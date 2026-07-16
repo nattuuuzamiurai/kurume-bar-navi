@@ -1,0 +1,33 @@
+[
+  {
+    "id": "ichibangai",
+    "name": "一番街",
+    "summary": "西鉄久留米駅前から明治通りに平行して伸びるアーケード商店街(全長約400m)。駅からのアクセスが良く、居酒屋・バーが多く並ぶ。",
+    "sources": [
+      { "label": "トリップアドバイザー「久留米一番街」", "url": "https://www.tripadvisor.jp/Attraction_Review-g1023416-d10484688-Reviews-Ichibangai-Kurume_Fukuoka_Prefecture_Kyushu.html" }
+    ]
+  },
+  {
+    "id": "nibangai",
+    "name": "二番街",
+    "summary": "一番街商店街を西へ抜けた先から西方向へ伸びる商店街。一番街と合わせて回遊しやすいエリア。",
+    "sources": [
+      { "label": "西鉄久留米〜JR久留米駅 周辺の商店街に関する記事", "url": "http://tamagazou.machinami.net/kurumeshigaichi2" }
+    ]
+  },
+  {
+    "id": "bunkagai",
+    "name": "文化街",
+    "summary": "久留米市日吉町、JR久留米駅と西鉄久留米駅のちょうど中間あたりに位置する歓楽街。中洲(福岡市)・堺町(北九州市)と並ぶ福岡県内三大歓楽街のひとつとされる。西鉄久留米駅からは徒歩15分前後。",
+    "sources": [
+      { "label": "note「久留米・文化街をひとりでぶらり。」", "url": "https://note.com/search?q=%E4%B9%85%E7%95%99%E7%B1%B3%E3%83%BB%E6%96%87%E5%8C%96%E8%A1%97%E3%82%92%E3%81%B2%E3%81%A8%E3%82%8A%E3%81%A7%E3%81%B6%E3%82%89%E3%82%8A" },
+      { "label": "福岡県料飲業生活衛生組合連合会「久留米文化街社交組合(筑後ブロック)組合員一覧」", "url": "https://f-ryoin.jp/union/kurume-bunkagai" }
+    ]
+  },
+  {
+    "id": "eki-shuhen",
+    "name": "西鉄久留米駅周辺",
+    "summary": "一番街・二番街・文化街のいずれかに明確に区分しきれない、西鉄久留米駅から徒歩数分圏内の店舗をまとめたエリア。",
+    "sources": []
+  }
+]

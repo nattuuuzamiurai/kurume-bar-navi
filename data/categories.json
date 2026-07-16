@@ -1,0 +1,44 @@
+[
+  {
+    "id": "bar",
+    "name": "バー",
+    "schemaType": "BarOrPub",
+    "summary": "カクテル・ウイスキー等を提供するバー、ダイニングバー。"
+  },
+  {
+    "id": "izakaya",
+    "name": "居酒屋",
+    "schemaType": "BarOrPub",
+    "summary": "お酒と食事を楽しめる居酒屋・大衆酒場。"
+  },
+  {
+    "id": "concafe",
+    "name": "コンカフェ",
+    "schemaType": "CafeOrCoffeeShop",
+    "summary": "メイド喫茶・ライブカフェなど、コンセプトを持ったカフェ形態の店舗。"
+  },
+  {
+    "id": "shisha",
+    "name": "シーシャ",
+    "schemaType": "BarOrPub",
+    "summary": "水タバコ(シーシャ)を楽しめるバー・カフェ。"
+  },
+  {
+    "id": "poker",
+    "name": "アミューズメントポーカーバー",
+    "schemaType": "BarOrPub",
+    "summary": "賭博性のないアミューズメント目的でポーカー等のカードゲームを楽しめる店舗。"
+  },
+  {
+    "id": "snack",
+    "name": "スナック",
+    "schemaType": "NightClub",
+    "summary": "ママ・スタッフとの会話を楽しむスナック・クラブ・ラウンジ。"
+  },
+  {
+    "id": "kyabakura",
+    "name": "キャバクラ",
+    "schemaType": "NightClub",
+    "summary": "キャストが接客するキャバクラ・クラブ。"
+  }
+]
