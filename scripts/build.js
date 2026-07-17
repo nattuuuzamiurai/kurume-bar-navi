@@ -149,10 +149,19 @@ function pickPhotoSource(v) {
 // (「写真を見る」の外部リンクボタンのみで対応)。
 //
 // 対象を増やす場合は、当該店舗のInstagram投稿(パーマリンク)を人手で確認し、
-// このマップに追記すること。
+// このマップに追記すること。**その際、投稿の実際の投稿者アカウントが店舗の公式アカウントと
+// 一致することを必ず確認すること**(検索エンジンの結果は、店舗が他アカウントの投稿に
+// タグ付け・言及されているだけのケースを、店舗自身の投稿と誤認しやすいため注意)。
+//
+// 2026-07-17 品質管理部指摘により修正: shisha-0942(SHISHA BAR 0942)に埋め込んでいた
+// https://www.instagram.com/p/C-wxVvmyfCG/ は、投稿者アカウントを再確認したところ
+// 公式アカウント@shishabar0942ではなく、無関係な個人アカウント(@nangoku_zundare0942、
+// 格闘技の試合報告の投稿で「at BAR 0942 @shishabar0942」と位置タグ付けしていただけ)の
+// 投稿だったため削除した。@shishabar0942公式アカウント自身の投稿で、検索エンジンから
+// パーマリンクを特定できるものが見つからなかったため、この店舗は埋め込み対象とせず、
+// 「写真を見る」外部リンクボタン(pickPhotoSource)にフォールバックする。
 // ============================================================
 const INSTAGRAM_POST_EMBEDS = {
-  "shisha-0942": "https://www.instagram.com/p/C-wxVvmyfCG/",
   "poker-ken": "https://www.instagram.com/p/DHUYDOMTOvi/",
   "poker-aa-aces": "https://www.instagram.com/p/CbkPsDWpeei/",
   "poker-ace-and-king": "https://www.instagram.com/p/DMzHAQgzjCE/",
