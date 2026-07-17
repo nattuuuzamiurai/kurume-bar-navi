@@ -68,39 +68,197 @@ function tagSlug(tag) {
   return tag.replace(/[\/\\:*?"<>|]/g, "-");
 }
 
-// 与えられた店舗一覧の中で実際に使われているタグを、件数の多い順に集計する。
-// (絞り込みチェックボックスは「このページに実在する店舗のタグ」だけを表示する)
-function collectTagCounts(venues) {
+// ============================================================
+// カテゴリごとのアイコン・差し色
+//
+// 【重要】実店舗の写真は一切使用しない。他サイト(食べログ・ホットペッパー・Retty等)の
+// 写真を転載することは著作権リスクがあるため、社長方針により禁止されている。
+// 代わりに、業態を表す汎用的な線画アイコン(自作のシンプルなSVG図形)をカードの
+// ビジュアル要素として使い、視覚的なボリュームを補う。特定の店舗の実際の外観・内観を
+// 表すものではなく、あくまで「業態を示す一般的なピクトグラム」であることを明確にするため、
+// 実写のような装飾は避けている。
+// ============================================================
+const CATEGORY_COLORS = {
+  bar: "#e8a33d",
+  izakaya: "#e2574c",
+  concafe: "#e07bb0",
+  shisha: "#59c3a6",
+  poker: "#7c6ce8",
+  snack: "#c9a227",
+  kyabakura: "#c9427a",
+};
+
+const CATEGORY_ICONS = {
+  // カクテルグラス
+  bar: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h32l-14 16v14h8m-16 0h16m-8-14L8 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="14" r="1.8" fill="currentColor"/></svg>`,
+  // 提灯(ちょうちん)
+  izakaya: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4v6M24 38v6M14 10h20a4 4 0 014 4v14a10 10 0 01-10 10h-8A10 10 0 0110 28V14a4 4 0 014-4z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 18h24M12 24h24M12 30h24" stroke="currentColor" stroke-width="1.5" opacity="0.6"/></svg>`,
+  // カップ+湯気
+  concafe: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 18h22v10a10 10 0 01-10 10h-2a10 10 0 01-10-10V18z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 20h4a5 5 0 010 10h-4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M17 12c0-2 2-2 2-4M24 12c0-2 2-2 2-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  // シーシャ(水タバコ)
+  shisha: `<svg viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="24" cy="34" rx="10" ry="6" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M24 28V16m0 0c4 0 6-3 4-7-2 2-4 2-4-1" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M14 30c-4 2-6 6-4 10M34 30c4 2 6 6 4 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/></svg>`,
+  // スペード(カード/ポーカー)
+  poker: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6c6 8 16 14 16 22a8 8 0 01-14 5c1 5 2 7 5 9H17c3-2 4-4 5-9a8 8 0 01-14-5c0-8 10-14 16-22z" fill="currentColor"/></svg>`,
+  // スナック・キャバクラ(非公開カテゴリだが将来のフェーズ2用に用意)
+  snack: `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M18 20c1-3 3-4 6-4s5 1 6 4M17 28h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  kyabakura: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 34l4-16 8-6 8 6 4 16z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="12" r="4" fill="currentColor"/></svg>`,
+};
+
+function categoryIconHtml(categoryId) {
+  const icon = CATEGORY_ICONS[categoryId];
+  if (!icon) return "";
+  const color = CATEGORY_COLORS[categoryId] || "#e8a33d";
+  return `<div class="venue-visual" style="--cat-color:${color}">${icon}</div>`;
+}
+
+// ============================================================
+// 「写真を見る」外部リンク(出典元での閲覧に誘導する。写真そのものは転載しない)
+// 写真が充実している傾向のあるサイトを優先的に選ぶ。
+// ============================================================
+const PHOTO_RICH_DOMAINS = [
+  "instagram.com",
+  "retty.me",
+  "hotpepper.jp",
+  "tabelog.com",
+  "con-ca.jp",
+  "concafe-ranking.jp",
+  "cafecon.jp",
+  "tiktok.com",
+  "pokepara.jp",
+  "town-night.jp",
+  "caba2.net",
+];
+
+function pickPhotoSource(v) {
+  const sources = v.sources || [];
+  for (const domain of PHOTO_RICH_DOMAINS) {
+    const found = sources.find((s) => s.url.includes(domain));
+    if (found) return found;
+  }
+  return sources[0] || null;
+}
+
+// ============================================================
+// Instagram公式埋め込みウィジェット(blockquote + embed.js)
+//
+// Meta Developerアプリ登録・アクセストークンは不要(2026-07時点で確認済み)。
+// ただし「アクセストークンを使ってプロフィールの投稿一覧を自動取得する」ことは
+// Meta Graph API(登録・トークン必須)の領域であり、今回は行っていない。
+// そのためここでは、投稿の個別URL(パーマリンク)が判明している店舗に限定して、
+// その1投稿だけを埋め込む方式にしている。プロフィールURLしか無い店舗は対象外
+// (「写真を見る」の外部リンクボタンのみで対応)。
+//
+// 対象を増やす場合は、当該店舗のInstagram投稿(パーマリンク)を人手で確認し、
+// このマップに追記すること。**その際、投稿の実際の投稿者アカウントが店舗の公式アカウントと
+// 一致することを必ず確認すること**(検索エンジンの結果は、店舗が他アカウントの投稿に
+// タグ付け・言及されているだけのケースを、店舗自身の投稿と誤認しやすいため注意)。
+//
+// 2026-07-17 品質管理部指摘により修正: shisha-0942(SHISHA BAR 0942)に埋め込んでいた
+// https://www.instagram.com/p/C-wxVvmyfCG/ は、投稿者アカウントを再確認したところ
+// 公式アカウント@shishabar0942ではなく、無関係な個人アカウント(@nangoku_zundare0942、
+// 格闘技の試合報告の投稿で「at BAR 0942 @shishabar0942」と位置タグ付けしていただけ)の
+// 投稿だったため削除した。@shishabar0942公式アカウント自身の投稿で、検索エンジンから
+// パーマリンクを特定できるものが見つからなかったため、この店舗は埋め込み対象とせず、
+// 「写真を見る」外部リンクボタン(pickPhotoSource)にフォールバックする。
+// ============================================================
+const INSTAGRAM_POST_EMBEDS = {
+  "poker-ken": "https://www.instagram.com/p/DHUYDOMTOvi/",
+  "poker-aa-aces": "https://www.instagram.com/p/CbkPsDWpeei/",
+  "poker-ace-and-king": "https://www.instagram.com/p/DMzHAQgzjCE/",
+  "shisha-aima": "https://www.instagram.com/p/DIYIdGqBCkm/",
+};
+
+const INSTAGRAM_EMBED_SCRIPT = `<script async src="//www.instagram.com/embed.js"></script>`;
+
+function instagramEmbedHtml(venueId) {
+  const postUrl = INSTAGRAM_POST_EMBEDS[venueId];
+  if (!postUrl) return "";
+  return `<div class="instagram-embed-wrap">
+  <blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(postUrl)}" data-instgrm-version="14"></blockquote>
+</div>`;
+}
+
+// ============================================================
+// 絞り込み(エリア・業態・タグを横断して組み合わせられるファセット絞り込みUI)
+// ============================================================
+
+// 与えられた店舗一覧から、指定した軸(area/category/tags)の件数を集計する。
+function collectFacetCounts(venues, key) {
   const counts = new Map();
   for (const v of venues) {
-    for (const t of v.tags || []) {
-      counts.set(t, (counts.get(t) || 0) + 1);
+    if (key === "tags") {
+      for (const t of v.tags || []) counts.set(t, (counts.get(t) || 0) + 1);
+    } else {
+      const val = v[key];
+      if (val) counts.set(val, (counts.get(val) || 0) + 1);
     }
   }
+  return counts;
+}
+
+function collectTagCounts(venues) {
+  const counts = collectFacetCounts(venues, "tags");
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"));
 }
 
-// タグ絞り込みチェックボックスUI + 結果件数表示。venueListId は絞り込み対象の <ul> の id。
-function tagFilterHtml(venues, venueListId) {
-  const tagCounts = collectTagCounts(venues);
-  if (tagCounts.length === 0) return "";
-  const checkboxes = tagCounts
-    .map(
-      ([tag, count]) =>
-        `<label class="tag-filter-item"><input type="checkbox" value="${escapeHtml(tag)}"> ${escapeHtml(tag)}<span class="count">(${count})</span></label>`
-    )
+// facetGroupHtml: エリア/業態/タグそれぞれのチェックボックス群を生成する。
+// idToLabel: {id: 表示名} のマップ(エリア名・業態名を出すため)。省略時はidをそのまま表示。
+function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge) {
+  if (counts.size === 0) return "";
+  const entries = [...counts.entries()].sort((a, b) => {
+    if (idToLabel) return 0; // エリア/業態は元の並び順を維持
+    return b[1] - a[1] || a[0].localeCompare(b[0], "ja");
+  });
+  const items = entries
+    .map(([value, count]) => {
+      const label = idToLabel ? idToLabel[value] || value : value;
+      return `<label class="tag-filter-item"><input type="checkbox" data-facet="${facetKey}" value="${escapeHtml(value)}"> ${escapeHtml(label)}<span class="count">(${count})</span></label>`;
+    })
     .join("\n");
+  const inner = `<div class="tag-filter-list">
+${items}
+  </div>`;
+  if (collapsedIfLarge && entries.length > 8) {
+    return `<details class="facet-group">
+  <summary>${escapeHtml(title)}で絞り込む(${entries.length})</summary>
+  ${inner}
+</details>`;
+  }
+  return `<div class="facet-group">
+  <p class="facet-group-title">${escapeHtml(title)}で絞り込む</p>
+  ${inner}
+</div>`;
+}
+
+// filterWidgetHtml: 与えられた店舗一覧を対象に、area/category/tags の
+// 3軸を組み合わせて絞り込めるUIを生成する。各軸は「このリストに実在する値」だけを
+// 選択肢にし、選択肢が1種類以下の軸(常に同じ値になる=絞り込む意味がない)は表示しない
+// (例: エリア別ページではエリア軸を出さない、業態別ページでは業態軸を出さない)。
+function filterWidgetHtml(venues, venueListId, areas, categories) {
+  const areaIdToLabel = Object.fromEntries(areas.map((a) => [a.id, a.name]));
+  const categoryIdToLabel = Object.fromEntries(categories.map((c) => [c.id, c.name]));
+
+  const areaCounts = collectFacetCounts(venues, "area");
+  const categoryCounts = collectFacetCounts(venues, "category");
+  const tagCounts = new Map(collectTagCounts(venues));
+
+  const groups = [];
+  if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false));
+  if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false));
+  if (tagCounts.size > 0) groups.push(facetGroupHtml("tags", "タグ", tagCounts, null, true));
+
+  if (groups.length === 0) return "";
+
   return `<div class="tag-filter" data-target="${venueListId}">
-  <p class="tag-filter-title">タグで絞り込む <button type="button" class="tag-filter-reset">条件をクリア</button></p>
-  <div class="tag-filter-list">
-${checkboxes}
-  </div>
+  <p class="tag-filter-title">絞り込む <button type="button" class="tag-filter-reset">条件をクリア</button></p>
+${groups.join("\n")}
   <p class="filter-result-count small"></p>
 </div>`;
 }
 
-// タグ絞り込みウィジェットを動かすクライアントサイドJS(外部ライブラリ不使用)。
-// チェックしたタグを「すべて含む(AND)」店舗だけを表示する。
+// 絞り込みウィジェットを動かすクライアントサイドJS(外部ライブラリ不使用)。
+// area・category は「選択した値のいずれかに一致(OR)」、tags は「選択したタグを
+// すべて含む(AND)」で絞り込む。3軸をまたぐ場合はAND(エリアAND業態ANDタグ)。
 const FILTER_SCRIPT = `<script>
 (function () {
   document.querySelectorAll('.tag-filter').forEach(function (widget) {
@@ -108,24 +266,38 @@ const FILTER_SCRIPT = `<script>
     var list = document.getElementById(targetId);
     if (!list) return;
     var cards = list.querySelectorAll('.venue-card');
-    var checkboxes = widget.querySelectorAll('input[type=checkbox]');
+    var allInputs = widget.querySelectorAll('input[type=checkbox]');
     var countEl = widget.querySelector('.filter-result-count');
+    function selectedByFacet(facet) {
+      return Array.prototype.filter.call(allInputs, function (c) {
+        return c.checked && c.getAttribute('data-facet') === facet;
+      }).map(function (c) { return c.value; });
+    }
     function apply() {
-      var selected = Array.prototype.filter.call(checkboxes, function (c) { return c.checked; }).map(function (c) { return c.value; });
+      var selArea = selectedByFacet('area');
+      var selCategory = selectedByFacet('category');
+      var selTags = selectedByFacet('tags');
       var visible = 0;
       cards.forEach(function (card) {
+        var area = card.getAttribute('data-area') || '';
+        var category = card.getAttribute('data-category') || '';
         var tags = (card.getAttribute('data-tags') || '').split('|');
-        var match = selected.length === 0 || selected.every(function (t) { return tags.indexOf(t) !== -1; });
+        var areaMatch = selArea.length === 0 || selArea.indexOf(area) !== -1;
+        var categoryMatch = selCategory.length === 0 || selCategory.indexOf(category) !== -1;
+        var tagsMatch = selTags.every(function (t) { return tags.indexOf(t) !== -1; });
+        var match = areaMatch && categoryMatch && tagsMatch;
         card.style.display = match ? '' : 'none';
         if (match) visible++;
       });
-      if (countEl) countEl.textContent = selected.length === 0 ? '' : visible + '件表示中(全' + cards.length + '件中)';
+      var anyChecked = Array.prototype.some.call(allInputs, function (c) { return c.checked; });
+      if (countEl) countEl.textContent = anyChecked ? visible + '件表示中(全' + cards.length + '件中)' : '';
     }
-    checkboxes.forEach(function (c) { c.addEventListener('change', apply); });
+    allInputs.forEach(function (c) { c.addEventListener('change', apply); });
     var resetBtn = widget.querySelector('.tag-filter-reset');
     if (resetBtn) {
-      resetBtn.addEventListener('click', function () {
-        checkboxes.forEach(function (c) { c.checked = false; });
+      resetBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        allInputs.forEach(function (c) { c.checked = false; });
         apply();
       });
     }
@@ -133,7 +305,7 @@ const FILTER_SCRIPT = `<script>
 })();
 </script>`;
 
-const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。`;
+const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の実写真は掲載しておらず、写真は各出典サイトまたはInstagram公式埋め込みでご覧いただけます(Instagram埋め込みをご利用の場合、お使いのブラウザがInstagram社のサーバーと通信します)。`;
 
 function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
@@ -162,6 +334,12 @@ ${jsonLdScript}
 <header class="site-header">
   <a class="site-title" href="${url("/")}">${escapeHtml(SITE_NAME)}</a>
   <p class="site-tagline">西鉄久留米駅周辺(一番街・二番街・文化街)の飲み屋まとめ</p>
+  <nav class="site-nav">
+    <a href="${url("/search/")}">絞り込み検索</a>
+    <a href="${url("/areas/")}">エリア</a>
+    <a href="${url("/categories/")}">業態</a>
+    <a href="${url("/tags/")}">タグ</a>
+  </nav>
 </header>
 <main>
 ${bodyHtml}
@@ -183,12 +361,18 @@ function venueCardHtml(v, categories, areas) {
   const tags = v.tags || [];
   const tagsAttr = escapeHtml(tags.join("|"));
   const tagsHtml = tags.length
-    ? `<span class="venue-card-tags">${tags.map((t) => `<span class="tag tag-small">${escapeHtml(t)}</span>`).join(" ")}</span>`
+    ? `<span class="venue-card-tags">${tags
+        .slice(0, 4)
+        .map((t) => `<span class="tag tag-small">${escapeHtml(t)}</span>`)
+        .join(" ")}${tags.length > 4 ? `<span class="tag tag-small tag-more">+${tags.length - 4}</span>` : ""}</span>`
     : "";
-  return `<li class="venue-card" data-tags="${tagsAttr}">
+  return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}">
   <a href="${url(`/venues/${v.id}/`)}">
-    <span class="venue-name">${escapeHtml(v.name)}</span>
-    <span class="venue-meta">${escapeHtml(cat ? cat.name : v.category)} / ${escapeHtml(area ? area.name : v.area)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</span>
+    ${categoryIconHtml(v.category)}
+    <span class="venue-card-body">
+      <span class="venue-name">${escapeHtml(v.name)}</span>
+      <span class="venue-meta">${escapeHtml(cat ? cat.name : v.category)} / ${escapeHtml(area ? area.name : v.area)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</span>
+    </span>
   </a>
   ${tagsHtml}
 </li>`;
@@ -204,7 +388,7 @@ function renderTop(venues, areas, categories) {
   const categoryLinks = categories
     .map(
       (c) =>
-        `<li><a href="${url(`/categories/${c.id}/`)}">${escapeHtml(c.name)}<span class="count">(${venues.filter((v) => v.category === c.id).length}件)</span></a></li>`
+        `<li><a class="category-link" href="${url(`/categories/${c.id}/`)}" style="--cat-color:${CATEGORY_COLORS[c.id] || "#e8a33d"}">${categoryIconHtml(c.id)}<span>${escapeHtml(c.name)}<span class="count">(${venues.filter((v) => v.category === c.id).length}件)</span></span></a></li>`
     )
     .join("\n");
   const newest = venues.slice(0, 12).map((v) => venueCardHtml(v, categories, areas)).join("\n");
@@ -213,19 +397,20 @@ function renderTop(venues, areas, categories) {
 <section class="hero">
   <h1>久留米飲み屋ナビ</h1>
   <p>福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど、飲み屋を幅広くまとめた情報サイトです。現在 <strong>${venues.length}件</strong> の店舗情報を掲載しています。</p>
+  <a class="cta-button" href="${url("/search/")}">エリア・業態・タグで絞り込んで探す →</a>
+</section>
+
+<section>
+  <h2>業態から探す</h2>
+  <ul class="category-grid">
+${categoryLinks}
+  </ul>
 </section>
 
 <section>
   <h2>エリアから探す</h2>
   <ul class="link-list">
 ${areaLinks}
-  </ul>
-</section>
-
-<section>
-  <h2>業態から探す</h2>
-  <ul class="link-list">
-${categoryLinks}
   </ul>
 </section>
 
@@ -263,6 +448,7 @@ function renderAreaIndex(areas, venues) {
 <ul class="link-list-detailed">
 ${items}
 </ul>
+<p><a href="${url("/search/")}">エリア・業態・タグを組み合わせて絞り込む →</a></p>
 `;
   return layout({
     title: "エリア一覧",
@@ -275,14 +461,15 @@ ${items}
 function renderCategoryIndex(categories, venues) {
   const items = categories
     .map(
-      (c) => `<li><a href="${url(`/categories/${c.id}/`)}"><strong>${escapeHtml(c.name)}</strong>(${venues.filter((v) => v.category === c.id).length}件)</a><p>${escapeHtml(c.summary)}</p></li>`
+      (c) => `<li><a class="category-link" href="${url(`/categories/${c.id}/`)}" style="--cat-color:${CATEGORY_COLORS[c.id] || "#e8a33d"}">${categoryIconHtml(c.id)}<span><strong>${escapeHtml(c.name)}</strong>(${venues.filter((v) => v.category === c.id).length}件)<br>${escapeHtml(c.summary)}</span></a></li>`
     )
     .join("\n");
   const body = `
 <h1>業態一覧</h1>
-<ul class="link-list-detailed">
+<ul class="link-list-detailed category-index">
 ${items}
 </ul>
+<p><a href="${url("/search/")}">エリア・業態・タグを組み合わせて絞り込む →</a></p>
 `;
   return layout({
     title: "業態一覧",
@@ -300,7 +487,7 @@ function renderAreaPage(area, venues, categories, areas) {
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/areas/")}">エリア</a> &gt; ${escapeHtml(area.name)}</nav>
 <h1>${escapeHtml(area.name)}の飲み屋一覧</h1>
 <p>${escapeHtml(area.summary)}</p>
-${tagFilterHtml(areaVenues, listId)}
+${filterWidgetHtml(areaVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
 </ul>
@@ -322,7 +509,7 @@ function renderCategoryPage(category, venues, areas, categories) {
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/categories/")}">業態</a> &gt; ${escapeHtml(category.name)}</nav>
 <h1>久留米・西鉄久留米駅周辺の${escapeHtml(category.name)}一覧</h1>
 <p>${escapeHtml(category.summary)}</p>
-${tagFilterHtml(catVenues, listId)}
+${filterWidgetHtml(catVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
 </ul>
@@ -350,6 +537,7 @@ function renderTagIndex(tagCounts) {
 <ul class="link-list">
 ${items}
 </ul>
+<p><a href="${url("/search/")}">エリア・業態・タグを組み合わせて絞り込む →</a></p>
 `;
   return layout({
     title: "タグから探す",
@@ -362,11 +550,13 @@ ${items}
 function renderTagPage(tag, venues, areas, categories) {
   const tagVenues = venues.filter((v) => (v.tags || []).includes(tag));
   const list = tagVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const listId = "venue-list-tag";
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/tags/")}">タグ</a> &gt; ${escapeHtml(tag)}</nav>
 <h1>「${escapeHtml(tag)}」の店舗一覧</h1>
 <p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの店舗 ${tagVenues.length}件です。</p>
-<ul class="venue-list">
+${filterWidgetHtml(tagVenues, listId, areas, categories)}
+<ul class="venue-list" id="${listId}">
 ${list || "<li>該当する店舗がありません。</li>"}
 </ul>
 `;
@@ -375,6 +565,29 @@ ${list || "<li>該当する店舗がありません。</li>"}
     description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている店舗の一覧。`,
     pathname: `/tags/${tagSlug(tag)}/`,
     bodyHtml: body,
+    extraScript: FILTER_SCRIPT,
+  });
+}
+
+// エリア・業態・タグの3軸を同時に組み合わせて絞り込める統合の「探す」ページ。
+function renderSearchPage(venues, areas, categories) {
+  const list = venues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const listId = "venue-list-search";
+  const body = `
+<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; 絞り込み検索</nav>
+<h1>エリア・業態・タグで探す</h1>
+<p>エリア・業態・タグを組み合わせて、条件に合うお店を絞り込めます(複数選択可)。</p>
+${filterWidgetHtml(venues, listId, areas, categories)}
+<ul class="venue-list" id="${listId}">
+${list}
+</ul>
+`;
+  return layout({
+    title: "エリア・業態・タグで探す",
+    description: "久留米飲み屋ナビの全店舗を、エリア・業態・タグを組み合わせて絞り込める検索ページ。",
+    pathname: "/search/",
+    bodyHtml: body,
+    extraScript: FILTER_SCRIPT,
   });
 }
 
@@ -413,13 +626,34 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
 
   const isNightBusiness = v.category === "snack" || v.category === "kyabakura";
 
+  const photoSource = pickPhotoSource(v);
+  const igEmbed = instagramEmbedHtml(v.id);
+  const photoSectionHtml = igEmbed
+    ? `<div class="photo-section">
+    <h2>写真</h2>
+    ${igEmbed}
+    <p class="small">Instagram公式の埋め込み機能で表示しています。${photoSource ? `他の写真は<a href="${escapeHtml(photoSource.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(photoSource.label)}</a>でもご覧いただけます。` : ""}</p>
+  </div>`
+    : photoSource
+    ? `<div class="photo-section">
+    <a class="photo-link-button" href="${escapeHtml(photoSource.url)}" rel="nofollow noopener" target="_blank">📷 ${escapeHtml(photoSource.label)}で写真を見る ↗</a>
+  </div>`
+    : "";
+
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a> &gt; <a href="${url(`/categories/${category.id}/`)}">${escapeHtml(category.name)}</a> &gt; ${escapeHtml(v.name)}</nav>
 
 <article class="venue-detail">
-  <h1>${escapeHtml(v.name)}</h1>
-  <p class="venue-meta">${escapeHtml(category.name)} / ${escapeHtml(area.name)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</p>
+  <div class="venue-detail-header" style="--cat-color:${CATEGORY_COLORS[v.category] || "#e8a33d"}">
+    ${categoryIconHtml(v.category)}
+    <div>
+      <h1>${escapeHtml(v.name)}</h1>
+      <p class="venue-meta">${escapeHtml(category.name)} / ${escapeHtml(area.name)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</p>
+    </div>
+  </div>
   ${tagsHtml ? `<p class="tags">${tagsHtml}</p>` : ""}
+
+  ${photoSectionHtml}
 
   <table class="venue-table">
     <tr><th>業態</th><td>${escapeHtml(category.name)}</td></tr>
@@ -460,6 +694,7 @@ ${relatedInArea}
     pathname: `/venues/${v.id}/`,
     bodyHtml: body,
     jsonLd: buildJsonLd(v, area, category),
+    extraScript: igEmbed ? INSTAGRAM_EMBED_SCRIPT : "",
   });
 }
 
@@ -472,7 +707,7 @@ function renderAboutPage() {
 <ul>
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
   <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
-  <li>他サイトの文章・写真をそのまま転載することはしていません。</li>
+  <li>他サイトの文章・写真をそのまま転載することはしていません。店舗の写真は掲載せず、業態を示す汎用アイコンを表示しています。写真をご覧になりたい場合は、各店舗ページの「写真を見る」ボタンから出典サイトへ、またはInstagram公式の埋め込み(利用可能な店舗のみ)でご覧いただけます。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
 </ul>
 
@@ -527,6 +762,10 @@ function build() {
   // about
   writeFile("about/index.html", renderAboutPage());
   urls.push("/about/");
+
+  // 絞り込み検索(エリア・業態・タグを組み合わせ)
+  writeFile("search/index.html", renderSearchPage(venues, areas, categories));
+  urls.push("/search/");
 
   // エリア一覧・個別(店舗数・一覧は公開対象のみでカウント)
   writeFile("areas/index.html", renderAreaIndex(areas, venues));
