@@ -21,6 +21,17 @@ const ASSETS_DIR = path.join(ROOT, "assets");
 const SITE_NAME = "久留米飲み屋ナビ";
 const SITE_URL = "https://nattuuuzamiurai.github.io/kurume-bar-navi";
 const BASE_PATH = "/kurume-bar-navi";
+
+// 連絡先(掲載内容の追加・修正・削除依頼の受付先)。
+// TODO: 実運用開始前に、実際に受信・監視できる会社のメールアドレスへ差し替えること。
+// 現時点ではプレースホルダーのため、本番公開前に必ず確認する。
+const CONTACT_EMAIL = "kurume-bar-navi-info@example.com";
+
+// 今回のフェーズで一般公開する業態(カテゴリID)のallowlist。
+// スナック・キャバクラ(snack/kyabakura)は data/venues.json にはデータとして残すが、
+// 社長判断によりフェーズ1では非公開とする(ページ自体を生成しない)。
+// フェーズ2で公開解禁する場合はここに追加すればよい。
+const PUBLISHED_CATEGORIES = ["bar", "izakaya", "concafe", "shisha", "poker"];
 function todayJST() {
   const now = new Date();
   const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -123,7 +134,7 @@ function renderTop(venues, areas, categories) {
   const body = `
 <section class="hero">
   <h1>久留米飲み屋ナビ</h1>
-  <p>福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラなど、飲み屋を幅広くまとめた情報サイトです。現在 <strong>${venues.length}件</strong> の店舗情報を掲載しています。</p>
+  <p>福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど、飲み屋を幅広くまとめた情報サイトです。現在 <strong>${venues.length}件</strong> の店舗情報を掲載しています。</p>
 </section>
 
 <section>
@@ -151,7 +162,7 @@ ${newest}
   return layout({
     title: null,
     description:
-      "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラなど飲み屋を網羅する情報サイト。",
+      "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど飲み屋を網羅する情報サイト。",
     pathname: "/",
     bodyHtml: body,
   });
@@ -191,7 +202,7 @@ ${items}
 `;
   return layout({
     title: "業態一覧",
-    description: "久留米飲み屋ナビが掲載するバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラの一覧。",
+    description: "久留米飲み屋ナビが掲載するバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーの一覧。",
     pathname: "/categories/",
     bodyHtml: body,
   });
@@ -212,7 +223,7 @@ ${list || "<li>準備中です。</li>"}
 `;
   return layout({
     title: `${area.name}の飲み屋一覧`,
-    description: `福岡県久留米市${area.name}エリアのバー・居酒屋・スナック・キャバクラ等の飲み屋一覧。${area.summary}`,
+    description: `福岡県久留米市${area.name}エリアのバー・居酒屋・コンカフェ等の飲み屋一覧。${area.summary}`,
     pathname: `/areas/${area.id}/`,
     bodyHtml: body,
   });
@@ -299,7 +310,8 @@ ${sourcesHtml}
   </ul>
 
   <h2>関係者の方へ</h2>
-  <p>この店舗の情報に誤りがある、または追加・修正をご希望の場合、掲載内容の追加・修正機能は現在準備中です。今しばらくお待ちください。</p>
+  <p>この店舗の情報に誤りがある、追加・修正をご希望の場合、または掲載を希望されない場合は、下記メールアドレスまでご連絡ください。</p>
+  <p><a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`【${v.name}】情報の追加・修正について`)}">${escapeHtml(CONTACT_EMAIL)}</a></p>
 </article>
 
 <section>
@@ -324,7 +336,7 @@ ${relatedInArea}
 function renderAboutPage() {
   const body = `
 <h1>このサイトについて</h1>
-<p>久留米飲み屋ナビは、福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街周辺エリア)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラなど、飲み屋を幅広く紹介する情報サイトです。</p>
+<p>久留米飲み屋ナビは、福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街周辺エリア)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど、飲み屋を幅広く紹介する情報サイトです。</p>
 
 <h2>掲載方針</h2>
 <ul>
@@ -335,10 +347,11 @@ function renderAboutPage() {
 </ul>
 
 <h2>掲載店舗の関係者の方へ</h2>
-<p>当サイトへの掲載内容に誤りがある場合の修正依頼、掲載を希望されない場合の削除依頼については、現在専用の受付窓口を準備中です。今しばらくお待ちください。</p>
+<p>当サイトへの掲載内容に誤りがある場合の修正依頼、掲載を希望されない場合の削除依頼については、下記メールアドレスまでご連絡ください。</p>
+<p><a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("掲載内容について")}">${escapeHtml(CONTACT_EMAIL)}</a></p>
 
 <h2>年齢確認について</h2>
-<p>スナック・キャバクラなど接待を伴う飲食店は、20歳未満の方はご利用いただけません。</p>
+<p>接待を伴う飲食店は、20歳未満の方はご利用いただけません。</p>
 `;
   return layout({
     title: "このサイトについて",
@@ -355,9 +368,22 @@ function writeFile(relPath, content) {
 }
 
 function build() {
-  const venues = readJSON("venues.json");
+  const allVenues = readJSON("venues.json");
   const areas = readJSON("areas.json");
-  const categories = readJSON("categories.json");
+  const allCategories = readJSON("categories.json");
+
+  // 公開対象(PUBLISHED_CATEGORIES)のみに絞り込む。
+  // 非公開の業態(スナック・キャバクラ等)は data/venues.json にはデータとして残るが、
+  // dist/ 配下にページを一切生成しない(リンクを隠すだけでなく、ファイル自体を作らない)。
+  const venues = allVenues.filter((v) => PUBLISHED_CATEGORIES.includes(v.category));
+  const categories = allCategories.filter((c) => PUBLISHED_CATEGORIES.includes(c.id));
+  const hiddenCount = allVenues.length - venues.length;
+  console.log(
+    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件、カテゴリ: ${allCategories
+      .filter((c) => !PUBLISHED_CATEGORIES.includes(c.id))
+      .map((c) => c.name)
+      .join("・")})`
+  );
 
   // クリーンビルド
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
@@ -372,7 +398,7 @@ function build() {
   writeFile("about/index.html", renderAboutPage());
   urls.push("/about/");
 
-  // エリア一覧・個別
+  // エリア一覧・個別(店舗数・一覧は公開対象のみでカウント)
   writeFile("areas/index.html", renderAreaIndex(areas, venues));
   urls.push("/areas/");
   for (const area of areas) {
@@ -380,7 +406,7 @@ function build() {
     urls.push(`/areas/${area.id}/`);
   }
 
-  // 業態一覧・個別
+  // 業態一覧・個別(非公開カテゴリはそもそも一覧に含めず、ページも生成しない)
   writeFile("categories/index.html", renderCategoryIndex(categories, venues));
   urls.push("/categories/");
   for (const category of categories) {
@@ -388,7 +414,7 @@ function build() {
     urls.push(`/categories/${category.id}/`);
   }
 
-  // 店舗個別ページ
+  // 店舗個別ページ(公開対象のみ生成。非公開店舗のHTMLファイルはdist/に一切作らない)
   for (const v of venues) {
     const area = areas.find((a) => a.id === v.area);
     const category = categories.find((c) => c.id === v.category);
