@@ -62,9 +62,80 @@ function absoluteUrl(p) {
   return `${SITE_URL}${p}`;
 }
 
+// タグ名をURL/ディレクトリ名として使える形に変換する(例: "海鮮/魚介" -> "海鮮-魚介")。
+// 表示上のタグ名(日本語)はそのまま保持し、パスにのみ使う。
+function tagSlug(tag) {
+  return tag.replace(/[\/\\:*?"<>|]/g, "-");
+}
+
+// 与えられた店舗一覧の中で実際に使われているタグを、件数の多い順に集計する。
+// (絞り込みチェックボックスは「このページに実在する店舗のタグ」だけを表示する)
+function collectTagCounts(venues) {
+  const counts = new Map();
+  for (const v of venues) {
+    for (const t of v.tags || []) {
+      counts.set(t, (counts.get(t) || 0) + 1);
+    }
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"));
+}
+
+// タグ絞り込みチェックボックスUI + 結果件数表示。venueListId は絞り込み対象の <ul> の id。
+function tagFilterHtml(venues, venueListId) {
+  const tagCounts = collectTagCounts(venues);
+  if (tagCounts.length === 0) return "";
+  const checkboxes = tagCounts
+    .map(
+      ([tag, count]) =>
+        `<label class="tag-filter-item"><input type="checkbox" value="${escapeHtml(tag)}"> ${escapeHtml(tag)}<span class="count">(${count})</span></label>`
+    )
+    .join("\n");
+  return `<div class="tag-filter" data-target="${venueListId}">
+  <p class="tag-filter-title">タグで絞り込む <button type="button" class="tag-filter-reset">条件をクリア</button></p>
+  <div class="tag-filter-list">
+${checkboxes}
+  </div>
+  <p class="filter-result-count small"></p>
+</div>`;
+}
+
+// タグ絞り込みウィジェットを動かすクライアントサイドJS(外部ライブラリ不使用)。
+// チェックしたタグを「すべて含む(AND)」店舗だけを表示する。
+const FILTER_SCRIPT = `<script>
+(function () {
+  document.querySelectorAll('.tag-filter').forEach(function (widget) {
+    var targetId = widget.getAttribute('data-target');
+    var list = document.getElementById(targetId);
+    if (!list) return;
+    var cards = list.querySelectorAll('.venue-card');
+    var checkboxes = widget.querySelectorAll('input[type=checkbox]');
+    var countEl = widget.querySelector('.filter-result-count');
+    function apply() {
+      var selected = Array.prototype.filter.call(checkboxes, function (c) { return c.checked; }).map(function (c) { return c.value; });
+      var visible = 0;
+      cards.forEach(function (card) {
+        var tags = (card.getAttribute('data-tags') || '').split('|');
+        var match = selected.length === 0 || selected.every(function (t) { return tags.indexOf(t) !== -1; });
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      if (countEl) countEl.textContent = selected.length === 0 ? '' : visible + '件表示中(全' + cards.length + '件中)';
+    }
+    checkboxes.forEach(function (c) { c.addEventListener('change', apply); });
+    var resetBtn = widget.querySelector('.tag-filter-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        checkboxes.forEach(function (c) { c.checked = false; });
+        apply();
+      });
+    }
+  });
+})();
+</script>`;
+
 const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。`;
 
-function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex }) {
+function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
   const canonical = absoluteUrl(pathname);
   const jsonLdScript = jsonLd
@@ -100,6 +171,7 @@ ${bodyHtml}
   <p><a href="${url("/about/")}">このサイトについて・掲載店舗の関係者の方へ</a></p>
   <p>&copy; ${SITE_NAME}</p>
 </footer>
+${extraScript || ""}
 </body>
 </html>
 `;
@@ -108,11 +180,17 @@ ${bodyHtml}
 function venueCardHtml(v, categories, areas) {
   const cat = categories.find((c) => c.id === v.category);
   const area = areas.find((a) => a.id === v.area);
-  return `<li class="venue-card">
+  const tags = v.tags || [];
+  const tagsAttr = escapeHtml(tags.join("|"));
+  const tagsHtml = tags.length
+    ? `<span class="venue-card-tags">${tags.map((t) => `<span class="tag tag-small">${escapeHtml(t)}</span>`).join(" ")}</span>`
+    : "";
+  return `<li class="venue-card" data-tags="${tagsAttr}">
   <a href="${url(`/venues/${v.id}/`)}">
     <span class="venue-name">${escapeHtml(v.name)}</span>
     <span class="venue-meta">${escapeHtml(cat ? cat.name : v.category)} / ${escapeHtml(area ? area.name : v.area)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</span>
   </a>
+  ${tagsHtml}
 </li>`;
 }
 
@@ -149,6 +227,12 @@ ${areaLinks}
   <ul class="link-list">
 ${categoryLinks}
   </ul>
+</section>
+
+<section>
+  <h2>タグから探す</h2>
+  <p>ダーツ・カラオケ・個室あり・もつ鍋など、遊べる要素や料理ジャンルから絞り込めます。</p>
+  <p><a href="${url("/tags/")}">タグ一覧を見る →</a></p>
 </section>
 
 <section>
@@ -209,15 +293,15 @@ ${items}
 }
 
 function renderAreaPage(area, venues, categories, areas) {
-  const list = venues
-    .filter((v) => v.area === area.id)
-    .map((v) => venueCardHtml(v, categories, areas))
-    .join("\n");
+  const areaVenues = venues.filter((v) => v.area === area.id);
+  const list = areaVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const listId = "venue-list-area";
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/areas/")}">エリア</a> &gt; ${escapeHtml(area.name)}</nav>
 <h1>${escapeHtml(area.name)}の飲み屋一覧</h1>
 <p>${escapeHtml(area.summary)}</p>
-<ul class="venue-list">
+${tagFilterHtml(areaVenues, listId)}
+<ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
 </ul>
 `;
@@ -226,19 +310,20 @@ ${list || "<li>準備中です。</li>"}
     description: `福岡県久留米市${area.name}エリアのバー・居酒屋・コンカフェ等の飲み屋一覧。${area.summary}`,
     pathname: `/areas/${area.id}/`,
     bodyHtml: body,
+    extraScript: FILTER_SCRIPT,
   });
 }
 
 function renderCategoryPage(category, venues, areas, categories) {
-  const list = venues
-    .filter((v) => v.category === category.id)
-    .map((v) => venueCardHtml(v, categories, areas))
-    .join("\n");
+  const catVenues = venues.filter((v) => v.category === category.id);
+  const list = catVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const listId = "venue-list-category";
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/categories/")}">業態</a> &gt; ${escapeHtml(category.name)}</nav>
 <h1>久留米・西鉄久留米駅周辺の${escapeHtml(category.name)}一覧</h1>
 <p>${escapeHtml(category.summary)}</p>
-<ul class="venue-list">
+${tagFilterHtml(catVenues, listId)}
+<ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
 </ul>
 `;
@@ -246,6 +331,49 @@ ${list || "<li>準備中です。</li>"}
     title: `${category.name}一覧`,
     description: `福岡県久留米市・西鉄久留米駅周辺の${category.name}一覧。${category.summary}`,
     pathname: `/categories/${category.id}/`,
+    bodyHtml: body,
+    extraScript: FILTER_SCRIPT,
+  });
+}
+
+function renderTagIndex(tagCounts) {
+  const items = tagCounts
+    .map(
+      ([tag, count]) =>
+        `<li><a href="${url(`/tags/${tagSlug(tag)}/`)}">${escapeHtml(tag)}<span class="count">(${count}件)</span></a></li>`
+    )
+    .join("\n");
+  const body = `
+<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; タグ</nav>
+<h1>タグから探す</h1>
+<p>ダーツ・カラオケなどの遊べる要素や、もつ鍋・焼肉などの料理ジャンル、個室の有無といった特徴からお店を探せます。</p>
+<ul class="link-list">
+${items}
+</ul>
+`;
+  return layout({
+    title: "タグから探す",
+    description: "久留米飲み屋ナビの店舗タグ一覧。ダーツ・カラオケ・個室あり・もつ鍋など、設備や料理ジャンルから店舗を絞り込めます。",
+    pathname: "/tags/",
+    bodyHtml: body,
+  });
+}
+
+function renderTagPage(tag, venues, areas, categories) {
+  const tagVenues = venues.filter((v) => (v.tags || []).includes(tag));
+  const list = tagVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const body = `
+<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/tags/")}">タグ</a> &gt; ${escapeHtml(tag)}</nav>
+<h1>「${escapeHtml(tag)}」の店舗一覧</h1>
+<p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの店舗 ${tagVenues.length}件です。</p>
+<ul class="venue-list">
+${list || "<li>該当する店舗がありません。</li>"}
+</ul>
+`;
+  return layout({
+    title: `「${tag}」の店舗一覧`,
+    description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている店舗の一覧。`,
+    pathname: `/tags/${tagSlug(tag)}/`,
     bodyHtml: body,
   });
 }
@@ -273,7 +401,9 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   const sourcesHtml = v.sources
     .map((s) => `<li><a href="${escapeHtml(s.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(s.label)}</a></li>`)
     .join("\n");
-  const tagsHtml = (v.tags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join(" ");
+  const tagsHtml = (v.tags || [])
+    .map((t) => `<a class="tag" href="${url(`/tags/${tagSlug(t)}/`)}">${escapeHtml(t)}</a>`)
+    .join(" ");
 
   const relatedInArea = allVenues
     .filter((x) => x.area === v.area && x.id !== v.id)
@@ -424,6 +554,26 @@ function build() {
     }
     writeFile(`venues/${v.id}/index.html`, renderVenuePage(v, area, category, venues, areas, categories));
     urls.push(`/venues/${v.id}/`);
+  }
+
+  // タグ一覧・個別(ダーツ・カラオケ・もつ鍋等、設備/料理ジャンルからの絞り込み用ページ。
+  // 公開対象の店舗が持つタグのみを対象にする)
+  const tagCounts = collectTagCounts(venues);
+  const slugSeen = new Map();
+  for (const [tag] of tagCounts) {
+    const slug = tagSlug(tag);
+    if (slugSeen.has(slug)) {
+      console.warn(`[warn] tag slug collision: "${tag}" と "${slugSeen.get(slug)}" が同じURL(${slug})になります`);
+    }
+    slugSeen.set(slug, tag);
+  }
+  if (tagCounts.length > 0) {
+    writeFile("tags/index.html", renderTagIndex(tagCounts));
+    urls.push("/tags/");
+    for (const [tag] of tagCounts) {
+      writeFile(`tags/${tagSlug(tag)}/index.html`, renderTagPage(tag, venues, areas, categories));
+      urls.push(`/tags/${tagSlug(tag)}/`);
+    }
   }
 
   // sitemap.xml

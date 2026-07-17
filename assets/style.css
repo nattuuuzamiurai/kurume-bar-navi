@@ -126,7 +126,66 @@ h2 { font-size: 1.15rem; margin-top: 2em; border-left: 4px solid var(--color-acc
   padding: 2px 10px;
   font-size: 0.8rem;
   margin-right: 6px;
+  margin-bottom: 6px;
   color: var(--color-muted);
+}
+a.tag:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.venue-card-tags {
+  display: block;
+  padding: 0 14px 12px;
+  margin-top: -6px;
+}
+.tag-small {
+  font-size: 0.72rem;
+  padding: 1px 8px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+.tag-filter {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 16px 0;
+}
+.tag-filter-title {
+  margin: 0 0 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.tag-filter-reset {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.tag-filter-reset:hover { color: var(--color-accent); border-color: var(--color-accent); }
+.tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.tag-filter-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.filter-result-count {
+  margin: 8px 0 0;
+  min-height: 1.2em;
 }
 
 .notice {
