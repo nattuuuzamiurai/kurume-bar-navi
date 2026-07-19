@@ -61,7 +61,7 @@ GitHub Pages で公開
   - **業態別の自作アイコン(SVG)**: `scripts/build.js` の `CATEGORY_ICONS` に、バー(カクテルグラス)・居酒屋(提灯)・コンカフェ(カップ)・シーシャ・アミューズメントポーカーバー(スペード)を表す、実店舗の外観・内観とは無関係な汎用ピクトグラムを直接コード内にSVGとして持たせている(外部画像ファイル・フォント不使用、著作権リスクなし)。業態ごとに差し色(`CATEGORY_COLORS`)も設定し、カード・見出し部分に反映している。
   - **「写真を見る」外部リンクボタン**: 各店舗ページに、出典サイト(公式Instagram・Retty・ホットペッパー等、写真が充実している傾向のあるサイトを優先)への外部リンクボタンを設置。実際の写真は出典元で見てもらう導線。
   - **Instagram公式埋め込み(該当店舗のみ)・公式プロフィールリンク**: 下記参照。
-  - **Googleマップの地図埋め込み**: 具体的な住所を持つ店舗に設置。下記参照。
+  - **Googleマップへの外部リンク**: 各店舗ページに「Googleマップで開く」ボタンを設置(iframe埋め込みは技術検証の結果不採用。下記参照)。
 
 ## Instagram公式埋め込み・公式プロフィールリンク(2026-07-19更新)
 
@@ -71,18 +71,19 @@ GitHub Pages で公開
 - 投稿埋め込み対象は `scripts/build.js` の `INSTAGRAM_POST_EMBEDS` に手動登録(2026-07-19時点で5件: `poker-ken`, `poker-aa-aces`, `poker-ace-and-king`, `shisha-aima`, `bar-rojiura-sakahari`)。
 - **公式プロフィールリンク**: 投稿パーマリンクまで特定できなくても、店舗の公式Instagramアカウント(プロフィール)を検索スニペットで確認できた店舗については、そのプロフィールURLを `data/venues.json` の `sources` に追加している。これにより各店舗ページの「写真を見る」ボタンが公式Instagramへ誘導される(2026-07-19時点で公開146件中34件が公式Instagramリンクを保有。うち店名・住所・電話番号の一致で照合した29件を本対応で追加)。Instagramのプロフィール・投稿ページは curl ではJSでラップされ投稿者名を機械抽出できないため、公式アカウントの同定は検索スニペット(人が読める形)での目視照合で行い、少しでも疑わしいものは採用していない。
 
-## Googleマップ 無料埋め込みを採用(2026-07-19、規約精査のうえ)
+## Googleマップは「外部リンク」で対応(iframe埋め込みは不採用、2026-07-19)
 
-前回(PR #5)は「Places API不採用の根拠がMaps Embed APIにも及ぶ」と解釈して見送ったが、規約をもう一段精査した結果、**APIキー不要のキーレス埋め込みは規約上セーフと判断し、具体的な住所を持つ店舗(公開146件中121件)に地図埋め込みを実装した**。
+**経緯(重要)**: 一度はキーレスの地図iframe埋め込みを実装したが、品質管理部の指摘で撤回した。当初「pb を自作すれば APIキー不要でキーレス埋め込みできる」と考えて `!1m2!2m1!1z + base64url(住所)` で `pb` を組み立てていたが、これは**本物のGoogleの pb 形式(座標や場所IDを含む)ではなく無効**だった(APIキー無しでは住所からジオコーディングできない)。品質管理部の実測で全件 **HTTP 404 + X-Frame-Options: SAMEORIGIN**(=地図が描画されない)が確認された。当初コメントに「最終エンドポイントは X-Frame-Options を返さず frameable と確認済み」と書いていたが、これは**別URLでの確認を一般化した誤った記載**で、事実と異なっていた(再発防止として、以後「確認済み」と書く前に必ず本番と同一のURLを実測する)。
 
-- **2つのプロダクトは別物・別規約**:
-  - キーレス埋め込み(`www.google.com/maps/embed?pb=...`。Googleマップの「共有→地図を埋め込む」で誰でも取得できるiframe。`maps.google.com/maps?q=<住所>&output=embed` は同じ `/maps/embed?pb=...` にリダイレクトされる) → **消費者向けの Google Maps 追加利用規約 + Geoガイドライン**の適用対象。
-  - Maps Embed API(`www.google.com/maps/embed/v1/place?key=...`。APIキー必須) → **Google Maps Platform ToS** の適用対象(3.2.3(d)(iii) の「listings or directory service 禁止」条項を含む)。
-- **Geoガイドライン(Google公式のGoogleマップ利用許可ページ、消費者向け規約が参照する権威文書)の明記**: 「**If you simply need to embed a Google map on your website, you don't need our permission.**(ウェブサイトにGoogleマップを埋め込むだけなら当社の許可は不要)」。商用利用を除外していない。「more integrated uses」にAPI(Platform)を使えとしており、単純な埋め込みはこの無料ウィジェットが正規ルート。
-- **directory禁止条項は消費者向け規約に存在しない**: Places API不採用の根拠だった「listings or directory service での利用禁止」は Platform ToS 固有の条項であり、消費者向け Google Maps 追加利用規約の禁止事項リストには存在しない。消費者向け規約のマッピング関連の唯一の制限は「Googleマップを使って**Google Mapsの代替となる/実質的に類似するサービス向けの** business listings database 等のマッピングデータセットを作成・拡張してはならない」であり、当サイトは(a)地図から地図データを抽出してデータセット化しておらず、(b)飲み屋ディレクトリはGoogleマップの代替でもないため**非該当**。
-- **帰属**: 埋め込みiframeにGoogle自身のロゴ・「Terms」・「地図の誤りを報告」等の帰属表示が内蔵されており、帰属要件を自動的に満たす。
-- **技術**: `pb` は `!1m2!2m1!1z` + base64url(住所)で、Googleの `output=embed` リダイレクトが生成するものと同一。リダイレクトを挟まず最終 `/maps/embed?pb=...` エンドポイントを直接指す(最終エンドポイントは X-Frame-Options を返さずクロスオリジンで frameable であることを確認済み。リダイレクト元は X-Frame-Options: SAMEORIGIN を返すため直接は使わない)。実装は `scripts/build.js` の `mapEmbedUrl`/`mapSectionHtml`。
-- **住所が曖昧な店舗(番地が無く「西鉄久留米駅徒歩◯分」等の25件)**: 埋め込むとピンがずれて誤認を招くため地図iframeは出さず、Geoガイドラインが同じく明示的に許可する「View on Google Maps」ボタン相当(店名+地域でのGoogleマップ検索リンク)のみを設置している。
+**方針**: iframe埋め込みは採用せず、全店舗で「Googleマップで開く」**外部リンク**(`https://www.google.com/maps/search/?api=1&query=<住所または店名+久留米>`)に一本化した。判断根拠(いずれも実測ベース):
+
+- `www.google.com/maps/embed?pb=<自作base64>` … 応答が不安定(開発環境の curl では 200、品質管理部の実測では 404)で、そもそも無効な pb のため正しい地図を確実に表示できない → **不採用**。
+- `maps.google.com/maps?q=<住所>&output=embed` … 初段が **HTTP 301 + X-Frame-Options: SAMEORIGIN**(最終リダイレクト先のみ 200 かつ XFO なし)。実ブラウザは通常リダイレクトの XFO を無視して最終応答のみ評価するため frameable になり得るが、**コマンドライン環境では実ブラウザでの最終描画まで検証できない**ため、「検証できない埋め込みは残さない」という方針に従い **不採用**。
+- `www.google.com/maps/search/?api=1&query=...`(外部リンク) … 実測で **HTTP 200** を確認。外部リンク(新規タブで開く)であり iframe ではないため X-Frame-Options の制約は無関係。GeoガイドラインもテキストやボタンでのGoogleマップリンク(「View on Google Maps」)を明示的に許可 → **採用**。
+
+具体的な住所(番地あり)を持つ店舗はその住所で、住所が曖昧な店舗(「西鉄久留米駅徒歩◯分」等)は店名+「久留米」でGoogleマップ検索を開くリンクにしている。実装は `scripts/build.js` の `mapSearchLink`/`mapSectionHtml`。
+
+**規約面の整理(参考、据え置き)**: キーレス埋め込み(`/maps/embed?pb=...`)と外部リンクは、いずれもAPIキー必須の Maps Embed API(Platform ToS適用、directory禁止条項3.2.3(d)(iii)を含む)とは別で、消費者向け Google Maps 追加利用規約 + Geoガイドラインの適用対象。Geoガイドラインは「ウェブサイトにGoogleマップを埋め込むだけなら許可不要」「テキスト/ボタンでのリンクも歓迎」と明記し、Places API不採用の根拠だった「listings/directory service 利用禁止」条項は消費者向け規約には存在しない。よって外部リンク方式は規約・技術の両面で問題ない。将来、実ブラウザ検証ができる体制でキーレスiframe埋め込みを再検討する余地はある。
 
 ## エリア・業態・タグを組み合わせた絞り込み検索(2026-07-17)
 
