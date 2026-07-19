@@ -323,6 +323,22 @@ a.tag:hover {
 /* ---------- 地図(Googleマップ キーレス埋め込み) ---------- */
 
 .map-section { margin: 18px 0; }
+.map-embed-wrap {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  line-height: 0;
+  margin-bottom: 12px;
+}
+.map-embed-wrap iframe {
+  display: block;
+  width: 100%;
+  height: 220px;
+  border: 0;
+}
+@media (min-width: 600px) {
+  .map-embed-wrap iframe { height: 250px; }
+}
 .map-link-button {
   display: inline-flex;
   align-items: center;
