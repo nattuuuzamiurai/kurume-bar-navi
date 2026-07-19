@@ -166,6 +166,12 @@ const INSTAGRAM_POST_EMBEDS = {
   "poker-aa-aces": "https://www.instagram.com/p/CbkPsDWpeei/",
   "poker-ace-and-king": "https://www.instagram.com/p/DMzHAQgzjCE/",
   "shisha-aima": "https://www.instagram.com/p/DIYIdGqBCkm/",
+  // 2026-07-19 追加。ロヂウラ酒八利の公式アカウント @rodiurasyuhari 自身が投稿した
+  // パーマリンク。検索結果の投稿者表記(「33 likes, 0 comments - rodiurasyuhari on
+  // May 8, 2025:」というInstagramの投稿者帰属フォーマット)で、投稿者が公式アカウント
+  // @rodiurasyuhari 本人であることを確認済み(店舗紹介スニペットでも
+  // 「ロヂウラ酒八利 豆津橋渡 (@rodiurasyuhari) 久留米の立ち飲み酒場」と一致確認)。
+  "bar-rojiura-sakahari": "https://www.instagram.com/p/DJZZcLayobg/",
 };
 
 const INSTAGRAM_EMBED_SCRIPT = `<script async src="//www.instagram.com/embed.js"></script>`;
@@ -176,6 +182,70 @@ function instagramEmbedHtml(venueId) {
   return `<div class="instagram-embed-wrap">
   <blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(postUrl)}" data-instgrm-version="14"></blockquote>
 </div>`;
+}
+
+// ============================================================
+// Googleマップへの外部リンク(iframe埋め込みは不採用)
+//
+// 【2026-07-19 品質管理部指摘を受けて方針修正】
+// 当初はキーレスの地図iframe埋め込み(www.google.com/maps/embed?pb=...)を実装したが、
+// これを撤回した。撤回理由:
+//  (1) pb パラメータを「!1m2!2m1!1z + base64url(住所)」で自作していたが、これは本物の
+//      Google の pb 形式(座標や場所IDを含む)ではない。APIキー無しでは住所からジオコーディング
+//      できないため、この方式では正しい地図を確実に表示できず、環境によっては 404 になる
+//      (品質管理部の実測で全件 404 + X-Frame-Options: SAMEORIGIN が確認された。開発環境の
+//      curl では 200 が返る場合もあり、応答が不安定で信頼できない)。
+//  (2) 代替として「maps.google.com/maps?q=<住所>&output=embed」も実測したが、これは初段が
+//      HTTP 301 + X-Frame-Options: SAMEORIGIN を返し(最終リダイレクト先のみ 200 かつ XFO なし)、
+//      「HTTP 200 かつ X-Frame-Options なし」を単体では満たさない。ブラウザは通常リダイレクトの
+//      XFO を無視して最終応答のみを評価するため実ブラウザでは frameable になり得るが、
+//      当環境(コマンドライン)では実ブラウザでの最終描画までは検証できない。
+//
+// 検証できない埋め込みを残さないという方針(品質管理部の指示)に従い、iframe埋め込みは採用せず、
+// 全店舗で「Googleマップで開く」外部リンク(/maps/search/?api=1&query=... )に一本化した。
+// このリンクは実測で HTTP 200 を確認済み(外部リンク=新規タブで開くため iframe ではなく、
+// X-Frame-Options の制約は無関係)。GeoガイドラインもテキストやボタンでのGoogleマップリンク
+// (「View on Google Maps」)を明示的に許可している。
+//
+// 規約面(リンク・埋め込みともに消費者向けGoogle Maps規約+Geoガイドラインの範囲で、
+// Places APIのdirectory禁止条項=Platform ToS固有 は非適用)の整理は据え置き。今回は
+// 技術的に確実に動くリンク方式に限定して実装する。
+// ============================================================
+
+// 住所から括弧内の注記(例: 「(西鉄久留米駅徒歩5分)」「(要確認)」)を除去する。
+function stripAddressNotes(address) {
+  if (!address) return "";
+  return address.replace(/[（(][^）)]*[）)]/g, "").trim();
+}
+
+// 地図検索クエリに具体的な住所を使えるか(丁目・番地レベルの番号を含むか)を判定する。
+function isMappableAddress(address) {
+  const a = stripAddressNotes(address);
+  if (!a) return false;
+  if (/\d+[-‐−ー－]\d+/.test(a)) return true; // 25-43 のような番地
+  if (/町\d/.test(a)) return true; // ○○町5 のような表記
+  if (/\d+番/.test(a)) return true;
+  return false;
+}
+
+// 「Googleマップで開く」外部リンク(Geoガイドラインが明示的に許可している
+// 「View on Google Maps」ボタン相当)。住所が具体的ならその住所で、曖昧なら店名+地域で検索する。
+function mapSearchLink(v) {
+  const a = stripAddressNotes(v.address);
+  const q = isMappableAddress(v.address) ? a : `${v.name} 久留米`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+}
+
+function mapSectionHtml(v) {
+  const searchLink = mapSearchLink(v);
+  const label = isMappableAddress(v.address)
+    ? "🗺 Googleマップで場所を見る ↗"
+    : "🗺 Googleマップで場所を探す ↗";
+  return `<div class="map-section">
+    <h2>地図・アクセス</h2>
+    <p><a class="map-link-button" href="${escapeHtml(searchLink)}" rel="nofollow noopener" target="_blank">${label}</a></p>
+    ${isMappableAddress(v.address) ? `<p class="small">住所: ${escapeHtml(stripAddressNotes(v.address))}(正確な位置・営業状況は店舗の公式情報でご確認ください)</p>` : ""}
+  </div>`;
 }
 
 // ============================================================
@@ -666,6 +736,8 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   </table>
 
   ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
+
+  ${mapSectionHtml(v)}
 
   <h2>情報源</h2>
   <p class="small">上記の情報は下記の公開情報をもとにした要約です(${BUILD_DATE}時点)。最新の営業状況は各出典元、または店舗の公式サイト・SNSでご確認ください。</p>
