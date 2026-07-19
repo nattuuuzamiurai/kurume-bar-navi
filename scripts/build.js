@@ -185,32 +185,34 @@ function instagramEmbedHtml(venueId) {
 }
 
 // ============================================================
-// Googleマップへの外部リンク(iframe埋め込みは不採用)
+// Googleマップ 地図表示(基本は外部リンク。一部店舗で iframe 埋め込みをテスト中)
 //
-// 【2026-07-19 品質管理部指摘を受けて方針修正】
-// 当初はキーレスの地図iframe埋め込み(www.google.com/maps/embed?pb=...)を実装したが、
-// これを撤回した。撤回理由:
-//  (1) pb パラメータを「!1m2!2m1!1z + base64url(住所)」で自作していたが、これは本物の
-//      Google の pb 形式(座標や場所IDを含む)ではない。APIキー無しでは住所からジオコーディング
-//      できないため、この方式では正しい地図を確実に表示できず、環境によっては 404 になる
-//      (品質管理部の実測で全件 404 + X-Frame-Options: SAMEORIGIN が確認された。開発環境の
-//      curl では 200 が返る場合もあり、応答が不安定で信頼できない)。
-//  (2) 代替として「maps.google.com/maps?q=<住所>&output=embed」も実測したが、これは初段が
-//      HTTP 301 + X-Frame-Options: SAMEORIGIN を返し(最終リダイレクト先のみ 200 かつ XFO なし)、
-//      「HTTP 200 かつ X-Frame-Options なし」を単体では満たさない。ブラウザは通常リダイレクトの
-//      XFO を無視して最終応答のみを評価するため実ブラウザでは frameable になり得るが、
-//      当環境(コマンドライン)では実ブラウザでの最終描画までは検証できない。
+// 【経緯】
+// - 当初、キーレス地図iframe(www.google.com/maps/embed?pb=<自作base64>)を実装したが、
+//   pb を住所の base64 で自作していたのは本物のGoogle形式(座標/場所ID)ではなく無効で、
+//   品質管理部の実測で全件 404 + X-Frame-Options: SAMEORIGIN となり撤回した(2026-07-19)。
+// - その後、全店舗で「Googleマップで開く」外部リンク(/maps/search/?api=1&query=...、
+//   実測 HTTP 200)に一本化した。
 //
-// 検証できない埋め込みを残さないという方針(品質管理部の指示)に従い、iframe埋め込みは採用せず、
-// 全店舗で「Googleマップで開く」外部リンク(/maps/search/?api=1&query=... )に一本化した。
-// このリンクは実測で HTTP 200 を確認済み(外部リンク=新規タブで開くため iframe ではなく、
-// X-Frame-Options の制約は無関係)。GeoガイドラインもテキストやボタンでのGoogleマップリンク
-// (「View on Google Maps」)を明示的に許可している。
+// 【2026-07-20 地図iframe埋め込みの段階的テスト(社長判断)】
+// 社長が実機(スマホ/PC)で地図のページ内表示を試したいとのことで、
+// maps.google.com/maps?q=<住所>&output=embed 形式(APIキー不要の消費者向けキーレス埋め込み。
+// api=1 の外部リンクと同じ消費者向けGoogle Maps規約の系列)の iframe を、
+// まず住所が明確な代表 3 店舗(MAP_EMBED_TEST_IDS)だけに設置する。残り 143 店舗は従来どおり
+// 外部リンクのまま(万一表示されなくても影響範囲を最小化するため段階展開)。
 //
-// 規約面(リンク・埋め込みともに消費者向けGoogle Maps規約+Geoガイドラインの範囲で、
-// Places APIのdirectory禁止条項=Platform ToS固有 は非適用)の整理は据え置き。今回は
-// 技術的に確実に動くリンク方式に限定して実装する。
+// 【実測事実(curl、2026-07-20)】この output=embed URL は:
+//   - 初段: HTTP 301 + X-Frame-Options: SAMEORIGIN、www.google.com/maps/embed?origin=mfe&pb=... へ
+//     リダイレクト
+//   - リダイレクト最終先: HTTP 200、X-Frame-Options ヘッダなし
+//   ブラウザは通常リダイレクトの X-Frame-Options を無視し最終応答のみを評価するため実ブラウザでは
+//   frameable になり得るが、当環境(コマンドライン)では実ブラウザでの最終描画までは検証できない。
+//   → 実機での表示可否は社長の確認待ち(このコメントに「実ブラウザで表示確認済み」とは書かない)。
+// 万一 iframe が表示されない場合に備え、iframe 直下に従来の「Googleマップで開く」外部リンクを必ず残す。
 // ============================================================
+
+// iframe 地図埋め込みをテストする店舗ID(住所が番地まで明確な代表店のみ)。
+const MAP_EMBED_TEST_IDS = new Set(["bar-mix", "izakaya-kakomian", "bar-highball-stand"]);
 
 // 住所から括弧内の注記(例: 「(西鉄久留米駅徒歩5分)」「(要確認)」)を除去する。
 function stripAddressNotes(address) {
@@ -236,15 +238,34 @@ function mapSearchLink(v) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
 }
 
+// キーレス地図埋め込みURL(APIキー不要、消費者向け output=embed 形式)。住所テキストから生成。
+function mapOutputEmbedUrl(address) {
+  const a = stripAddressNotes(address);
+  return `https://maps.google.com/maps?q=${encodeURIComponent(a)}&output=embed`;
+}
+
 function mapSectionHtml(v) {
   const searchLink = mapSearchLink(v);
   const label = isMappableAddress(v.address)
     ? "🗺 Googleマップで場所を見る ↗"
     : "🗺 Googleマップで場所を探す ↗";
+  const addrNote = isMappableAddress(v.address)
+    ? `<p class="small">住所: ${escapeHtml(stripAddressNotes(v.address))}(正確な位置・営業状況は店舗の公式情報でご確認ください)</p>`
+    : "";
+
+  // テスト対象かつ住所が明確な店舗のみ、iframe 埋め込みを出す(残りは外部リンクのみ)。
+  const showEmbed = MAP_EMBED_TEST_IDS.has(v.id) && isMappableAddress(v.address);
+  const embedHtml = showEmbed
+    ? `<div class="map-embed-wrap">
+      <iframe src="${escapeHtml(mapOutputEmbedUrl(v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>`
+    : "";
+
   return `<div class="map-section">
     <h2>地図・アクセス</h2>
+    ${embedHtml}
     <p><a class="map-link-button" href="${escapeHtml(searchLink)}" rel="nofollow noopener" target="_blank">${label}</a></p>
-    ${isMappableAddress(v.address) ? `<p class="small">住所: ${escapeHtml(stripAddressNotes(v.address))}(正確な位置・営業状況は店舗の公式情報でご確認ください)</p>` : ""}
+    ${addrNote}
   </div>`;
 }
 
