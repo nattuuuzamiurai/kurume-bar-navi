@@ -188,38 +188,69 @@ section { margin-bottom: 8px; }
 .venue-list {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: grid;
   gap: 12px;
-  grid-template-columns: 1fr;
+  /* モバイル: 幅に応じて1〜2列(狭い端末は1列、通常のスマホは2列) */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
 
+/* 店舗カード = タイル状。上部に業態カラーのヘッダー、下に店名・エリア・タグ数個 */
 .venue-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
-.venue-card:hover { border-color: var(--color-accent); }
+.venue-card:hover {
+  border-color: var(--cat-color, var(--color-accent));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
 
 .venue-card > a {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
+  flex-direction: column;
   color: var(--color-text);
+  height: 100%;
 }
 
-.venue-card-body { flex: 1; min-width: 0; }
-
-.venue-name { display: block; font-weight: 700; font-size: 1.02rem; }
-.venue-meta { display: block; color: var(--color-muted); font-size: 0.82rem; margin-top: 3px; }
-
-.venue-card-tags {
-  display: block;
-  padding: 0 14px 14px;
-  margin-top: -2px;
+.venue-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--cat-color) 30%, var(--color-surface)), color-mix(in srgb, var(--cat-color) 12%, var(--color-surface)));
+  border-bottom: 1px solid var(--color-border);
 }
+.venue-card-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  color: var(--cat-color, var(--color-accent));
+}
+.venue-card-icon svg { width: 100%; height: 100%; display: block; }
+.venue-card-cat {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--cat-color) 55%, var(--color-text));
+}
+
+.venue-card-body {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.venue-name { display: block; font-weight: 700; font-size: 1.02rem; line-height: 1.4; }
+.venue-meta { display: block; color: var(--color-muted); font-size: 0.82rem; }
+
+.venue-card-tags { display: block; margin-top: 4px; }
 
 /* ---------- パンくず ---------- */
 
@@ -232,20 +263,65 @@ section { margin-bottom: 8px; }
 
 /* ---------- 店舗詳細ページ ---------- */
 
-.venue-detail-header {
+/* ビジュアルヒーロー: 業態カラーの大きなバナー。開いた瞬間に「何の店か・どこか」が分かる */
+.venue-hero {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--cat-color) 16%, var(--color-surface)), var(--color-surface));
-  border: 1px solid var(--color-border);
-  border-left: 5px solid var(--cat-color, var(--color-accent));
+  gap: 16px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--cat-color) 42%, transparent), transparent 60%),
+    linear-gradient(150deg, color-mix(in srgb, var(--cat-color) 26%, var(--color-surface)), var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--cat-color) 40%, var(--color-border));
   border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 22px 18px;
+  margin-bottom: 16px;
 }
-.venue-detail-header .venue-visual { width: 52px; height: 52px; }
-.venue-detail-header h1 { margin: 0; }
-.venue-detail-header .venue-meta { margin-top: 4px; }
+.venue-hero-icon {
+  width: 68px;
+  height: 68px;
+  flex: none;
+  color: var(--cat-color, var(--color-accent));
+  background: color-mix(in srgb, var(--cat-color) 20%, var(--color-bg));
+  border: 2px solid color-mix(in srgb, var(--cat-color) 55%, transparent);
+  border-radius: 16px;
+  padding: 12px;
+}
+.venue-hero-icon svg { width: 100%; height: 100%; display: block; }
+.venue-hero-text { min-width: 0; }
+.venue-hero-cat {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--cat-color) 60%, var(--color-text));
+  margin-bottom: 4px;
+}
+.venue-hero-sep { opacity: 0.6; margin: 0 4px; }
+.venue-hero h1 { margin: 0; font-size: 1.5rem; line-height: 1.35; }
+.venue-hero-walk {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--cat-color) 18%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--cat-color) 40%, var(--color-border));
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+
+/* アイコン付きセクション見出し + セクションごとの余白 */
+.info-section { margin: 22px 0; }
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: none;
+  padding-left: 0;
+  margin: 0 0 12px;
+}
+.section-heading-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
 
 .venue-table {
   width: 100%;
@@ -457,7 +533,8 @@ details.facet-group[open] summary { margin-bottom: 10px; }
 @media (min-width: 600px) {
   main { padding: 26px 20px 70px; }
   h1 { font-size: 1.85rem; }
-  .venue-list { grid-template-columns: repeat(2, 1fr); }
+  .venue-hero h1 { font-size: 1.75rem; }
+  .venue-list { grid-template-columns: repeat(3, 1fr); }
   .category-grid { grid-template-columns: repeat(3, 1fr); }
   .link-list { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
 }
@@ -466,9 +543,8 @@ details.facet-group[open] summary { margin-bottom: 10px; }
   :root { --max-width: 1100px; }
   body { font-size: 16.5px; }
   .site-header { padding: 18px 24px 12px; }
-  .venue-list { grid-template-columns: repeat(3, 1fr); }
+  .venue-list { grid-template-columns: repeat(4, 1fr); }
   .category-grid { grid-template-columns: repeat(5, 1fr); }
   .category-index { grid-template-columns: repeat(2, 1fr) !important; }
-  .venue-card > a { padding: 16px; }
   .tag-filter-list { row-gap: 10px; }
 }

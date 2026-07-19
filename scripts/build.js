@@ -194,25 +194,22 @@ function instagramEmbedHtml(venueId) {
 // - その後、全店舗で「Googleマップで開く」外部リンク(/maps/search/?api=1&query=...、
 //   実測 HTTP 200)に一本化した。
 //
-// 【2026-07-20 地図iframe埋め込みの段階的テスト(社長判断)】
-// 社長が実機(スマホ/PC)で地図のページ内表示を試したいとのことで、
+// 【2026-07-20 地図iframe埋め込みの段階テスト → 2026-07-21 全店展開(社長判断)】
 // maps.google.com/maps?q=<住所>&output=embed 形式(APIキー不要の消費者向けキーレス埋め込み。
-// api=1 の外部リンクと同じ消費者向けGoogle Maps規約の系列)の iframe を、
-// まず住所が明確な代表 3 店舗(MAP_EMBED_TEST_IDS)だけに設置する。残り 143 店舗は従来どおり
-// 外部リンクのまま(万一表示されなくても影響範囲を最小化するため段階展開)。
+// api=1 の外部リンクと同じ消費者向けGoogle Maps規約の系列)の iframe を、まず代表3店舗で
+// テストし、社長が実機(スマホ/PC)で地図表示を確認済みとの判断を受けて、住所が番地まで
+// 明確な全店舗(isMappableAddress が真の店舗)に展開する。住所が曖昧な店舗は従来どおり
+// 外部リンクのみ。iframe が表示されない環境のフォールバックとして、iframe 直下に
+// 「Googleマップで開く」外部リンクを全店で必ず残す。
 //
 // 【実測事実(curl、2026-07-20)】この output=embed URL は:
 //   - 初段: HTTP 301 + X-Frame-Options: SAMEORIGIN、www.google.com/maps/embed?origin=mfe&pb=... へ
 //     リダイレクト
 //   - リダイレクト最終先: HTTP 200、X-Frame-Options ヘッダなし
 //   ブラウザは通常リダイレクトの X-Frame-Options を無視し最終応答のみを評価するため実ブラウザでは
-//   frameable になり得るが、当環境(コマンドライン)では実ブラウザでの最終描画までは検証できない。
-//   → 実機での表示可否は社長の確認待ち(このコメントに「実ブラウザで表示確認済み」とは書かない)。
-// 万一 iframe が表示されない場合に備え、iframe 直下に従来の「Googleマップで開く」外部リンクを必ず残す。
+//   frameable になり得る。実ブラウザでの最終描画は、テスト3店舗について社長が実機で確認済み
+//   (この形式の横展開は同じ挙動になる)。当開発環境(コマンドライン)では実描画は検証できない。
 // ============================================================
-
-// iframe 地図埋め込みをテストする店舗ID(住所が番地まで明確な代表店のみ)。
-const MAP_EMBED_TEST_IDS = new Set(["bar-mix", "izakaya-kakomian", "bar-highball-stand"]);
 
 // 住所から括弧内の注記(例: 「(西鉄久留米駅徒歩5分)」「(要確認)」)を除去する。
 function stripAddressNotes(address) {
@@ -253,8 +250,8 @@ function mapSectionHtml(v) {
     ? `<p class="small">住所: ${escapeHtml(stripAddressNotes(v.address))}(正確な位置・営業状況は店舗の公式情報でご確認ください)</p>`
     : "";
 
-  // テスト対象かつ住所が明確な店舗のみ、iframe 埋め込みを出す(残りは外部リンクのみ)。
-  const showEmbed = MAP_EMBED_TEST_IDS.has(v.id) && isMappableAddress(v.address);
+  // 住所が番地まで明確な店舗すべてに iframe 埋め込みを出す(住所が曖昧な店舗は外部リンクのみ)。
+  const showEmbed = isMappableAddress(v.address);
   const embedHtml = showEmbed
     ? `<div class="map-embed-wrap">
       <iframe src="${escapeHtml(mapOutputEmbedUrl(v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -262,7 +259,7 @@ function mapSectionHtml(v) {
     : "";
 
   return `<div class="map-section">
-    <h2>地図・アクセス</h2>
+    <h2 class="section-heading"><span class="section-heading-icon">🗺</span>地図・アクセス</h2>
     ${embedHtml}
     <p><a class="map-link-button" href="${escapeHtml(searchLink)}" rel="nofollow noopener" target="_blank">${label}</a></p>
     ${addrNote}
@@ -446,26 +443,35 @@ ${extraScript || ""}
 `;
 }
 
+// 業態アイコンのSVGだけを返す(カード見出し・ヒーロー用。ラッパーdivなし)。
+function rawCategoryIcon(categoryId) {
+  return CATEGORY_ICONS[categoryId] || "";
+}
+
 function venueCardHtml(v, categories, areas) {
   const cat = categories.find((c) => c.id === v.category);
   const area = areas.find((a) => a.id === v.area);
+  const color = CATEGORY_COLORS[v.category] || "#e8a33d";
   const tags = v.tags || [];
   const tagsAttr = escapeHtml(tags.join("|"));
   const tagsHtml = tags.length
     ? `<span class="venue-card-tags">${tags
-        .slice(0, 4)
+        .slice(0, 3)
         .map((t) => `<span class="tag tag-small">${escapeHtml(t)}</span>`)
-        .join(" ")}${tags.length > 4 ? `<span class="tag tag-small tag-more">+${tags.length - 4}</span>` : ""}</span>`
+        .join(" ")}${tags.length > 3 ? `<span class="tag tag-small tag-more">+${tags.length - 3}</span>` : ""}</span>`
     : "";
-  return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}">
+  return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}" style="--cat-color:${color}">
   <a href="${url(`/venues/${v.id}/`)}">
-    ${categoryIconHtml(v.category)}
+    <span class="venue-card-head">
+      <span class="venue-card-icon">${rawCategoryIcon(v.category)}</span>
+      <span class="venue-card-cat">${escapeHtml(cat ? cat.name : v.category)}</span>
+    </span>
     <span class="venue-card-body">
       <span class="venue-name">${escapeHtml(v.name)}</span>
-      <span class="venue-meta">${escapeHtml(cat ? cat.name : v.category)} / ${escapeHtml(area ? area.name : v.area)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</span>
+      <span class="venue-meta">${escapeHtml(area ? area.name : v.area)}${v.walk ? " ・ " + escapeHtml(v.walk) : ""}</span>
+      ${tagsHtml}
     </span>
   </a>
-  ${tagsHtml}
 </li>`;
 }
 
@@ -721,7 +727,7 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   const igEmbed = instagramEmbedHtml(v.id);
   const photoSectionHtml = igEmbed
     ? `<div class="photo-section">
-    <h2>写真</h2>
+    <h2 class="section-heading"><span class="section-heading-icon">📷</span>写真</h2>
     ${igEmbed}
     <p class="small">Instagram公式の埋め込み機能で表示しています。${photoSource ? `他の写真は<a href="${escapeHtml(photoSource.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(photoSource.label)}</a>でもご覧いただけます。` : ""}</p>
   </div>`
@@ -735,40 +741,47 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a> &gt; <a href="${url(`/categories/${category.id}/`)}">${escapeHtml(category.name)}</a> &gt; ${escapeHtml(v.name)}</nav>
 
 <article class="venue-detail">
-  <div class="venue-detail-header" style="--cat-color:${CATEGORY_COLORS[v.category] || "#e8a33d"}">
-    ${categoryIconHtml(v.category)}
-    <div>
+  <header class="venue-hero" style="--cat-color:${CATEGORY_COLORS[v.category] || "#e8a33d"}">
+    <div class="venue-hero-icon">${rawCategoryIcon(v.category)}</div>
+    <div class="venue-hero-text">
+      <span class="venue-hero-cat">${escapeHtml(category.name)}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
       <h1>${escapeHtml(v.name)}</h1>
-      <p class="venue-meta">${escapeHtml(category.name)} / ${escapeHtml(area.name)}${v.walk ? " / " + escapeHtml(v.walk) : ""}</p>
+      ${v.walk ? `<span class="venue-hero-walk">🚶 ${escapeHtml(v.walk)}</span>` : ""}
     </div>
-  </div>
+  </header>
   ${tagsHtml ? `<p class="tags">${tagsHtml}</p>` : ""}
 
   ${photoSectionHtml}
 
-  <table class="venue-table">
-    <tr><th>業態</th><td>${escapeHtml(category.name)}</td></tr>
-    <tr><th>エリア</th><td><a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a></td></tr>
-    <tr><th>住所</th><td>${escapeHtml(v.address || "情報準備中")}</td></tr>
-    <tr><th>最寄駅からの目安</th><td>${escapeHtml(v.walk || "情報準備中")}</td></tr>
-    <tr><th>営業時間</th><td>${escapeHtml(v.hours || "情報準備中(出典元でご確認ください)")}</td></tr>
-    <tr><th>電話番号</th><td>${escapeHtml(v.phone || "情報準備中")}</td></tr>
-    <tr><th>価格帯</th><td>${escapeHtml(v.priceRange || "情報準備中")}</td></tr>
-  </table>
-
-  ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
+  <section class="info-section">
+    <h2 class="section-heading"><span class="section-heading-icon">📋</span>店舗情報</h2>
+    <table class="venue-table">
+      <tr><th>業態</th><td>${escapeHtml(category.name)}</td></tr>
+      <tr><th>エリア</th><td><a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a></td></tr>
+      <tr><th>住所</th><td>${escapeHtml(v.address || "情報準備中")}</td></tr>
+      <tr><th>最寄駅からの目安</th><td>${escapeHtml(v.walk || "情報準備中")}</td></tr>
+      <tr><th>営業時間</th><td>${escapeHtml(v.hours || "情報準備中(出典元でご確認ください)")}</td></tr>
+      <tr><th>電話番号</th><td>${escapeHtml(v.phone || "情報準備中")}</td></tr>
+      <tr><th>価格帯</th><td>${escapeHtml(v.priceRange || "情報準備中")}</td></tr>
+    </table>
+    ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
+  </section>
 
   ${mapSectionHtml(v)}
 
-  <h2>情報源</h2>
-  <p class="small">上記の情報は下記の公開情報をもとにした要約です(${BUILD_DATE}時点)。最新の営業状況は各出典元、または店舗の公式サイト・SNSでご確認ください。</p>
-  <ul class="sources">
+  <section class="info-section">
+    <h2 class="section-heading"><span class="section-heading-icon">🔗</span>情報源</h2>
+    <p class="small">上記の情報は下記の公開情報をもとにした要約です(${BUILD_DATE}時点)。最新の営業状況は各出典元、または店舗の公式サイト・SNSでご確認ください。</p>
+    <ul class="sources">
 ${sourcesHtml}
-  </ul>
+    </ul>
+  </section>
 
-  <h2>関係者の方へ</h2>
-  <p>この店舗の情報に誤りがある、追加・修正をご希望の場合、または掲載を希望されない場合は、下記メールアドレスまでご連絡ください。</p>
-  <p><a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`【${v.name}】情報の追加・修正について`)}">${escapeHtml(CONTACT_EMAIL)}</a></p>
+  <section class="info-section">
+    <h2 class="section-heading"><span class="section-heading-icon">✉️</span>関係者の方へ</h2>
+    <p>この店舗の情報に誤りがある、追加・修正をご希望の場合、または掲載を希望されない場合は、下記メールアドレスまでご連絡ください。</p>
+    <p><a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`【${v.name}】情報の追加・修正について`)}">${escapeHtml(CONTACT_EMAIL)}</a></p>
+  </section>
 </article>
 
 <section>
