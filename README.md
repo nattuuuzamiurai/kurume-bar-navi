@@ -59,24 +59,30 @@ GitHub Pages で公開
 - **モバイルファースト**: `assets/style.css` は基本スタイルをスマホ向けに書き、`min-width: 600px / 900px` のメディアクエリでタブレット・PC向けに拡張する構成にしている。タップ領域は44px前後を確保。
 - **【重要】店舗の実写真は掲載しない**: 食べログ・ホットペッパー・Retty等、他サイトの写真を転載することは著作権リスクがあるため、品質管理部・レビュー部が繰り返し確認してきた「他サイトの文章・写真・評点を転載しない」という会社方針に反する。そのため、実写真の代わりに以下の方法でビジュアルの厚みを出している。
   - **業態別の自作アイコン(SVG)**: `scripts/build.js` の `CATEGORY_ICONS` に、バー(カクテルグラス)・居酒屋(提灯)・コンカフェ(カップ)・シーシャ・アミューズメントポーカーバー(スペード)を表す、実店舗の外観・内観とは無関係な汎用ピクトグラムを直接コード内にSVGとして持たせている(外部画像ファイル・フォント不使用、著作権リスクなし)。業態ごとに差し色(`CATEGORY_COLORS`)も設定し、カード・見出し部分に反映している。
-  - **「写真を見る」外部リンクボタン**: 各店舗ページに、出典サイト(Retty・ホットペッパー等、写真が充実している傾向のあるサイトを優先)への外部リンクボタンを設置。実際の写真は出典元で見てもらう導線。
-  - **Instagram公式埋め込み(該当店舗のみ)**: 下記参照。
+  - **「写真を見る」外部リンクボタン**: 各店舗ページに、出典サイト(公式Instagram・Retty・ホットペッパー等、写真が充実している傾向のあるサイトを優先)への外部リンクボタンを設置。実際の写真は出典元で見てもらう導線。
+  - **Instagram公式埋め込み(該当店舗のみ)・公式プロフィールリンク**: 下記参照。
+  - **Googleマップの地図埋め込み**: 具体的な住所を持つ店舗に設置。下記参照。
 
-## Instagram公式埋め込みについて(2026-07-17)
+## Instagram公式埋め込み・公式プロフィールリンク(2026-07-19更新)
 
-- Meta Developerアプリの登録・アクセストークンの取得は**不要**であることを確認済み(2026-07時点)。`https://www.instagram.com/embed.js` を読み込み、`<blockquote class="instagram-media" data-instgrm-permalink="投稿URL">` を配置するクライアントサイド埋め込みは、認証なしで動作する(実際に対象5店舗の投稿で動作確認済み)。
-- ただし、これは「特定の1投稿(パーマリンク)を埋め込む」方式であり、「そのアカウントの最新投稿一覧を自動取得する」には認証が必要なMeta Graph API(`/instagram_oembed`、アクセストークン必須)が必要になる。そのため、**投稿単位のパーマリンクが判明している店舗に限定**して埋め込んでいる。
-- 対象は `scripts/build.js` の `INSTAGRAM_POST_EMBEDS` に手動で登録している(2026-07-17時点で5件: `shisha-0942`, `poker-ken`, `poker-aa-aces`, `poker-ace-and-king`, `shisha-aima`)。プロフィールURLしか無い店舗(大半)は対象外とし、「写真を見る」ボタンのみで対応している。
-- 埋め込みを追加する場合は、対象店舗の公開Instagram投稿のパーマリンク(`https://www.instagram.com/p/xxxxx/` または `/reel/xxxxx/`)を人手で確認し、`INSTAGRAM_POST_EMBEDS` に追記する。
+- Meta Developerアプリの登録・アクセストークンの取得は**不要**であることを確認済み。`https://www.instagram.com/embed.js` を読み込み、`<blockquote class="instagram-media" data-instgrm-permalink="投稿URL">` を配置するクライアントサイド埋め込みは、認証なしで動作する。
+- ただし、これは「特定の1投稿(パーマリンク)を埋め込む」方式であり、「そのアカウントの最新投稿一覧を自動取得する」には認証が必要なMeta Graph API(`/instagram_oembed`、アクセストークン必須)が必要になる。そのため**投稿単位のパーマリンクが判明し、かつその投稿の投稿者が店舗公式アカウント本人であることを確認できた店舗に限定**して埋め込んでいる。
+- **投稿者アカウントの一致確認の方法**: Instagram/検索エンジンが投稿に付ける投稿者帰属フォーマット「`N likes, M comments - <handle> on <Month> <day>, <year>:`」で投稿者handleを特定し、それが独立に確認した店舗公式アカウントと一致する場合のみ採用する。キャプション本文中に `@<公式handle>` が**言及されているだけ**のもの(＝別アカウントが店舗を位置タグ付け/メンションしている可能性)は採用しない(2026-07-17のshisha-0942の誤り=無関係な個人アカウントの位置タグ付け投稿を誤採用、の再発防止)。
+- 投稿埋め込み対象は `scripts/build.js` の `INSTAGRAM_POST_EMBEDS` に手動登録(2026-07-19時点で5件: `poker-ken`, `poker-aa-aces`, `poker-ace-and-king`, `shisha-aima`, `bar-rojiura-sakahari`)。
+- **公式プロフィールリンク**: 投稿パーマリンクまで特定できなくても、店舗の公式Instagramアカウント(プロフィール)を検索スニペットで確認できた店舗については、そのプロフィールURLを `data/venues.json` の `sources` に追加している。これにより各店舗ページの「写真を見る」ボタンが公式Instagramへ誘導される(2026-07-19時点で公開146件中34件が公式Instagramリンクを保有。うち店名・住所・電話番号の一致で照合した29件を本対応で追加)。Instagramのプロフィール・投稿ページは curl ではJSでラップされ投稿者名を機械抽出できないため、公式アカウントの同定は検索スニペット(人が読める形)での目視照合で行い、少しでも疑わしいものは採用していない。
 
-## Googleマップ埋め込みは不採用(2026-07-17時点)
+## Googleマップ 無料埋め込みを採用(2026-07-19、規約精査のうえ)
 
-社長より「Googleマップの埋め込みiframeで店舗の場所を示す」提案があったが、調査の結果、**今回は採用しないことにした**。
+前回(PR #5)は「Places API不採用の根拠がMaps Embed APIにも及ぶ」と解釈して見送ったが、規約をもう一段精査した結果、**APIキー不要のキーレス埋め込みは規約上セーフと判断し、具体的な住所を持つ店舗(公開146件中121件)に地図埋め込みを実装した**。
 
-- Maps Embed API自体は無料・無制限利用だが(`developers.google.com/maps/documentation/embed` で確認)、Google Cloudのプロジェクト作成・APIキー発行が必要。
-- より重要な点として、Google Maps Platform利用規約(`cloud.google.com/maps-platform/terms`、2026-07-17時点で再確認)の "Google Maps Core Services" の対象サービス一覧に **Maps Embed API も含まれている**ことを確認した。Places API不採用の根拠とした条項3.2.3(d)(iii)「掲載・ディレクトリサービスでの利用」の禁止は、Places API固有の条項ではなく、Google Maps Core Services全体に適用される一般条項であり、Maps Embed APIに対する個別の適用除外(Places APIにあるような専用条項)も見当たらなかった。
-- 実務上は多くのディレクトリ/店舗紹介サイトがGoogleマップを埋め込んでいる実態があり、「単に地図を補助的に表示するだけ」であればグレーとの見方もあり得るが、Places API不採用の判断との整合性(同じ会社・同じサイトで、片方は規約リスクを理由に不採用、もう片方は採用、という一貫性の欠如)を避けるため、**明確な社長確認・法務的な整理がつくまでは実装しない**という保守的な判断とした。
-- 採用する場合は、(a) 経営管理オフィス経由での社長確認、(b) Google Cloudアカウント作成・APIキー発行という新規の外部サービス契約の承認、の両方が必要になる。
+- **2つのプロダクトは別物・別規約**:
+  - キーレス埋め込み(`www.google.com/maps/embed?pb=...`。Googleマップの「共有→地図を埋め込む」で誰でも取得できるiframe。`maps.google.com/maps?q=<住所>&output=embed` は同じ `/maps/embed?pb=...` にリダイレクトされる) → **消費者向けの Google Maps 追加利用規約 + Geoガイドライン**の適用対象。
+  - Maps Embed API(`www.google.com/maps/embed/v1/place?key=...`。APIキー必須) → **Google Maps Platform ToS** の適用対象(3.2.3(d)(iii) の「listings or directory service 禁止」条項を含む)。
+- **Geoガイドライン(Google公式のGoogleマップ利用許可ページ、消費者向け規約が参照する権威文書)の明記**: 「**If you simply need to embed a Google map on your website, you don't need our permission.**(ウェブサイトにGoogleマップを埋め込むだけなら当社の許可は不要)」。商用利用を除外していない。「more integrated uses」にAPI(Platform)を使えとしており、単純な埋め込みはこの無料ウィジェットが正規ルート。
+- **directory禁止条項は消費者向け規約に存在しない**: Places API不採用の根拠だった「listings or directory service での利用禁止」は Platform ToS 固有の条項であり、消費者向け Google Maps 追加利用規約の禁止事項リストには存在しない。消費者向け規約のマッピング関連の唯一の制限は「Googleマップを使って**Google Mapsの代替となる/実質的に類似するサービス向けの** business listings database 等のマッピングデータセットを作成・拡張してはならない」であり、当サイトは(a)地図から地図データを抽出してデータセット化しておらず、(b)飲み屋ディレクトリはGoogleマップの代替でもないため**非該当**。
+- **帰属**: 埋め込みiframeにGoogle自身のロゴ・「Terms」・「地図の誤りを報告」等の帰属表示が内蔵されており、帰属要件を自動的に満たす。
+- **技術**: `pb` は `!1m2!2m1!1z` + base64url(住所)で、Googleの `output=embed` リダイレクトが生成するものと同一。リダイレクトを挟まず最終 `/maps/embed?pb=...` エンドポイントを直接指す(最終エンドポイントは X-Frame-Options を返さずクロスオリジンで frameable であることを確認済み。リダイレクト元は X-Frame-Options: SAMEORIGIN を返すため直接は使わない)。実装は `scripts/build.js` の `mapEmbedUrl`/`mapSectionHtml`。
+- **住所が曖昧な店舗(番地が無く「西鉄久留米駅徒歩◯分」等の25件)**: 埋め込むとピンがずれて誤認を招くため地図iframeは出さず、Geoガイドラインが同じく明示的に許可する「View on Google Maps」ボタン相当(店名+地域でのGoogleマップ検索リンク)のみを設置している。
 
 ## エリア・業態・タグを組み合わせた絞り込み検索(2026-07-17)
 

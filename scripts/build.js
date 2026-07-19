@@ -166,6 +166,12 @@ const INSTAGRAM_POST_EMBEDS = {
   "poker-aa-aces": "https://www.instagram.com/p/CbkPsDWpeei/",
   "poker-ace-and-king": "https://www.instagram.com/p/DMzHAQgzjCE/",
   "shisha-aima": "https://www.instagram.com/p/DIYIdGqBCkm/",
+  // 2026-07-19 追加。ロヂウラ酒八利の公式アカウント @rodiurasyuhari 自身が投稿した
+  // パーマリンク。検索結果の投稿者表記(「33 likes, 0 comments - rodiurasyuhari on
+  // May 8, 2025:」というInstagramの投稿者帰属フォーマット)で、投稿者が公式アカウント
+  // @rodiurasyuhari 本人であることを確認済み(店舗紹介スニペットでも
+  // 「ロヂウラ酒八利 豆津橋渡 (@rodiurasyuhari) 久留米の立ち飲み酒場」と一致確認)。
+  "bar-rojiura-sakahari": "https://www.instagram.com/p/DJZZcLayobg/",
 };
 
 const INSTAGRAM_EMBED_SCRIPT = `<script async src="//www.instagram.com/embed.js"></script>`;
@@ -176,6 +182,85 @@ function instagramEmbedHtml(venueId) {
   return `<div class="instagram-embed-wrap">
   <blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(postUrl)}" data-instgrm-version="14"></blockquote>
 </div>`;
+}
+
+// ============================================================
+// Googleマップ 無料埋め込み(APIキー不要の「地図を埋め込む」ウィジェット)
+//
+// 【規約確認: 2026-07-19】APIキーが必要な Maps Embed API とは別プロダクト・別規約。
+// - APIキー不要の「Googleマップ共有→地図を埋め込む」機能(この iframe。URL形式は
+//   www.google.com/maps/embed?pb=... 。maps.google.com/maps?q=...&output=embed で
+//   同じ /maps/embed?pb=... にリダイレクトされる)は、Google Maps Platform ToS ではなく
+//   一般消費者向けの Google Maps 追加利用規約 + Geoガイドライン(about.google の
+//   「Using Google Maps, Google Earth, and Street View」)の適用対象。
+// - Geoガイドラインは「If you simply need to embed a Google map on your website, you
+//   don't need our permission.(ウェブサイトにGoogleマップを埋め込むだけなら許可不要)」
+//   と明記しており、商用サイトを除外していない。「more integrated uses」にAPI(Platform)を
+//   使えとしており、単純な埋め込みはこちらの無料ウィジェットが正規ルート。
+// - Places API 不採用の根拠だった「listings or directory service での利用禁止」条項
+//   (Platform ToS 3.2.3(d)(iii))は、この消費者向け規約の禁止事項には存在しない。
+//   消費者向け規約のマッピング関連の唯一の制限は「Googleマップを使って Google Maps の
+//   代替となる/実質的に類似するサービス向けの business listings database 等の
+//   マッピングデータセットを作成・拡張してはならない」であり、当サイトは地図データを
+//   抽出してデータセット化しておらず、飲み屋ディレクトリはGoogleマップの代替でもないため
+//   非該当。埋め込みiframeにはGoogle自身の帰属表示(ロゴ/Terms/地図の誤りを報告)が
+//   内蔵されており帰属要件も自動的に満たす。
+// - よって Places API とは規約適用範囲が異なり、キーレス埋め込みは規約上セーフと判断。
+//
+// 技術面: pb パラメータは「!1m2!2m1!1z」+ base64url(住所)で、Googleの output=embed
+// リダイレクトが生成するものと同一。リダイレクトを挟まず最終エンドポイントを直接指すことで
+// X-Frame-Options の問題を避けている(最終 /maps/embed エンドポイントは X-Frame-Options を
+// 返さずクロスオリジンで frameable であることを確認済み)。
+// ============================================================
+
+// 住所から括弧内の注記(例: 「(西鉄久留米駅徒歩5分)」「(要確認)」)を除去する。
+function stripAddressNotes(address) {
+  if (!address) return "";
+  return address.replace(/[（(][^）)]*[）)]/g, "").trim();
+}
+
+// 地図に落とせる具体的な住所か(丁目・番地レベルの番号を含むか)を判定する。
+function isMappableAddress(address) {
+  const a = stripAddressNotes(address);
+  if (!a) return false;
+  if (/\d+[-‐−ー－]\d+/.test(a)) return true; // 25-43 のような番地
+  if (/町\d/.test(a)) return true; // ○○町5 のような表記
+  if (/\d+番/.test(a)) return true;
+  return false;
+}
+
+// キーレスGoogleマップ埋め込みURL(APIキー不要)。住所を base64url 化して pb を構成する。
+function mapEmbedUrl(address) {
+  const a = stripAddressNotes(address);
+  const pb = "!1m2!2m1!1z" + Buffer.from(a, "utf8").toString("base64url");
+  return `https://www.google.com/maps/embed?pb=${pb}`;
+}
+
+// 「Googleマップで見る/探す」外部リンク(Geoガイドラインが明示的に許可している
+// 「View on Google Maps」ボタン相当)。住所が具体的ならその住所で、曖昧なら店名+地域で検索する。
+function mapSearchLink(v) {
+  const a = stripAddressNotes(v.address);
+  const q = isMappableAddress(v.address) ? a : `${v.name} 久留米`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+}
+
+function mapSectionHtml(v) {
+  const searchLink = mapSearchLink(v);
+  if (isMappableAddress(v.address)) {
+    const src = mapEmbedUrl(v.address);
+    return `<div class="map-section">
+    <h2>地図・アクセス</h2>
+    <div class="map-embed-wrap">
+      <iframe src="${escapeHtml(src)}" title="${escapeHtml(v.name)}の地図" width="100%" height="300" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+    <p class="small">地図は住所(${escapeHtml(stripAddressNotes(v.address))})をもとにGoogleマップで表示しています。正確な位置は店舗の公式情報でご確認ください。<a href="${escapeHtml(searchLink)}" rel="nofollow noopener" target="_blank">Googleマップで開く ↗</a></p>
+  </div>`;
+  }
+  // 具体的な住所が無い場合は埋め込まず、店名での検索リンクのみ提供する
+  return `<div class="map-section">
+    <h2>地図・アクセス</h2>
+    <p><a class="map-link-button" href="${escapeHtml(searchLink)}" rel="nofollow noopener" target="_blank">🗺 Googleマップで場所を探す ↗</a></p>
+  </div>`;
 }
 
 // ============================================================
@@ -666,6 +751,8 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   </table>
 
   ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
+
+  ${mapSectionHtml(v)}
 
   <h2>情報源</h2>
   <p class="small">上記の情報は下記の公開情報をもとにした要約です(${BUILD_DATE}時点)。最新の営業状況は各出典元、または店舗の公式サイト・SNSでご確認ください。</p>
