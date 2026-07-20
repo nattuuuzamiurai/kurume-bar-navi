@@ -112,6 +112,37 @@ function categoryIconHtml(categoryId) {
 }
 
 // ============================================================
+// 料理ジャンルの併記
+//
+// izakaya カテゴリには焼肉・イタリアン・中華・韓国料理等が含まれるため、業態表示を
+// 「居酒屋(焼肉)」のように料理ジャンルを併記して分かりやすくする。tags のうち
+// 「料理ジャンルを表すタグ」だけを CUISINE_TAGS で判定する(設備・利用シーン・飲み物
+// タグは対象外)。表示ラベルの変更のみで、JSON-LD の @type(schemaType)は変更しない。
+// バー/コンカフェ/シーシャ/ポーカーは対象外(izakaya のみ併記)。
+// ============================================================
+const CUISINE_TAGS = new Set([
+  "焼肉", "ホルモン", "焼き鳥", "串焼き", "つくね", "鶏料理", "手羽先",
+  "もつ鍋", "鍋料理", "海鮮/魚介", "焼き魚", "おでん", "天ぷら", "餃子",
+  "中華", "韓国料理", "イタリアン", "スペイン料理", "タイ料理", "ピザ",
+  "ビストロ", "グリル", "肉料理", "鉄板料理", "もんじゃ焼き", "炉端焼き",
+  "沖縄料理", "郷土料理", "九州料理", "屋台",
+]);
+
+// 店舗の料理ジャンル併記文字列を返す(izakaya かつ料理ジャンルタグがある場合のみ。
+// 代表として tags 配列の先頭順で最大2個まで)。それ以外は空文字。
+function cuisineLabelFor(v) {
+  if (v.category !== "izakaya") return "";
+  const cuisines = (v.tags || []).filter((t) => CUISINE_TAGS.has(t)).slice(0, 2);
+  return cuisines.join("・");
+}
+
+// 業態表示ラベル。料理ジャンル併記がある場合は「居酒屋(焼肉)」のように付す。
+function categoryLabel(v, categoryName) {
+  const c = cuisineLabelFor(v);
+  return c ? `${categoryName}(${c})` : categoryName;
+}
+
+// ============================================================
 // 「写真を見る」外部リンク(出典元での閲覧に誘導する。写真そのものは転載しない)
 // 写真が充実している傾向のあるサイトを優先的に選ぶ。
 // ============================================================
@@ -517,7 +548,7 @@ function venueCardHtml(v, categories, areas) {
   <a href="${url(`/venues/${v.id}/`)}">
     <span class="venue-card-head">
       <span class="venue-card-icon">${rawCategoryIcon(v.category)}</span>
-      <span class="venue-card-cat">${escapeHtml(cat ? cat.name : v.category)}</span>
+      <span class="venue-card-cat">${escapeHtml(categoryLabel(v, cat ? cat.name : v.category))}</span>
     </span>
     <span class="venue-card-body">
       <span class="venue-name">${escapeHtml(v.name)}</span>
@@ -807,7 +838,7 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   <header class="venue-hero" style="--cat-color:${CATEGORY_COLORS[v.category] || "#e8a33d"}">
     <div class="venue-hero-icon">${rawCategoryIcon(v.category)}</div>
     <div class="venue-hero-text">
-      <span class="venue-hero-cat">${escapeHtml(category.name)}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
+      <span class="venue-hero-cat">${escapeHtml(categoryLabel(v, category.name))}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
       <h1>${escapeHtml(v.name)}</h1>
       ${v.walk ? `<span class="venue-hero-walk">🚶 ${escapeHtml(v.walk)}</span>` : ""}
     </div>
@@ -819,7 +850,7 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   <section class="info-section">
     <h2 class="section-heading"><span class="section-heading-icon">📋</span>店舗情報</h2>
     <table class="venue-table">
-      <tr><th>業態</th><td>${escapeHtml(category.name)}</td></tr>
+      <tr><th>業態</th><td>${escapeHtml(categoryLabel(v, category.name))}</td></tr>
       <tr><th>エリア</th><td><a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a></td></tr>
       <tr><th>住所</th><td>${escapeHtml(v.address || "情報準備中")}</td></tr>
       <tr><th>最寄駅からの目安</th><td>${escapeHtml(v.walk || "情報準備中")}</td></tr>
@@ -876,9 +907,12 @@ function renderAboutPage() {
 <ul>
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
   <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
-  <li>他サイトの文章・写真をそのまま転載することはしていません。店舗の写真は掲載せず、業態を示す汎用アイコンを表示しています。写真をご覧になりたい場合は、各店舗ページの「写真を見る」ボタンから出典サイトへ、またはInstagram公式の埋め込み(利用可能な店舗のみ)でご覧いただけます。</li>
+  <li>他サイトの文章・写真をそのまま転載することはしていません。写真は、店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信のみ</strong>を出典として掲載しています(第三者のグルメサイト等の写真は使用していません)。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
 </ul>
+
+<h2>外部サービスの埋め込み・参照について</h2>
+<p>本サイトの各店舗ページでは、Instagram公式の投稿埋め込み、Googleマップの地図埋め込み、各店の公式サイト画像の参照などを行っています。そのため、ページ閲覧時にお使いのブラウザから Instagram(Meta)・Google・各店の公式サイト等の外部サーバーへ通信が発生する場合があります。これら外部サービス側での情報の取り扱いは、各サービスのプライバシーポリシーに従います。</p>
 
 <h2>掲載店舗の関係者の方へ</h2>
 <p>当サイトへの掲載内容に誤りがある場合の修正依頼、掲載を希望されない場合の削除依頼については、下記メールアドレスまでご連絡ください。</p>
