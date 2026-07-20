@@ -217,11 +217,10 @@ const OFFICIAL_PHOTOS = {
     sourceLabel: "炭火酒蔵 喜多 公式サイト",
     sourceUrl: "https://www.sumibishuzo-kita.com/",
   },
-  "bar-lampsquare": {
-    imageUrl: "https://cdn.r-corona.jp/prd.rb.r-corona.jp/assets/site_files/obv2r4tv/35451726/sixf.jpg",
-    sourceLabel: "BAR & CAFE LAMP SQUARE 公式サイト",
-    sourceUrl: "https://lampsquare-kurume.owst.jp/",
-  },
+  // 【2026-07-21 レビュー部の条件付きGOにより除外】bar-lampsquare は画像が cdn.r-corona.jp
+  // (Recruit系CDN)上にあり、公式サイト自体が Recruit の店舗ページ作成サービス owst.jp
+  // (RestaurantBOARD)製。Recruit は今回禁止対象にしたホットペッパーグルメの親会社であり、
+  // 「クリーンな公式ソース限定」の線引きを濁すため対象外とした(写真なし=ビジュアルヒーローのまま)。
   "izakaya-kiseki-tebasaki": {
     imageUrl: "https://kiseteba.com/img/ogp.png",
     sourceLabel: "奇跡の手羽先 公式サイト",
