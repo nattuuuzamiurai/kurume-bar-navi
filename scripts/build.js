@@ -185,6 +185,59 @@ function instagramEmbedHtml(venueId) {
 }
 
 // ============================================================
+// 公式サイト画像のホットリンク表示(2026-07-21、社長判断で公式ソース限定の写真掲載を解禁)
+//
+// 【方針・制約】
+// - 使うのは「店自身が公式に発信している写真」のみ(公式サイトのog:image等)。
+//   第三者グルメサイト(食べログ・ホットペッパー・Retty・ぐるなび等)の写真は一切使わない。
+// - 画像は自サイトに保存(rehost)せず、店のサーバー上のURLを直接参照する <img>(ホットリンク)で
+//   表示する。=複製・保存が発生しないため侵害の度合いが最も低い。**画像ファイルのホストは一切なし。**
+// - すべての写真に「提供元(公式サイト)表示+公式サイトへのリンク」と、削除依頼の案内文を付ける。
+//
+// 【実測(curl、2026-07-21)】各 imageUrl は、当サイトの GitHub Pages ドメインを Referer に付けた
+// クロスオリジン要求で HTTP 200 + Content-Type: image/* を返すことを確認済み(=サーバー側で
+// リファラによるホットリンクブロックをしていない)。ただし実ブラウザでの最終描画は未検証
+// (この環境では確認できない)。実機表示は社長のテスト確認に委ねる。
+//
+// 対象は、公式ドメイン(店名を含む店自身のサイト)の og:image が上記実測を満たした店舗に限定。
+// ============================================================
+const OFFICIAL_PHOTOS = {
+  "bar-remember": {
+    imageUrl: "https://static.wixstatic.com/media/d671d7_b6cf8175b8d54a8a886dbc8580952a06~mv2.png/v1/fit/w_2500,h_1330,al_c/d671d7_b6cf8175b8d54a8a886dbc8580952a06~mv2.png",
+    sourceLabel: "Remember 公式サイト",
+    sourceUrl: "https://www.kurume-remember.com/",
+  },
+  "bar-oshu-kitchen-alma": {
+    imageUrl: "https://oshukitchen-alma.com/img/ogp.png",
+    sourceLabel: "欧州キッチンアルマ 公式サイト",
+    sourceUrl: "https://oshukitchen-alma.com/",
+  },
+  "izakaya-sumibi-sakagura-kita": {
+    imageUrl: "https://www.sumibishuzo-kita.com/shared/img/shared/ogp.png",
+    sourceLabel: "炭火酒蔵 喜多 公式サイト",
+    sourceUrl: "https://www.sumibishuzo-kita.com/",
+  },
+  // 【2026-07-21 レビュー部の条件付きGOにより除外】bar-lampsquare は画像が cdn.r-corona.jp
+  // (Recruit系CDN)上にあり、公式サイト自体が Recruit の店舗ページ作成サービス owst.jp
+  // (RestaurantBOARD)製。Recruit は今回禁止対象にしたホットペッパーグルメの親会社であり、
+  // 「クリーンな公式ソース限定」の線引きを濁すため対象外とした(写真なし=ビジュアルヒーローのまま)。
+  "izakaya-kiseki-tebasaki": {
+    imageUrl: "https://kiseteba.com/img/ogp.png",
+    sourceLabel: "奇跡の手羽先 公式サイト",
+    sourceUrl: "https://kiseteba.com/",
+  },
+};
+
+function officialPhotoHtml(venueId) {
+  const p = OFFICIAL_PHOTOS[venueId];
+  if (!p) return "";
+  return `<figure class="official-photo">
+    <img src="${escapeHtml(p.imageUrl)}" alt="${escapeHtml(p.sourceLabel)}の写真" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+    <figcaption class="small">提供: <a href="${escapeHtml(p.sourceUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(p.sourceLabel)}</a>(画像は公式サイトのものを直接参照して表示しています。当サイトに保存はしていません)</figcaption>
+  </figure>`;
+}
+
+// ============================================================
 // Googleマップ 地図表示(基本は外部リンク。一部店舗で iframe 埋め込みをテスト中)
 //
 // 【経緯】
@@ -725,11 +778,21 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
 
   const photoSource = pickPhotoSource(v);
   const igEmbed = instagramEmbedHtml(v.id);
+  const officialPhoto = officialPhotoHtml(v.id);
+  // 写真(公式Instagram埋め込み or 公式サイト画像)を掲載している場合に表示する削除依頼案内。
+  const photoRemovalNotice = `<p class="small photo-removal-notice">写真は店舗の公式発信(公式Instagram/公式サイト)を出典として掲載しています。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`【${v.name}】写真掲載について`)}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
   const photoSectionHtml = igEmbed
     ? `<div class="photo-section">
     <h2 class="section-heading"><span class="section-heading-icon">📷</span>写真</h2>
     ${igEmbed}
-    <p class="small">Instagram公式の埋め込み機能で表示しています。${photoSource ? `他の写真は<a href="${escapeHtml(photoSource.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(photoSource.label)}</a>でもご覧いただけます。` : ""}</p>
+    <p class="small">店舗公式アカウントのInstagram投稿を、Instagram公式の埋め込み機能で表示しています。${photoSource ? `他の写真は<a href="${escapeHtml(photoSource.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(photoSource.label)}</a>でもご覧いただけます。` : ""}</p>
+    ${photoRemovalNotice}
+  </div>`
+    : officialPhoto
+    ? `<div class="photo-section">
+    <h2 class="section-heading"><span class="section-heading-icon">📷</span>写真</h2>
+    ${officialPhoto}
+    ${photoRemovalNotice}
   </div>`
     : photoSource
     ? `<div class="photo-section">
