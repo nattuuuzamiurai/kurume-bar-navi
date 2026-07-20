@@ -396,6 +396,20 @@ a.tag:hover {
 }
 .instagram-embed-wrap iframe { max-width: 100%; }
 
+/* 公式サイト画像のホットリンク表示(自サイトに保存せず、店のサーバー画像を直接参照) */
+.official-photo { margin: 0; }
+.official-photo img {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.official-photo figcaption { margin-top: 6px; }
+.photo-removal-notice { margin-top: 8px; opacity: 0.85; }
+
 /* ---------- 地図(Googleマップ キーレス埋め込み) ---------- */
 
 .map-section { margin: 18px 0; }
