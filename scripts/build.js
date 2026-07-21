@@ -269,6 +269,222 @@ function officialPhotoHtml(venueId) {
 }
 
 // ============================================================
+// 店舗ロゴのホットリンク表示(2026-07-22)
+//
+// 【方針・制約】公式サイト画像(OFFICIAL_PHOTOS)と同じ線引きを踏襲する。
+// - 使うのは「店自身(またはそのチェーン運営元)の公式サイト」に掲載されているロゴのみ。
+//   第三者グルメサイト(食べログ・ホットペッパー・Retty・ぐるなび)およびそのページ作成
+//   サービス(owst.jp / gorp.jp / r-corona.jp)由来の画像は一切使わない。
+// - 画像は自サイトに保存(rehost)せず、店のサーバー上のURLを直接参照する <img>(ホットリンク)。
+//   **画像ファイルのホストは一切なし。**
+// - 店舗ページに提供元(公式サイト)へのリンクと削除依頼の案内を出す(venueLogoCreditHtml)。
+//   一覧カードは煩雑になるため出典表記を出さない(店舗ページで担保)。
+// - 読み込みに失敗した場合は業態アイコン(自作SVG)にフォールバックする(img の onerror)。
+//
+// 【bg フィールド】ロゴは透過PNGが多く、白抜き(白一色)のロゴは白背景だと見えない。
+// - "light"(既定): 白背景。濃色のロゴ・背景が焼き込まれたロゴ向け。
+// - "dark": 濃色背景。白抜きロゴ向け。
+//   実際に画像を取得して合成し、白背景/濃色背景それぞれでの視認性を目視確認したうえで指定している
+//   (2026-07-22時点で "dark" 指定は3件)。
+//
+// 【実測(curl、2026-07-22)】30件すべて、当サイトの GitHub Pages ドメインを Referer に付けた
+// クロスオリジン要求で HTTP 200 + Content-Type: image/* を返すことを確認済み
+// (=リファラによるホットリンクブロックなし)。ただし実ブラウザでの最終描画は未検証。
+// ============================================================
+const VENUE_LOGOS = {
+  // --- 居酒屋・料理系 ---
+  "izakaya-kakomian": {
+    imageUrl: "https://momo.cmosite.com/wp-content/uploads/sites/35/2020/01/logo_w.png",
+    siteLabel: "かこみ庵 久留米店 公式サイト",
+    siteUrl: "https://bb-kakomian.com/kurume/",
+  },
+  "izakaya-kiseki-tebasaki": {
+    imageUrl: "https://kiseteba.com/img/apple-touch-icon.png",
+    siteLabel: "奇跡の手羽先 公式サイト",
+    siteUrl: "https://kiseteba.com/",
+  },
+  "izakaya-torimero": {
+    imageUrl: "https://torimero.com/prd/wp/wp-content/uploads/2025/05/torimero512.png",
+    siteLabel: "三代目 鳥メロ 公式サイト",
+    siteUrl: "https://torimero.com/nishitetsukurume/",
+  },
+  "izakaya-sumibi-sakagura-kita": {
+    imageUrl: "https://www.sumibishuzo-kita.com/shared/img/shared/logo.png",
+    siteLabel: "炭火酒蔵 喜多 公式サイト",
+    siteUrl: "https://www.sumibishuzo-kita.com/",
+  },
+  "izakaya-sengoku-ieyasu": {
+    imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/04/logo.png",
+    siteLabel: "戦国焼鳥 家康 公式サイト",
+    siteUrl: "https://yakitori-ieyasu.co.jp/",
+  },
+  "izakaya-kuimonoya-wan": {
+    // 白抜きの筆文字ロゴ(透過PNG)のため濃色背景。
+    imageUrl: "https://www.oizumifoods.co.jp/img/common/shops/izakaya_logo01.png",
+    siteLabel: "くいもの屋わん 公式サイト(大泉フーズ)",
+    siteUrl: "https://search.oizumifoods.co.jp/detail/2583/",
+    bg: "dark",
+  },
+  "izakaya-isomaru": {
+    imageUrl: "https://isomaru.jp/wp-content/uploads/2022/11/isomarusuisan_logo.jpg",
+    siteLabel: "磯丸水産 公式サイト",
+    siteUrl: "https://isomaru.jp/1541/",
+  },
+  "izakaya-sanzoku-dining": {
+    imageUrl: "https://www.dragoncafe.jp/shared/img/shared/logo.png",
+    siteLabel: "SANZOKU DINING さっさん 公式サイト",
+    siteUrl: "https://www.dragoncafe.jp/",
+  },
+  "izakaya-sumibi-kushiya": {
+    imageUrl: "https://new-hakata-style.com/assets/img/apple-touch-icon.png",
+    siteLabel: "ニューハカタスタイル 公式サイト",
+    siteUrl: "https://new-hakata-style.com/",
+  },
+  "izakaya-taketora": {
+    imageUrl: "https://hakata-gyoza-taketora.com/wp-content/uploads/2026/02/cropped-2026_02_12_0lb_Kleki_transparent-180x180.png",
+    siteLabel: "博多一口餃子たけとら 公式サイト",
+    siteUrl: "https://hakata-gyoza-taketora.com/",
+  },
+  "izakaya-toriichizu": {
+    // 白抜きの鶏マーク(透過PNG)のため濃色背景。
+    imageUrl: "https://toriichizu.net/wp-content/uploads/2020/12/cropped-logo-toriichizu-180x180.png",
+    siteLabel: "とりいちず 公式サイト",
+    siteUrl: "https://toriichizu.net/shoplist/fukuoka/kurumeshi/",
+    bg: "dark",
+  },
+  "izakaya-shanghai-shuka": {
+    // 白抜きの店名ロゴ(透過PNG)のため濃色背景。
+    imageUrl: "https://shanghai-shuka.com/img/logo_footer.png",
+    siteLabel: "上海酒家 公式サイト",
+    siteUrl: "https://shanghai-shuka.com/",
+    bg: "dark",
+  },
+  "izakaya-ryuoukan-honten": {
+    imageUrl: "https://static.wixstatic.com/media/b86d6d_0c42461f10d74c13b7775778ef59a210~mv2.png",
+    siteLabel: "焼肉龍王館 公式サイト",
+    siteUrl: "https://www.ryuoukan.com/",
+  },
+  "izakaya-okinawa-kizuna": {
+    imageUrl: "https://kizuna1110.com/system_panel/uploads/touchicon/touchicon.png",
+    siteLabel: "沖縄風居酒屋 絆 公式サイト",
+    siteUrl: "https://kizuna1110.com/",
+  },
+  "izakaya-mui": {
+    imageUrl: "https://www.yakiniku-mui.com/shared/img/shared/logo.png",
+    siteLabel: "韓国家庭料理 無為 公式サイト",
+    siteUrl: "https://www.yakiniku-mui.com/",
+  },
+  "izakaya-amenita-pizzeria": {
+    imageUrl: "https://pizzeria-amenita.com/wp-content/themes/bonse/assets/images/logo.png",
+    siteLabel: "Pizzeria Amenita 公式サイト",
+    siteUrl: "https://pizzeria-amenita.com/",
+  },
+  "izakaya-hirukara-shinkichi": {
+    imageUrl: "https://shinkichi-kurume.jp/system_panel/uploads/images/fft_logo02.png",
+    siteLabel: "昼カラ酒場しん吉 公式サイト",
+    siteUrl: "https://shinkichi-kurume.jp/shinkichi",
+  },
+  "izakaya-kalbi-yokocho": {
+    imageUrl: "https://karubiyokotyo.com/img/logo_footer.png",
+    siteLabel: "久留米焼肉 カルビ横丁 公式サイト",
+    siteUrl: "https://karubiyokotyo.com/",
+  },
+  "izakaya-tori-shiki": {
+    imageUrl: "https://torishiki-kurume.com/img/apple-touch-icon.png",
+    siteLabel: "焼き鳥とり四季 公式サイト",
+    siteUrl: "https://torishiki-kurume.com/",
+  },
+  "izakaya-shiroichi": {
+    // 原寸(1400x1461・約930KB)は表示サイズに対し過大なため、Wix標準のリサイズ済みURL
+    // (アスペクト比はほぼ同じ 240x250、約55KB)を参照する。実測 200 + image/png。
+    imageUrl: "https://static.wixstatic.com/media/c62334_eb94ec85033a42bc8b5d8ce68dbcbd8e~mv2_d_1400_1461_s_2.png/v1/fill/w_240,h_250,al_c,q_85/c62334_eb94ec85033a42bc8b5d8ce68dbcbd8e~mv2_d_1400_1461_s_2.png",
+    siteLabel: "ホルモン家 しろ壱 公式サイト",
+    siteUrl: "https://www.horumonya-shiroichi.com/",
+  },
+  "izakaya-karisamu": {
+    imageUrl: "https://izzy.best/images/karisamu/kasamu_a.png",
+    siteLabel: "カリサム 公式サイト",
+    siteUrl: "https://izzy.best/karisamu/index.html",
+  },
+  // --- コンカフェ ---
+  "concafe-axia": {
+    imageUrl: "https://anisongaxia.com/common/upload_data/anisongaxiacom/image/apple-touch-icon.png",
+    siteLabel: "コンセプトカフェ AXIA 公式サイト",
+    siteUrl: "https://anisongaxia.com/",
+  },
+  "concafe-platinum-seven": {
+    imageUrl: "https://kurume-seven.com/wp-content/uploads/2026/05/favicon-200x200.png",
+    siteLabel: "カフェラウンジ PLATINUM SEVEN 公式サイト",
+    siteUrl: "https://kurume-seven.com/",
+  },
+  // --- バー ---
+  "bar-remember": {
+    imageUrl: "https://static.wixstatic.com/media/d671d7_b6cf8175b8d54a8a886dbc8580952a06%7Emv2.png/v1/fill/w_180%2Ch_180%2Clg_1%2Cusm_0.66_1.00_0.01/d671d7_b6cf8175b8d54a8a886dbc8580952a06%7Emv2.png",
+    siteLabel: "リメンバー 公式サイト",
+    siteUrl: "https://www.kurume-remember.com/",
+  },
+  "bar-manuka": {
+    // 白抜き版(manuqa-logo-white.png)は白背景で不可視のため、正方形マークの favicon を採用。
+    imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/favicon.png",
+    siteLabel: "マヌーカ 公式サイト",
+    siteUrl: "https://manuqa.jp/",
+  },
+  "bar-oshu-kitchen-alma": {
+    imageUrl: "https://oshukitchen-alma.com/img/apple-touch-icon.png",
+    siteLabel: "欧州キッチンアルマ 公式サイト",
+    siteUrl: "https://oshukitchen-alma.com/",
+  },
+  "bar-live-actor": {
+    imageUrl: "https://livebaractor.com/wp-content/uploads/2021/11/cropped-icon-180x180.png",
+    siteLabel: "Live Bar Actor 公式サイト",
+    siteUrl: "https://livebaractor.com/",
+  },
+  "bar-highball-stand": {
+    imageUrl: "https://highball-stand.com/wp-content/uploads/2024/07/cropped-logo1-180x180.png",
+    siteLabel: "ザ・ハイボールスタンド 公式サイト",
+    siteUrl: "https://highball-stand.com/",
+  },
+  "bar-welmona": {
+    imageUrl: "https://welmona.com/img/apple-touch-icon.png",
+    siteLabel: "BAR WELMONA 公式サイト",
+    siteUrl: "https://welmona.com/",
+  },
+  "bar-aletta": {
+    imageUrl: "https://aletta-kurume.com/home/wp-content/uploads/2018/12/cropped-9836b00030f5b01c0b638441173e8a18-180x180.jpg",
+    siteLabel: "ALETTA 公式サイト",
+    siteUrl: "https://aletta-kurume.com/",
+  },
+};
+
+// 業態アイコンの枠(カード/ヒーロー)を描画する。ロゴが登録されている店舗はロゴ画像に差し替え、
+// 読み込み失敗時は onerror で業態アイコンにフォールバックする。
+// variant: "card" | "hero"
+function venueIconSlotHtml(v, variant) {
+  const cls = variant === "hero" ? "venue-hero-icon" : "venue-card-icon";
+  const icon = rawCategoryIcon(v.category);
+  const logo = VENUE_LOGOS[v.id];
+  if (!logo) return `<span class="${cls}">${icon}</span>`;
+  const bgClass = logo.bg === "dark" ? " has-logo-dark" : "";
+  // onerror: ロゴ枠の装飾を外し、隠してある業態アイコンを表示する(画像が消えたまま空白になるのを防ぐ)。
+  // 店舗ページでは、ロゴが出せなかったのに出典表記だけ残るのを防ぐため出典行も隠す。
+  const onerror =
+    "this.style.display='none';this.parentNode.classList.remove('has-logo','has-logo-dark');" +
+    "var f=this.nextElementSibling;if(f){f.hidden=false;}" +
+    (variant === "hero"
+      ? "var c=document.getElementById('venue-logo-credit');if(c){c.hidden=true;}"
+      : "");
+  return `<span class="${cls} has-logo${bgClass}"><img class="venue-logo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(v.name)}のロゴ" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}"><span class="venue-logo-fallback" hidden>${icon}</span></span>`;
+}
+
+// 店舗ページに出す、ロゴの出典表記と削除依頼の案内(一覧カードには出さない)。
+function venueLogoCreditHtml(v) {
+  const logo = VENUE_LOGOS[v.id];
+  if (!logo) return "";
+  const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
+  return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(logo.siteUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(logo.siteLabel)}</a>のものを直接参照して表示しています(当サイトには保存していません)。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
+}
+
+// ============================================================
 // Googleマップ 地図表示(基本は外部リンク。一部店舗で iframe 埋め込みをテスト中)
 //
 // 【経緯】
@@ -477,7 +693,7 @@ const FILTER_SCRIPT = `<script>
 })();
 </script>`;
 
-const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の実写真は掲載しておらず、写真は各出典サイトまたはInstagram公式埋め込みでご覧いただけます(Instagram埋め込みをご利用の場合、お使いのブラウザがInstagram社のサーバーと通信します)。`;
+const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)を出典とするもののみを、提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。`;
 
 function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
@@ -547,7 +763,7 @@ function venueCardHtml(v, categories, areas) {
   return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}" style="--cat-color:${color}">
   <a href="${url(`/venues/${v.id}/`)}">
     <span class="venue-card-head">
-      <span class="venue-card-icon">${rawCategoryIcon(v.category)}</span>
+      ${venueIconSlotHtml(v, "card")}
       <span class="venue-card-cat">${escapeHtml(categoryLabel(v, cat ? cat.name : v.category))}</span>
     </span>
     <span class="venue-card-body">
@@ -836,13 +1052,14 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
 
 <article class="venue-detail">
   <header class="venue-hero" style="--cat-color:${CATEGORY_COLORS[v.category] || "#e8a33d"}">
-    <div class="venue-hero-icon">${rawCategoryIcon(v.category)}</div>
+    ${venueIconSlotHtml(v, "hero")}
     <div class="venue-hero-text">
       <span class="venue-hero-cat">${escapeHtml(categoryLabel(v, category.name))}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
       <h1>${escapeHtml(v.name)}</h1>
       ${v.walk ? `<span class="venue-hero-walk">🚶 ${escapeHtml(v.walk)}</span>` : ""}
     </div>
   </header>
+  ${venueLogoCreditHtml(v)}
   ${tagsHtml ? `<p class="tags">${tagsHtml}</p>` : ""}
 
   ${photoSectionHtml}
@@ -908,6 +1125,7 @@ function renderAboutPage() {
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
   <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
   <li>他サイトの文章・写真をそのまま転載することはしていません。写真は、店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信のみ</strong>を出典として掲載しています(第三者のグルメサイト等の写真は使用していません)。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
+  <li>店舗のロゴについても、その店(またはチェーンの運営元)の公式サイトに掲載されているものだけを、公式サイト上の画像を直接参照する形で表示しています(当サイトのサーバーには保存していません)。掲載元へのリンクは各店舗ページに記載しています。ロゴの掲載を希望されない場合は、下記の連絡先までお知らせください。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
 </ul>
 
@@ -952,6 +1170,14 @@ function build() {
       .map((c) => c.name)
       .join("・")})`
   );
+
+  // ロゴ登録の整合性チェック(店舗の削除・ID変更で参照先が消えていないかを検出する)
+  const publishedIds = new Set(venues.map((v) => v.id));
+  const orphanLogoIds = Object.keys(VENUE_LOGOS).filter((id) => !publishedIds.has(id));
+  if (orphanLogoIds.length > 0) {
+    console.warn(`[warn] VENUE_LOGOS に公開店舗と一致しないIDがあります: ${orphanLogoIds.join(", ")}`);
+  }
+  console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length}件`);
 
   // クリーンビルド
   fs.rmSync(DIST_DIR, { recursive: true, force: true });

@@ -1,8 +1,8 @@
 /* ============================================================
    久留米飲み屋ナビ スタイルシート
    モバイルファースト(基本スタイルはスマホ向け。min-widthで拡張)。
-   実店舗の写真は一切使用せず、業態アイコン(自作SVG)と差し色で
-   ビジュアルの厚みを出す方針。
+   ビジュアルの基本は業態アイコン(自作SVG)と差し色。写真・ロゴは店舗自身の
+   公式ソースのものだけをホットリンクで表示する(自サイトには保存しない)。
    ============================================================ */
 
 :root {
@@ -409,6 +409,42 @@ a.tag:hover {
 }
 .official-photo figcaption { margin-top: 6px; }
 .photo-removal-notice { margin-top: 8px; opacity: 0.85; }
+
+/* ---------- 店舗ロゴ(公式サイト画像のホットリンク。自サイトには保存しない) ----------
+   カード・ヒーローの業態アイコン枠を、ロゴがある店舗ではロゴ画像に差し替える。
+   縦横比がまちまちなので object-fit: contain + 余白付きのアバター枠で崩れないようにし、
+   透過ロゴでも見えるよう背景色(既定=白、白抜きロゴは .has-logo-dark で濃色)を敷く。 */
+.venue-card-icon.has-logo,
+.venue-hero-icon.has-logo {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+.venue-card-icon.has-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  padding: 3px;
+}
+.venue-hero-icon.has-logo { padding: 8px; }
+/* 白抜き(白一色)のロゴ用。白背景だと見えないため濃色を敷く */
+.venue-card-icon.has-logo-dark,
+.venue-hero-icon.has-logo-dark {
+  background: #17151f;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.venue-logo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* 画像が読めなかったときのフォールバック(業態アイコン) */
+.venue-logo-fallback { display: block; width: 100%; height: 100%; }
+.venue-logo-fallback[hidden] { display: none; }
+/* ロゴの有無でカード上部の高さがずれないよう、ヘッダーの高さを揃える */
+.venue-card-head { min-height: 58px; }
+.logo-credit { margin: -6px 0 14px; opacity: 0.85; }
 
 /* ---------- 地図(Googleマップ キーレス埋め込み) ---------- */
 
