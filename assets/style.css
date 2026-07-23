@@ -693,6 +693,13 @@ details.facet-group[open] summary { margin-bottom: 10px; }
   padding: 12px 16px;
   font-size: 0.9rem;
 }
+.notice-unverified {
+  background: rgba(226, 87, 76, 0.14);
+  border-color: #e2574c;
+  color: var(--color-text);
+  margin: 14px 0;
+  font-weight: 600;
+}
 
 .small { font-size: 0.82rem; color: var(--color-muted); }
 

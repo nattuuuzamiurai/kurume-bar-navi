@@ -32,6 +32,37 @@ const CONTACT_EMAIL = "kurume-bar-navi-info@example.com";
 // 社長判断によりフェーズ1では非公開とする(ページ自体を生成しない)。
 // フェーズ2で公開解禁する場合はここに追加すればよい。
 const PUBLISHED_CATEGORIES = ["bar", "izakaya", "concafe", "shisha", "poker"];
+
+// カテゴリは公開対象だが、店舗単位でフェーズ2(非公開)にするID。
+// 【フェーズ1/2の境界は「カテゴリ名」ではなく「実態(接待性)」で判定する】(レビュー部方針)。
+// キャストが客席に付いて接客する/キャストドリンク・指名料・シングルチャージ等の接待型課金がある店は、
+// 表向きのカテゴリが居酒屋・コンカフェであってもフェーズ2とする。
+// スナック・キャバクラ23店とまったく同じ扱い(dist/・sitemap・検索・タグ・一覧・JSON-LDのどこにも
+// 出さず、店名・IDも漏らさない)。データ自体は将来の判断のため残す。
+const PHASE2_VENUE_IDS = new Set([
+  // 実態がガールズバー業態。シングルチャージ+キャストドリンクの接待型課金(「居酒屋(中華)」表示は誤認を招く)。
+  // ※付与されていた「中華」タグは、六ツ門町の別店舗 izakaya-nyanyan-chinese(本物の中華料理店)から
+  //   混入した疑いがある。非公開化するため実害はないが、データ上のメモとしてここに残す。
+  "izakaya-nyanko-sakaba",
+  // 公式が「ガールズバー」表記。社長判断で暫定フェーズ2。
+  "concafe-platinum-seven",
+  // 店名自体が「ガールズバー&コンセプトカフェ」。社長判断で暫定フェーズ2。
+  "concafe-axia",
+]);
+
+// 営業状況を確認できていない店舗(削除はしないが、店舗ページに注記を出し、
+// 未確認の営業時間は「情報準備中」に寄せて「営業中」判定・営業時間表示に使わない)。
+// data/venues.json 側で hours/closedDays は既に null 化済み(=facet・バッジからも自動的に外れる)。
+const UNVERIFIED_VENUE_IDS = new Set([
+  // 食べログが「掲載保留」=営業状況未確認
+  "izakaya-pachino",
+  "izakaya-kairakutei",
+  "izakaya-omoni",
+  // 出典がInstagramのみで、Instagram側が投稿日取得をブロックしており最終更新を確認できない
+  // (閉店の証拠もないため注記付きで掲載継続)
+  "poker-ace-and-king",
+  "shisha-0942",
+]);
 function todayJST() {
   const now = new Date();
   const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -1488,6 +1519,10 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
 
   const isNightBusiness = v.category === "snack" || v.category === "kyabakura";
   const sched = parseSchedule(v.hours, v.closedDays);
+  const isUnverified = UNVERIFIED_VENUE_IDS.has(v.id);
+  const unverifiedNotice = isUnverified
+    ? `<p class="notice notice-unverified">⚠️ この店舗の営業状況を確認できていません。移転・閉店している可能性もあります。ご来店前に、最新の営業情報を出典元・店舗の公式情報で必ずご確認ください。</p>`
+    : "";
 
   const photoSource = pickPhotoSource(v);
   const igEmbed = instagramEmbedHtml(v.id);
@@ -1527,6 +1562,7 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
     </div>
   </header>
   ${venueLogoCreditHtml(v)}
+  ${unverifiedNotice}
   ${tagsHtml ? `<p class="tags">${tagsHtml}</p>` : ""}
 
   ${chargeCalloutHtml(v)}
@@ -1638,26 +1674,49 @@ function build() {
   const areas = readJSON("areas.json");
   const allCategories = readJSON("categories.json");
 
-  // 公開対象(PUBLISHED_CATEGORIES)のみに絞り込む。
-  // 非公開の業態(スナック・キャバクラ等)は data/venues.json にはデータとして残るが、
-  // dist/ 配下にページを一切生成しない(リンクを隠すだけでなく、ファイル自体を作らない)。
-  const venues = allVenues.filter((v) => PUBLISHED_CATEGORIES.includes(v.category));
+  // 公開対象に絞り込む。非公開は2種類あり、いずれも data/venues.json にはデータとして残すが
+  // dist/ 配下にページを一切生成しない(リンクを隠すだけでなく、ファイル自体を作らない):
+  //   (a) 非公開カテゴリ(スナック・キャバクラ) … PUBLISHED_CATEGORIES 外
+  //   (b) 店舗単位のフェーズ2(接待性のある店) … PHASE2_VENUE_IDS
+  const venues = allVenues.filter(
+    (v) => PUBLISHED_CATEGORIES.includes(v.category) && !PHASE2_VENUE_IDS.has(v.id)
+  );
   const categories = allCategories.filter((c) => PUBLISHED_CATEGORIES.includes(c.id));
   const hiddenCount = allVenues.length - venues.length;
+
+  // PHASE2_VENUE_IDS のタイポ・ID変更で「非公開にしたつもりが公開されている」事故を防ぐ整合性チェック。
+  const allIds = new Set(allVenues.map((v) => v.id));
+  const missingPhase2 = [...PHASE2_VENUE_IDS].filter((id) => !allIds.has(id));
+  if (missingPhase2.length > 0) {
+    console.warn(`[warn] PHASE2_VENUE_IDS にデータ上存在しないIDがあります: ${missingPhase2.join(", ")}`);
+  }
+  const missingUnverified = [...UNVERIFIED_VENUE_IDS].filter((id) => !allIds.has(id));
+  if (missingUnverified.length > 0) {
+    console.warn(`[warn] UNVERIFIED_VENUE_IDS にデータ上存在しないIDがあります: ${missingUnverified.join(", ")}`);
+  }
+
+  const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));
   console.log(
-    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件、カテゴリ: ${allCategories
+    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件 = 非公開カテゴリ${allCategories
       .filter((c) => !PUBLISHED_CATEGORIES.includes(c.id))
       .map((c) => c.name)
-      .join("・")})`
+      .join("・")} + 店舗単位フェーズ2${phase2Published.length}件)`
   );
 
-  // ロゴ登録の整合性チェック(店舗の削除・ID変更で参照先が消えていないかを検出する)
+  // ロゴ登録の整合性チェック。
+  // - broken: データ上に存在しないID(削除・ID変更で参照先が消えた)→ 要修正なので warn。
+  // - hidden: データは在るが非公開(フェーズ2等)でページが生成されない→ 想定内なので info。
   const publishedIds = new Set(venues.map((v) => v.id));
-  const orphanLogoIds = Object.keys(VENUE_LOGOS).filter((id) => !publishedIds.has(id));
-  if (orphanLogoIds.length > 0) {
-    console.warn(`[warn] VENUE_LOGOS に公開店舗と一致しないIDがあります: ${orphanLogoIds.join(", ")}`);
+  const brokenLogoIds = Object.keys(VENUE_LOGOS).filter((id) => !allIds.has(id));
+  const hiddenLogoIds = Object.keys(VENUE_LOGOS).filter((id) => allIds.has(id) && !publishedIds.has(id));
+  if (brokenLogoIds.length > 0) {
+    console.warn(`[warn] VENUE_LOGOS にデータ上存在しないIDがあります: ${brokenLogoIds.join(", ")}`);
   }
-  console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length}件`);
+  if (hiddenLogoIds.length > 0) {
+    console.log(`[info] VENUE_LOGOS のうち非公開店舗の${hiddenLogoIds.length}件はロゴを表示しません: ${hiddenLogoIds.join(", ")}`);
+  }
+  const orphanLogoIds = brokenLogoIds;
+  console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length - hiddenLogoIds.length}件`);
 
   // 絞り込み用の機械可読データの生成状況(パースできなかった文字列は目視で確認できるよう出力する)
   const withHours = venues.filter((v) => v.hours);
