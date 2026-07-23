@@ -109,36 +109,63 @@ function tagSlug(tag) {
 // 表すものではなく、あくまで「業態を示す一般的なピクトグラム」であることを明確にするため、
 // 実写のような装飾は避けている。
 // ============================================================
+// 業態カラー(2026-07-23 デザイン刷新: 明るめ藍色ベースに映える鮮やかトーンへ)。
+// 社長承認済みの見本(redesign-prototype.html)の値を採用。
 const CATEGORY_COLORS = {
-  bar: "#e8a33d",
-  izakaya: "#e2574c",
-  concafe: "#e07bb0",
-  shisha: "#59c3a6",
-  poker: "#7c6ce8",
-  snack: "#c9a227",
-  kyabakura: "#c9427a",
+  bar: "#9d8dff",
+  izakaya: "#ff8a5c",
+  concafe: "#ff85bd",
+  shisha: "#3fd7b6",
+  poker: "#5ad07a",
+  // 非公開カテゴリ(フェーズ1では出さない)。フォールバック用に色は持たせておく。
+  snack: "#e0b24a",
+  kyabakura: "#ff7ab0",
 };
 
+// 業態アイコン。見本のライン(24x24・stroke)スタイルに刷新。currentColor で業態カラーに追従。
 const CATEGORY_ICONS = {
   // カクテルグラス
-  bar: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h32l-14 16v14h8m-16 0h16m-8-14L8 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="14" r="1.8" fill="currentColor"/></svg>`,
+  bar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14l-7 8z"/><path d="M12 11v8"/><path d="M8 21h8"/></svg>`,
   // 提灯(ちょうちん)
-  izakaya: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4v6M24 38v6M14 10h20a4 4 0 014 4v14a10 10 0 01-10 10h-8A10 10 0 0110 28V14a4 4 0 014-4z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 18h24M12 24h24M12 30h24" stroke="currentColor" stroke-width="1.5" opacity="0.6"/></svg>`,
+  izakaya: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v2"/><rect x="6" y="5" width="12" height="14" rx="6"/><path d="M6 9h12M6 15h12"/><path d="M12 19v3"/></svg>`,
   // カップ+湯気
-  concafe: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 18h22v10a10 10 0 01-10 10h-2a10 10 0 01-10-10V18z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 20h4a5 5 0 010 10h-4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M17 12c0-2 2-2 2-4M24 12c0-2 2-2 2-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  concafe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/><path d="M10.5 3.5c.6.6.6 1.4 0 2M13.5 4.5c.4.4.4 1 0 1.4"/></svg>`,
   // シーシャ(水タバコ)
-  shisha: `<svg viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="24" cy="34" rx="10" ry="6" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M24 28V16m0 0c4 0 6-3 4-7-2 2-4 2-4-1" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M14 30c-4 2-6 6-4 10M34 30c4 2 6 6 4 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7"/></svg>`,
+  shisha: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21h-2a4 4 0 0 1-4-4v-3h8v3"/><path d="M10 14V7a2 2 0 0 1 4 0c0 3 3 2 3 5"/><path d="M8 21h8"/><path d="M8 4c.7.6.7 1.4 0 2"/></svg>`,
   // スペード(カード/ポーカー)
-  poker: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6c6 8 16 14 16 22a8 8 0 01-14 5c1 5 2 7 5 9H17c3-2 4-4 5-9a8 8 0 01-14-5c0-8 10-14 16-22z" fill="currentColor"/></svg>`,
+  poker: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 7 6.5 7 10a3.4 3.4 0 0 1-6 2.4c.4 2.2 1 3 2.2 4.1H8.8c1.2-1.1 1.8-1.9 2.2-4.1A3.4 3.4 0 0 1 5 13c0-3.5 4-6 7-10z"/></svg>`,
   // スナック・キャバクラ(非公開カテゴリだが将来のフェーズ2用に用意)
-  snack: `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M18 20c1-3 3-4 6-4s5 1 6 4M17 28h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`,
-  kyabakura: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 34l4-16 8-6 8 6 4 16z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="12" r="4" fill="currentColor"/></svg>`,
+  snack: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>`,
+  kyabakura: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l3 9h10l3-9-5 4-3-6-3 6z"/></svg>`,
 };
+
+// UI用アイコン(タブバー・factsグリッド等)。見本のセットをそのまま採用。
+const UI_ICONS = {
+  home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg>`,
+  search: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-3.5-3.5"/></svg>`,
+  pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>`,
+  tag: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h7l9 9-7 7-9-9z"/><circle cx="8.5" cy="8.5" r="1.4"/></svg>`,
+  grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>`,
+  yen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5l5 7 5-7"/><path d="M12 12v7"/><path d="M8 14h8M8 17h8"/></svg>`,
+  card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>`,
+  smoke: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17h13v3H3z"/><path d="M18 17v3M21 17v3"/><path d="M14 8c2 0 2-3 0-3M17 11c2.5 0 2.5-4 0-4"/></svg>`,
+  seat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v5"/><path d="M4 11h16v5H4z"/><path d="M6 16v3M18 16v3"/></svg>`,
+  cal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>`,
+  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L17 12l5 2v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4 6.2 2 2 0 0 1 6 4z"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>`,
+  walk: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="4.5" r="1.6"/><path d="M11 21l1.5-6-2.5-2 1-5 3 2 2 1"/><path d="M9.5 13l-1.5 3-2 1"/></svg>`,
+};
+
+function uiIcon(name, cls) {
+  const svg = UI_ICONS[name] || "";
+  return cls ? `<span class="${cls}">${svg}</span>` : svg;
+}
 
 function categoryIconHtml(categoryId) {
   const icon = CATEGORY_ICONS[categoryId];
   if (!icon) return "";
-  const color = CATEGORY_COLORS[categoryId] || "#e8a33d";
+  const color = CATEGORY_COLORS[categoryId] || "#9d8dff";
   return `<div class="venue-visual" style="--cat-color:${color}">${icon}</div>`;
 }
 
@@ -1078,7 +1105,27 @@ const FILTER_SCRIPT = `<script>
 
 const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)を出典とするもののみを、提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
 
-function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript }) {
+// 下部固定タブバー(モバイルのアプリ風ナビ。PCではCSSで非表示にしヘッダーナビを使う)。
+// マップ相当の独立ページは無い(キーレス地図埋め込みは1店ずつのため全店ピンの集約地図を作れない)
+// ため、4つ目のタブは「業態」にしている。
+function tabbarHtml(activeTab) {
+  const tabs = [
+    { key: "home", href: url("/"), icon: "home", label: "ホーム" },
+    { key: "search", href: url("/search/"), icon: "search", label: "さがす" },
+    { key: "area", href: url("/areas/"), icon: "pin", label: "エリア" },
+    { key: "category", href: url("/categories/"), icon: "grid", label: "業態" },
+  ];
+  return `<nav class="tabbar" aria-label="サイト内ナビゲーション">
+${tabs
+  .map(
+    (t) =>
+      `  <a class="tab${t.key === activeTab ? " on" : ""}" href="${t.href}"${t.key === activeTab ? ' aria-current="page"' : ""}><span class="tab-ic">${UI_ICONS[t.icon]}</span>${t.label}</a>`
+  )
+  .join("\n")}
+</nav>`;
+}
+
+function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript, activeTab }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
   const canonical = absoluteUrl(pathname);
   const jsonLdScript = jsonLd
@@ -1088,9 +1135,10 @@ function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex,
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
+<meta name="theme-color" content="#1b1e34">
 <link rel="canonical" href="${canonical}">
 ${robotsNoindex ? '<meta name="robots" content="noindex">' : ""}
 <meta property="og:type" content="website">
@@ -1103,10 +1151,9 @@ ${jsonLdScript}
 </head>
 <body>
 <header class="site-header">
-  <a class="site-title" href="${url("/")}">${escapeHtml(SITE_NAME)}</a>
-  <p class="site-tagline">西鉄久留米駅周辺(一番街・二番街・文化街)の飲み屋まとめ</p>
+  <a class="site-title" href="${url("/")}">久留米<small>飲み屋</small>ナビ</a>
   <nav class="site-nav">
-    <a href="${url("/search/")}">絞り込み検索</a>
+    <a href="${url("/search/")}">さがす</a>
     <a href="${url("/areas/")}">エリア</a>
     <a href="${url("/categories/")}">業態</a>
     <a href="${url("/tags/")}">タグ</a>
@@ -1120,6 +1167,8 @@ ${bodyHtml}
   <p><a href="${url("/about/")}">このサイトについて・掲載店舗の関係者の方へ</a></p>
   <p>&copy; ${SITE_NAME}</p>
 </footer>
+${tabbarHtml(activeTab)}
+${CARD_OPEN_SCRIPT}
 ${extraScript || ""}
 </body>
 </html>
@@ -1131,114 +1180,228 @@ function rawCategoryIcon(categoryId) {
   return CATEGORY_ICONS[categoryId] || "";
 }
 
+// 予算(夜)を短いラベルに整形(カード用)。例: 「〜3,000円」「2,000〜3,000円」「4,000円〜」。
+function budgetShort(v) {
+  const b = parseBudget(v.budgetDinner);
+  if (!b) return "";
+  const y = (n) => n.toLocaleString("en-US");
+  if (b.min === 0) return `〜${y(b.max)}円`;
+  if (b.max >= 100000) return `${y(b.min)}円〜`;
+  if (b.min === b.max) return `${y(b.min)}円`;
+  return `${y(b.min)}〜${y(b.max)}円`;
+}
+
+// チャージ/お通しを短いラベルに整形(カード用)。金額が読めれば「チャージ◯円」等、
+// 「なし」明言なら「お通しなし」。それ以外は空(カードを煩雑にしない)。
+function chargeShort(v) {
+  if (!v.charge) return "";
+  if (isChargeFree(v.charge)) return "お通しなし";
+  const t = normalizeText(v.charge);
+  const m = t.match(/(チャージ|お通し|席料|サービス料)[^、。]{0,10}?(\d{2,5})\s*円/);
+  if (m) {
+    const kind = m[1] === "チャージ" ? "チャージ" : m[1] === "席料" ? "席料" : "お通し";
+    return `${kind}${Number(m[2]).toLocaleString("en-US")}円`;
+  }
+  return "";
+}
+
+// カードの2行目に出すタグ(最大3個)。頻出タグには絵文字を添える。
+const TAG_EMOJI = {
+  "ダーツ": "🎯", "ビリヤード": "🎱", "カラオケ": "🎤", "昼カラオケ": "🎤",
+  "生演奏/ライブ": "🎸", "音楽バー": "🎵", "DJ": "🎧", "スポーツ観戦": "📺",
+  "スポーツ観戦バー": "📺", "シーシャあり": "💨", "ボードゲーム": "🎲",
+  "個室あり": "🚪", "座敷": "🌱", "カウンター席あり": "🪑", "一人客歓迎": "🙋",
+  "深夜営業": "🌙", "飲み放題あり": "🍺", "もつ鍋": "🍲", "焼き鳥": "🍢",
+  "餃子": "🥟", "焼肉": "🥩", "海鮮/魚介": "🐟", "ワイン充実": "🍷",
+  "カクテル充実": "🍸", "日本酒充実": "🍶", "焼酎": "🍶", "メイドカフェ": "☕",
+};
+function cardTagLineHtml(v) {
+  const tags = (v.tags || []).slice(0, 3);
+  if (tags.length === 0) return "";
+  const inner = tags
+    .map((t) => `${TAG_EMOJI[t] || ""}${escapeHtml(t)}`)
+    .join(" ・ ");
+  return `<span class="card-tagline">${inner}</span>`;
+}
+
+// カード内の営業中バッジ(クライアントサイドで端末時刻から判定して表示する。
+// data-open がある店舗のみ。初期は hidden で、CARD_OPEN_SCRIPT が点灯させる)。
+function cardOpenPillHtml(v) {
+  const sched = parseSchedule(v.hours, v.closedDays);
+  if (!sched.parsed) return "";
+  return `<span class="pill pill-open" data-open-pill hidden>🟢 <span data-open-label>営業中</span></span>`;
+}
+
+// 一覧に並ぶ店舗カード(2026-07-23 デザイン刷新: アバター + 店名 + 要点チップ)。
+// フィルタ機能のため class="venue-card" と data-* 属性は従来どおり維持する。
 function venueCardHtml(v, categories, areas) {
   const cat = categories.find((c) => c.id === v.category);
   const area = areas.find((a) => a.id === v.area);
-  const color = CATEGORY_COLORS[v.category] || "#e8a33d";
+  const color = CATEGORY_COLORS[v.category] || "#9d8dff";
   const tags = v.tags || [];
   const tagsAttr = escapeHtml(tags.join("|"));
-  const tagsHtml = tags.length
-    ? `<span class="venue-card-tags">${tags
-        .slice(0, 3)
-        .map((t) => `<span class="tag tag-small">${escapeHtml(t)}</span>`)
-        .join(" ")}${tags.length > 3 ? `<span class="tag tag-small tag-more">+${tags.length - 3}</span>` : ""}</span>`
-    : "";
+
+  const bShort = budgetShort(v);
+  const cShort = chargeShort(v);
+  const pills = [
+    cardOpenPillHtml(v),
+    bShort ? `<span class="pill">${escapeHtml(bShort)}</span>` : "",
+    `<span class="pill pill-area">${escapeHtml(area ? area.name : v.area)}</span>`,
+    cShort ? `<span class="pill pill-charge">${escapeHtml(cShort)}</span>` : "",
+  ]
+    .filter(Boolean)
+    .join("");
+
   return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}"${venueFacetAttrs(v)} style="--cat-color:${color}">
-  <a href="${url(`/venues/${v.id}/`)}">
-    <span class="venue-card-head">
-      ${venueIconSlotHtml(v, "card")}
-      <span class="venue-card-cat">${escapeHtml(categoryLabel(v, cat ? cat.name : v.category))}</span>
-    </span>
+  <a class="venue-card-link" href="${url(`/venues/${v.id}/`)}">
+    ${venueIconSlotHtml(v, "card")}
     <span class="venue-card-body">
+      <span class="venue-card-cat">${escapeHtml(categoryLabel(v, cat ? cat.name : v.category))}</span>
       <span class="venue-name">${escapeHtml(v.name)}</span>
-      <span class="venue-meta">${escapeHtml(area ? area.name : v.area)}${v.walk ? " ・ " + escapeHtml(v.walk) : ""}</span>
-      ${tagsHtml}
+      <span class="venue-card-pills">${pills}</span>
+      ${cardTagLineHtml(v)}
     </span>
   </a>
 </li>`;
 }
 
+// 一覧に店舗カードがあるページで、営業中バッジをクライアントサイドで点灯するスクリプト。
+// data-open(曜日,開始分,終了分)を端末の現在時刻と突き合わせる(深夜跨ぎは前日枠で判定)。
+const CARD_OPEN_SCRIPT = `<script>
+(function () {
+  var now = new Date();
+  var day = now.getDay();
+  var minutes = now.getHours() * 60 + now.getMinutes();
+  function openAt(raw) {
+    if (!raw) return false;
+    var slots = raw.split(';');
+    for (var i = 0; i < slots.length; i++) {
+      var p = slots[i].split(',');
+      var d = +p[0], s = +p[1], e = +p[2];
+      if (d === day && minutes >= s && minutes < e) return true;
+      if (d === (day + 6) % 7 && minutes + 1440 >= s && minutes + 1440 < e) return true;
+    }
+    return false;
+  }
+  document.querySelectorAll('.venue-card[data-open]').forEach(function (card) {
+    var pill = card.querySelector('[data-open-pill]');
+    if (!pill) return;
+    if (openAt(card.getAttribute('data-open'))) {
+      var fuzzy = card.getAttribute('data-open-fuzzy') === '1';
+      var lbl = pill.querySelector('[data-open-label]');
+      if (fuzzy && lbl) lbl.textContent = '営業中(終了時刻要確認)';
+      pill.hidden = false;
+    }
+  });
+})();
+</script>`;
+
 function renderTop(venues, areas, categories) {
-  const areaLinks = areas
+  const countBy = (fn) => venues.filter(fn).length;
+
+  // 業態タイル(色・アイコン・件数の大きなタップ領域)。
+  const catTiles = categories
+    .map((c) => {
+      const n = countBy((v) => v.category === c.id);
+      const note = c.id === "izakaya" ? " ・ 焼肉/焼鳥も" : "";
+      return `<a class="cat-tile" style="--cc:${CATEGORY_COLORS[c.id] || "#9d8dff"}" href="${url(`/categories/${c.id}/`)}">
+    <span class="cat-tile-ic">${CATEGORY_ICONS[c.id] || ""}</span>
+    <span class="cat-tile-nm">${escapeHtml(c.name)}</span>
+    <span class="cat-tile-ct"><b>${n}</b> 軒${note}</span>
+  </a>`;
+    })
+    .join("\n");
+
+  // エリアタイル。
+  const areaTiles = areas
     .map(
       (a) =>
-        `<li><a href="${url(`/areas/${a.id}/`)}">${escapeHtml(a.name)}<span class="count">(${venues.filter((v) => v.area === a.id).length}件)</span></a></li>`
+        `<a class="area-tile" href="${url(`/areas/${a.id}/`)}">${uiIcon("pin", "area-tile-ic")}<span class="area-tile-nm">${escapeHtml(a.name)}</span><span class="count">${countBy((v) => v.area === a.id)}軒</span></a>`
     )
     .join("\n");
-  const categoryLinks = categories
-    .map(
-      (c) =>
-        `<li><a class="category-link" href="${url(`/categories/${c.id}/`)}" style="--cat-color:${CATEGORY_COLORS[c.id] || "#e8a33d"}">${categoryIconHtml(c.id)}<span>${escapeHtml(c.name)}<span class="count">(${venues.filter((v) => v.category === c.id).length}件)</span></span></a></li>`
-    )
-    .join("\n");
-  const newest = venues.slice(0, 12).map((v) => venueCardHtml(v, categories, areas)).join("\n");
 
-  // 「今すぐ探す」のショートカット。リンク先の /search/ はURLクエリを読んで初期条件を適用する。
-  const countBy = (fn) => venues.filter(fn).length;
-  const quickPick = (href, label, count, primary) =>
-    `<a class="quick-pick${primary ? " quick-pick-primary" : ""}" href="${href}">${label}${count !== null ? `<span class="count">(${count})</span>` : ""}</a>`;
-  const budgetChips = BUDGET_BUCKETS.map((b) =>
-    quickPick(url(`/search/?budget=${b.value}`), escapeHtml(b.label), countBy((v) => budgetBucketsFor(v).includes(b.value)), false)
-  ).join("\n");
-  const conditionChips = [
-    quickPick(url("/search/?charge=free"), "お通し・チャージなし", countBy((v) => isChargeFree(v.charge)), false),
-    quickPick(url("/search/?pay=card"), "カード可", countBy((v) => paymentTokens(v.payment).includes("card")), false),
-    quickPick(url("/search/?smoke=no"), "禁煙", countBy((v) => smokingToken(v.smoking) === "no"), false),
-    quickPick(url("/search/?smoke=yes"), "喫煙可", countBy((v) => smokingToken(v.smoking) === "yes"), false),
-    quickPick(url(`/search/?tags=${encodeURIComponent("個室あり")}`), "個室あり", countBy((v) => (v.tags || []).includes("個室あり")), false),
-    quickPick(url(`/search/?tags=${encodeURIComponent("一人客歓迎")}`), "一人客歓迎", countBy((v) => (v.tags || []).includes("一人客歓迎")), false),
+  // こだわりチップ(既存の絞り込みへの導線。/search/ がURLクエリを読んで初期条件を適用する)。
+  const chip = (href, label) => `<a class="home-chip" href="${href}">${label}</a>`;
+  const chips = [
+    chip(url(`/search/?tags=${encodeURIComponent("ダーツ")}`), "🎯 ダーツ"),
+    chip(url(`/search/?tags=${encodeURIComponent("個室あり")}`), "🚪 個室あり"),
+    chip(url(`/search/?tags=${encodeURIComponent("深夜営業")}`), "🌙 深夜営業"),
+    chip(url("/search/?pay=cash"), "💴 現金のみ"),
+    chip(url("/search/?smoke=no"), "🚭 禁煙"),
+    chip(url("/search/?charge=free"), "🍶 お通しなし"),
   ].join("\n");
+
+  // 予算チップ。
+  const budgetChips = BUDGET_BUCKETS.map((b) =>
+    chip(url(`/search/?budget=${b.value}`), escapeHtml(b.label))
+  ).join("\n");
+
   const openCount = countBy((v) => parseSchedule(v.hours, v.closedDays).parsed);
+  // いま営業中の店数は端末時刻依存のためクライアントサイドで確定する。全店のスケジュールを
+  // コンパクトに渡し、ヒーローの「◯軒」を書き換える(取得できない場合は固定文言にフォールバック)。
+  const schedules = venues
+    .map((v) => {
+      const s = parseSchedule(v.hours, v.closedDays);
+      return s.parsed ? s.slots.map((x) => `${x.day},${x.start},${x.end}`).join(";") : "";
+    })
+    .filter(Boolean);
+  const openCountScript = `<script>
+(function () {
+  var data = ${JSON.stringify(schedules)};
+  var now = new Date(), day = now.getDay(), min = now.getHours() * 60 + now.getMinutes();
+  function openAt(raw){var a=raw.split(';');for(var i=0;i<a.length;i++){var p=a[i].split(','),d=+p[0],s=+p[1],e=+p[2];if(d===day&&min>=s&&min<e)return true;if(d===(day+6)%7&&min+1440>=s&&min+1440<e)return true;}return false;}
+  var n = 0; for (var i = 0; i < data.length; i++) if (openAt(data[i])) n++;
+  var el = document.getElementById('open-now-count');
+  if (el) el.textContent = 'この時間に営業中 ・ ' + n + '軒';
+})();
+</script>`;
 
   const body = `
-<section class="hero">
-  <h1>久留米の飲み屋を「条件」で探す</h1>
-  <p>福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー <strong>${venues.length}件</strong> を掲載。<strong>いま営業中か・予算・カードが使えるか・禁煙か・お通しの有無</strong>まで組み合わせて絞り込めます。</p>
-  <a class="cta-button" href="${url("/search/?open=now")}">🕒 いま営業中の店を探す →</a>
-  <p class="small">営業時間を確認できた${openCount}件が対象です(ご利用の端末の時刻で判定します)。</p>
+<section class="home-hero">
+  <p class="home-eyebrow">📍 西鉄久留米・一番街 / 二番街 / 文化街</p>
+  <h1>今夜、どこ飲む？</h1>
+  <p class="home-sub">久留米の飲み屋 <strong>${venues.length}軒</strong> から、いま開いてる店・予算・こだわりで選ぶ。</p>
+  <a class="open-cta" href="${url("/search/?open=now")}">
+    <span class="open-cta-live"></span>
+    <span class="open-cta-text"><b>いま開いてる店</b><span id="open-now-count">営業時間が分かる${openCount}軒から探す</span></span>
+    <span class="open-cta-arrow">→</span>
+  </a>
+  <a class="home-searchbar" href="${url("/search/")}">🔍 エリア・業態・こだわりで探す</a>
 </section>
 
-<section class="quick-section">
-  <h2>予算から探す</h2>
-  <div class="quick-picks">
+<section class="home-sec">
+  <div class="sec-title"><h2>業態から選ぶ</h2></div>
+  <div class="cat-tiles">
+${catTiles}
+  </div>
+</section>
+
+<section class="home-sec">
+  <div class="sec-title"><h2>予算から選ぶ</h2></div>
+  <div class="home-chips">
 ${budgetChips}
   </div>
 </section>
 
-<section class="quick-section">
-  <h2>こだわり条件から探す</h2>
-  <div class="quick-picks">
-${conditionChips}
+<section class="home-sec">
+  <div class="sec-title"><h2>こだわりでサッと</h2><a href="${url("/search/")}">すべての条件 →</a></div>
+  <div class="home-chips">
+${chips}
   </div>
-  <p><a class="cta-button cta-button-sub" href="${url("/search/")}">エリア・業態・予算・条件を組み合わせて探す →</a></p>
 </section>
 
-<section>
-  <h2>業態から探す</h2>
-  <ul class="category-grid">
-${categoryLinks}
-  </ul>
+<section class="home-sec">
+  <div class="sec-title"><h2>エリアから選ぶ</h2></div>
+  <div class="area-tiles">
+${areaTiles}
+  </div>
 </section>
 
-<section>
-  <h2>エリアから探す</h2>
-  <ul class="link-list">
-${areaLinks}
-  </ul>
-</section>
-
-<section>
-  <h2>タグから探す</h2>
-  <p>ダーツ・カラオケ・個室あり・もつ鍋など、遊べる要素や料理ジャンルから絞り込めます。</p>
-  <p><a href="${url("/tags/")}">タグ一覧を見る →</a></p>
-</section>
-
-<section>
-  <h2>掲載店舗</h2>
+<section class="home-sec">
+  <div class="sec-title"><h2>掲載店舗</h2><a href="${url("/categories/")}">すべて見る →</a></div>
   <ul class="venue-list">
-${newest}
+${venues.slice(0, 8).map((v) => venueCardHtml(v, categories, areas)).join("\n")}
   </ul>
-  <p><a href="${url("/categories/")}">すべての業態を見る →</a></p>
 </section>
 `;
   return layout({
@@ -1247,6 +1410,8 @@ ${newest}
       "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)の飲み屋を、いま営業中か・予算・カード可否・禁煙・お通しの有無まで組み合わせて探せる情報サイト。バー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーを掲載。",
     pathname: "/",
     bodyHtml: body,
+    activeTab: "home",
+    extraScript: openCountScript,
   });
 }
 
@@ -1268,13 +1433,14 @@ ${items}
     description: "久留米飲み屋ナビが掲載する一番街・二番街・文化街・西鉄久留米駅周辺エリアの一覧。",
     pathname: "/areas/",
     bodyHtml: body,
+    activeTab: "area",
   });
 }
 
 function renderCategoryIndex(categories, venues) {
   const items = categories
     .map(
-      (c) => `<li><a class="category-link" href="${url(`/categories/${c.id}/`)}" style="--cat-color:${CATEGORY_COLORS[c.id] || "#e8a33d"}">${categoryIconHtml(c.id)}<span><strong>${escapeHtml(c.name)}</strong>(${venues.filter((v) => v.category === c.id).length}件)<br>${escapeHtml(c.summary)}</span></a></li>`
+      (c) => `<li><a class="category-link" href="${url(`/categories/${c.id}/`)}" style="--cat-color:${CATEGORY_COLORS[c.id] || "#9d8dff"}">${categoryIconHtml(c.id)}<span><strong>${escapeHtml(c.name)}</strong>(${venues.filter((v) => v.category === c.id).length}件)<br>${escapeHtml(c.summary)}</span></a></li>`
     )
     .join("\n");
   const body = `
@@ -1289,6 +1455,7 @@ ${items}
     description: "久留米飲み屋ナビが掲載するバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーの一覧。",
     pathname: "/categories/",
     bodyHtml: body,
+    activeTab: "category",
   });
 }
 
@@ -1311,6 +1478,7 @@ ${list || "<li>準備中です。</li>"}
     pathname: `/areas/${area.id}/`,
     bodyHtml: body,
     extraScript: FILTER_SCRIPT,
+    activeTab: "area",
   });
 }
 
@@ -1333,6 +1501,7 @@ ${list || "<li>準備中です。</li>"}
     pathname: `/categories/${category.id}/`,
     bodyHtml: body,
     extraScript: FILTER_SCRIPT,
+    activeTab: "category",
   });
 }
 
@@ -1401,6 +1570,7 @@ ${list}
     pathname: "/search/",
     bodyHtml: body,
     extraScript: FILTER_SCRIPT,
+    activeTab: "search",
   });
 }
 
@@ -1507,9 +1677,6 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   const sourcesHtml = v.sources
     .map((s) => `<li><a href="${escapeHtml(s.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(s.label)}</a></li>`)
     .join("\n");
-  const tagsHtml = (v.tags || [])
-    .map((t) => `<a class="tag" href="${url(`/tags/${tagSlug(t)}/`)}">${escapeHtml(t)}</a>`)
-    .join(" ");
 
   const relatedInArea = allVenues
     .filter((x) => x.area === v.area && x.id !== v.id)
@@ -1548,48 +1715,66 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   </div>`
     : "";
 
+  // 店舗情報を、アイコン付き2列カードグリッド(facts-grid)に整理する。
+  // 値があるものだけ出す(営業時間は核情報なので常に出し、無ければ「情報準備中」)。
+  const facts = [];
+  facts.push({ icon: "clock", k: "営業時間", v: v.hours || "情報準備中(出典元でご確認ください)" });
+  if (v.closedDays) facts.push({ icon: "cal", k: "定休日", v: v.closedDays });
+  if (v.budgetDinner) facts.push({ icon: "yen", k: "予算(夜)", v: v.budgetDinner });
+  if (v.budgetLunch) facts.push({ icon: "yen", k: "予算(昼)", v: v.budgetLunch });
+  if (!v.budgetDinner && !v.budgetLunch && v.priceRange) facts.push({ icon: "yen", k: "価格帯", v: v.priceRange });
+  if (v.seats) facts.push({ icon: "seat", k: "席数", v: v.seats });
+  if (v.payment) facts.push({ icon: "card", k: "支払い", v: v.payment });
+  if (v.smoking) facts.push({ icon: "smoke", k: "喫煙", v: v.smoking });
+  if (v.reservation) facts.push({ icon: "check", k: "予約", v: v.reservation });
+  if (v.phone) facts.push({ icon: "phone", k: "電話", v: v.phone });
+  facts.push({ icon: "pin", k: "住所", v: v.address || "情報準備中" });
+  if (v.walk) facts.push({ icon: "walk", k: "アクセス", v: v.walk });
+  const factsGridHtml = `<div class="facts-grid">
+${facts
+  .map(
+    (f) =>
+      `    <div class="fact"><span class="fact-ic">${UI_ICONS[f.icon] || ""}</span><span class="fact-body"><span class="fact-k">${escapeHtml(f.k)}</span><span class="fact-v">${escapeHtml(f.v)}</span></span></div>`
+  )
+  .join("\n")}
+  </div>`;
+
+  const dtagsHtml = (v.tags || [])
+    .map((t) => `<a class="dtag" href="${url(`/tags/${tagSlug(t)}/`)}">${escapeHtml(t)}</a>`)
+    .join("");
+
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a> &gt; <a href="${url(`/categories/${category.id}/`)}">${escapeHtml(category.name)}</a> &gt; ${escapeHtml(v.name)}</nav>
 
 <article class="venue-detail">
-  <header class="venue-hero" style="--cat-color:${CATEGORY_COLORS[v.category] || "#e8a33d"}">
-    ${venueIconSlotHtml(v, "hero")}
-    <div class="venue-hero-text">
-      <span class="venue-hero-cat">${escapeHtml(categoryLabel(v, category.name))}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
-      <h1>${escapeHtml(v.name)}</h1>
-      ${v.walk ? `<span class="venue-hero-walk">🚶 ${escapeHtml(v.walk)}</span>` : ""}
-      ${sched.parsed ? `<span id="open-now-badge" class="open-badge" data-open="${sched.slots.map((s) => `${s.day},${s.start},${s.end}`).join(";")}"${sched.fuzzy ? ' data-open-fuzzy="1"' : ""} hidden></span>` : ""}
+  <header class="venue-hero" style="--cat-color:${CATEGORY_COLORS[v.category] || "#9d8dff"};--cc:${CATEGORY_COLORS[v.category] || "#9d8dff"}">
+    <div class="venue-hero-inner">
+      ${venueIconSlotHtml(v, "hero")}
+      <div class="venue-hero-text">
+        <span class="venue-hero-cat">${escapeHtml(categoryLabel(v, category.name))}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
+        <h1>${escapeHtml(v.name)}</h1>
+        <div class="venue-hero-badges">
+          ${sched.parsed ? `<span id="open-now-badge" class="open-badge" data-open="${sched.slots.map((s) => `${s.day},${s.start},${s.end}`).join(";")}"${sched.fuzzy ? ' data-open-fuzzy="1"' : ""} hidden></span>` : ""}
+          <a class="pill pill-area" href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a>
+          ${v.walk ? `<span class="pill">🚶 ${escapeHtml(v.walk)}</span>` : ""}
+        </div>
+      </div>
     </div>
   </header>
   ${venueLogoCreditHtml(v)}
   ${unverifiedNotice}
-  ${tagsHtml ? `<p class="tags">${tagsHtml}</p>` : ""}
 
   ${chargeCalloutHtml(v)}
 
-  ${photoSectionHtml}
-
   <section class="info-section">
     <h2 class="section-heading"><span class="section-heading-icon">📋</span>店舗情報</h2>
-    <table class="venue-table">
-      <tr><th>業態</th><td>${escapeHtml(categoryLabel(v, category.name))}</td></tr>
-      <tr><th>エリア</th><td><a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a></td></tr>
-      <tr><th>住所</th><td>${escapeHtml(v.address || "情報準備中")}</td></tr>
-      <tr><th>最寄駅からの目安</th><td>${escapeHtml(v.walk || "情報準備中")}</td></tr>
-      <tr><th>営業時間</th><td>${escapeHtml(v.hours || "情報準備中(出典元でご確認ください)")}</td></tr>
-      ${v.closedDays ? `<tr><th>定休日</th><td>${escapeHtml(v.closedDays)}</td></tr>` : ""}
-      <tr><th>電話番号</th><td>${escapeHtml(v.phone || "情報準備中")}</td></tr>
-      ${v.budgetDinner ? `<tr><th>予算(夜)</th><td>${escapeHtml(v.budgetDinner)}</td></tr>` : ""}
-      ${v.budgetLunch ? `<tr><th>予算(昼)</th><td>${escapeHtml(v.budgetLunch)}</td></tr>` : ""}
-      ${!v.budgetDinner && !v.budgetLunch ? `<tr><th>価格帯</th><td>${escapeHtml(v.priceRange || "情報準備中")}</td></tr>` : v.priceRange ? `<tr><th>価格帯</th><td>${escapeHtml(v.priceRange)}</td></tr>` : ""}
-      ${v.charge ? `<tr><th>チャージ・お通し</th><td>${escapeHtml(v.charge)}</td></tr>` : ""}
-      ${v.seats ? `<tr><th>席数</th><td>${escapeHtml(v.seats)}</td></tr>` : ""}
-      ${v.payment ? `<tr><th>支払い方法</th><td>${escapeHtml(v.payment)}</td></tr>` : ""}
-      ${v.smoking ? `<tr><th>喫煙</th><td>${escapeHtml(v.smoking)}</td></tr>` : ""}
-      ${v.reservation ? `<tr><th>予約</th><td>${escapeHtml(v.reservation)}</td></tr>` : ""}
-    </table>
+    ${factsGridHtml}
     ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
   </section>
+
+  ${dtagsHtml ? `<section class="info-section"><h2 class="section-heading"><span class="section-heading-icon">🏷</span>特徴・タグ</h2><div class="dtags">${dtagsHtml}</div></section>` : ""}
+
+  ${photoSectionHtml}
 
   ${mapSectionHtml(v)}
 
