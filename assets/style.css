@@ -19,6 +19,9 @@
 
 * { box-sizing: border-box; }
 
+/* hidden属性を常に優先する(display指定のあるクラスに hidden を付けても隠れるようにする) */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -549,7 +552,137 @@ details.facet-group[open] summary { margin-bottom: 10px; }
 }
 .tag-filter-item input { accent-color: var(--color-accent); }
 
-.filter-result-count { margin: 12px 0 0; min-height: 1.2em; }
+.filter-result-count { margin: 12px 0 0; min-height: 1.2em; font-weight: 700; color: var(--color-text); }
+.filter-note { margin: 6px 0 0; }
+
+/* 「いま営業中」の絞り込み(最上段に置き、他の条件より目立たせる) */
+.facet-open {
+  background: rgba(232, 163, 61, 0.1);
+  border: 1px solid rgba(232, 163, 61, 0.5);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.open-now-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  cursor: pointer;
+  min-height: 40px;
+  font-size: 0.92rem;
+}
+.open-now-toggle input { accent-color: var(--color-accent); width: 18px; height: 18px; }
+.open-now-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.open-now-time select {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 0.85rem;
+  min-height: 36px;
+}
+.open-now-reset {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  min-height: 34px;
+}
+.open-now-reset:hover { color: var(--color-accent); border-color: var(--color-accent); }
+
+/* ---------- トップページの「今すぐ探す」ショートカット ---------- */
+
+.quick-section { margin-bottom: 26px; }
+.quick-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-bottom: 12px;
+}
+.quick-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 9px 15px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  min-height: 42px;
+}
+.quick-pick:hover { border-color: var(--color-accent); text-decoration: none; }
+.quick-pick-primary {
+  background: rgba(232, 163, 61, 0.16);
+  border-color: var(--color-accent);
+  font-weight: 700;
+}
+.cta-button-sub {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  box-shadow: none;
+  font-weight: 700;
+}
+
+/* ---------- 営業状況バッジ(店舗ページ) ---------- */
+
+.open-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.open-badge-on { background: #1f7a4d; color: #ffffff; }
+.open-badge-off { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
+
+/* ---------- チャージ・お通しのハイライト(店舗ページ) ---------- */
+
+.charge-callout {
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-left: 5px solid var(--color-accent);
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  margin: 16px 0;
+}
+.charge-callout-head {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-muted);
+  letter-spacing: 0.02em;
+}
+.charge-callout-icon { margin-right: 5px; }
+.charge-callout-value {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.charge-callout .small { margin: 0; }
+.charge-callout-free { border-color: #3fbf82; border-left-color: #3fbf82; }
+.charge-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #1f7a4d;
+  color: #ffffff;
+  font-size: 0.76rem;
+}
 
 /* ---------- その他 ---------- */
 
@@ -559,6 +692,13 @@ details.facet-group[open] summary { margin-bottom: 10px; }
   border-radius: var(--radius);
   padding: 12px 16px;
   font-size: 0.9rem;
+}
+.notice-unverified {
+  background: rgba(226, 87, 76, 0.14);
+  border-color: #e2574c;
+  color: var(--color-text);
+  margin: 14px 0;
+  font-weight: 600;
 }
 
 .small { font-size: 0.82rem; color: var(--color-muted); }

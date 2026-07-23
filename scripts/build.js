@@ -32,6 +32,37 @@ const CONTACT_EMAIL = "kurume-bar-navi-info@example.com";
 // 社長判断によりフェーズ1では非公開とする(ページ自体を生成しない)。
 // フェーズ2で公開解禁する場合はここに追加すればよい。
 const PUBLISHED_CATEGORIES = ["bar", "izakaya", "concafe", "shisha", "poker"];
+
+// カテゴリは公開対象だが、店舗単位でフェーズ2(非公開)にするID。
+// 【フェーズ1/2の境界は「カテゴリ名」ではなく「実態(接待性)」で判定する】(レビュー部方針)。
+// キャストが客席に付いて接客する/キャストドリンク・指名料・シングルチャージ等の接待型課金がある店は、
+// 表向きのカテゴリが居酒屋・コンカフェであってもフェーズ2とする。
+// スナック・キャバクラ23店とまったく同じ扱い(dist/・sitemap・検索・タグ・一覧・JSON-LDのどこにも
+// 出さず、店名・IDも漏らさない)。データ自体は将来の判断のため残す。
+const PHASE2_VENUE_IDS = new Set([
+  // 実態がガールズバー業態。シングルチャージ+キャストドリンクの接待型課金(「居酒屋(中華)」表示は誤認を招く)。
+  // ※付与されていた「中華」タグは、六ツ門町の別店舗 izakaya-nyanyan-chinese(本物の中華料理店)から
+  //   混入した疑いがある。非公開化するため実害はないが、データ上のメモとしてここに残す。
+  "izakaya-nyanko-sakaba",
+  // 公式が「ガールズバー」表記。社長判断で暫定フェーズ2。
+  "concafe-platinum-seven",
+  // 店名自体が「ガールズバー&コンセプトカフェ」。社長判断で暫定フェーズ2。
+  "concafe-axia",
+]);
+
+// 営業状況を確認できていない店舗(削除はしないが、店舗ページに注記を出し、
+// 未確認の営業時間は「情報準備中」に寄せて「営業中」判定・営業時間表示に使わない)。
+// data/venues.json 側で hours/closedDays は既に null 化済み(=facet・バッジからも自動的に外れる)。
+const UNVERIFIED_VENUE_IDS = new Set([
+  // 食べログが「掲載保留」=営業状況未確認
+  "izakaya-pachino",
+  "izakaya-kairakutei",
+  "izakaya-omoni",
+  // 出典がInstagramのみで、Instagram側が投稿日取得をブロックしており最終更新を確認できない
+  // (閉店の証拠もないため注記付きで掲載継続)
+  "poker-ace-and-king",
+  "shisha-0942",
+]);
 function todayJST() {
   const now = new Date();
   const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -140,6 +171,195 @@ function cuisineLabelFor(v) {
 function categoryLabel(v, categoryName) {
   const c = cuisineLabelFor(v);
   return c ? `${categoryName}(${c})` : categoryName;
+}
+
+// ============================================================
+// 店舗詳細情報の機械可読化(2026-07-22)
+//
+// data/venues.json は「出典の表記をそのまま残した日本語の文字列」を正とし(人が読んで
+// 検証できる形を1か所に保つため)、絞り込み検索に必要な機械可読データは、ここで
+// ビルド時に文字列からパースして生成する。パースできなかった店舗はその条件での
+// 絞り込み対象から外れるだけで、表示(文字列)は従来どおり出る。
+// パース結果の件数・失敗した文字列はビルドログに出力し、目視で検証できるようにしている。
+// ============================================================
+
+// 曜日文字 → JavaScript の Date#getDay() の値(日=0)
+const DAY_TO_INDEX = { 日: 0, 月: 1, 火: 2, 水: 3, 木: 4, 金: 5, 土: 6 };
+const JP_WEEK_ORDER = ["月", "火", "水", "木", "金", "土", "日"];
+const ALL_DAY_CHARS = "月火水木金土日";
+
+function normalizeText(s) {
+  return String(s)
+    .replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+    .replace(/[：]/g, ":")
+    .replace(/[～~]/g, "〜");
+}
+
+// 「(水〜日)」のように曜日だけが入った括弧は中身を残し、それ以外の括弧注記(L.O.等)は落とす。
+function stripHoursNotes(s) {
+  return s
+    .replace(/[（(]([^）)]*)[）)]/g, (m, inner) =>
+      /^[月火水木金土日祝前・、,〜\s]+$/.test(inner) ? inner : ""
+    )
+    .replace(/※.*$/g, "")
+    .replace(/(ランチ|ディナー|カフェ|ハッピーアワー|バータイム|昼|夜)/g, "")
+    .trim();
+}
+
+// 曜日表記(例: "月〜水・金〜日", "土日", "全日")を getDay() の配列に展開する。
+function expandDayTokens(token) {
+  let t = token
+    .replace(/全日|毎日|終日|年中無休/g, ALL_DAY_CHARS)
+    .replace(/平日/g, "月火水木金")
+    .replace(/祝前日|祝前|祝日|祝/g, "");
+  const days = new Set();
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (!(c in DAY_TO_INDEX)) continue;
+    if (t[i + 1] === "〜" && t[i + 2] in DAY_TO_INDEX) {
+      const from = JP_WEEK_ORDER.indexOf(c);
+      const to = JP_WEEK_ORDER.indexOf(t[i + 2]);
+      for (let k = 0; k < 7; k++) {
+        const idx = (from + k) % 7;
+        days.add(DAY_TO_INDEX[JP_WEEK_ORDER[idx]]);
+        if (idx === to) break;
+      }
+      i += 2;
+    } else {
+      days.add(DAY_TO_INDEX[c]);
+    }
+  }
+  return [...days];
+}
+
+const TIME_RANGE_RE = /(翌)?(\d{1,2}):(\d{2})\s*〜\s*(?:(翌)?(\d{1,2}):(\d{2})|(LAST|Last|last|ラスト))?/g;
+
+// 営業時間文字列 + 定休日文字列 → [{day, start, end, fuzzyEnd}] (分単位。深夜は24:00超で表現)
+function parseSchedule(hours, closedDays) {
+  if (!hours) return { slots: [], parsed: false, fuzzy: false };
+  const text = stripHoursNotes(normalizeText(hours));
+  const closed = new Set(parseClosedDays(closedDays));
+  const chunks = text.split("/");
+  const slots = [];
+  let fuzzy = false;
+  let currentDays = null;
+  for (const rawChunk of chunks) {
+    const chunk = rawChunk.trim();
+    if (!chunk) continue;
+    const dayMatch = chunk.match(/^[月火水木金土日祝前全毎平終年中無休・、,〜\s]+/);
+    let days = dayMatch ? expandDayTokens(dayMatch[0]) : [];
+    if (days.length > 0) currentDays = days;
+    else days = currentDays || expandDayTokens(ALL_DAY_CHARS);
+
+    TIME_RANGE_RE.lastIndex = 0;
+    let m;
+    while ((m = TIME_RANGE_RE.exec(chunk)) !== null) {
+      let start = Number(m[2]) * 60 + Number(m[3]) + (m[1] ? 1440 : 0);
+      let end;
+      let fuzzyEnd = false;
+      if (m[5] !== undefined) {
+        end = Number(m[5]) * 60 + Number(m[6]) + (m[4] ? 1440 : 0);
+        if (end <= start) end += 1440;
+      } else {
+        // 「20:00〜LAST」など終了時刻が公開されていないもの。深夜5:00までを暫定の枠として扱い、
+        // 画面上は「終了時刻不明」と明示する(勝手に閉店時刻を断定しないため)。
+        end = 29 * 60;
+        if (end <= start) end = start + 60;
+        fuzzyEnd = true;
+        fuzzy = true;
+      }
+      for (const d of days) {
+        if (closed.has(d)) continue;
+        slots.push({ day: d, start, end, fuzzyEnd });
+      }
+    }
+  }
+  return { slots, parsed: slots.length > 0, fuzzy };
+}
+
+// 定休日文字列 → getDay() の配列。「第2・第4木曜」のような隔週指定は週次の休みとして扱わない。
+function parseClosedDays(s) {
+  if (!s) return [];
+  let t = normalizeText(s).replace(/[（(][^）)]*[）)]/g, "");
+  if (/^(なし|無休|年中無休)/.test(t.trim())) return [];
+  t = t.replace(/第[\d]+(?:[・,、]第?[\d]+)*(?:週)?[月火水木金土日]曜?日?/g, "");
+  t = t.replace(/祝前日|祝前|祝日|祝/g, "");
+  const days = new Set();
+  for (const c of t) if (c in DAY_TO_INDEX) days.add(DAY_TO_INDEX[c]);
+  return [...days];
+}
+
+// 予算文字列 → { min, max }(円)。「〜3000円」「2001〜3000円」「3500円」等に対応。
+function parseBudget(s) {
+  if (!s) return null;
+  const t = normalizeText(s).replace(/[（(][^）)]*[）)]/g, "").replace(/,/g, "");
+  let m = t.match(/(\d{3,6})\s*円?\s*〜\s*(\d{3,6})/);
+  if (m) return { min: Number(m[1]), max: Number(m[2]) };
+  m = t.match(/〜\s*(\d{3,6})/);
+  if (m) return { min: 0, max: Number(m[1]) };
+  m = t.match(/(\d{3,6})\s*円\s*〜/);
+  if (m) return { min: Number(m[1]), max: 100000 };
+  m = t.match(/(\d{3,6})/);
+  if (m) return { min: Number(m[1]), max: Number(m[1]) };
+  return null;
+}
+
+const BUDGET_BUCKETS = [
+  { value: "0-2000", label: "〜2000円", min: 0, max: 2000 },
+  { value: "2000-3000", label: "2000〜3000円", min: 2000, max: 3000 },
+  { value: "3000-4000", label: "3000〜4000円", min: 3000, max: 4000 },
+  { value: "4000-", label: "4000円〜", min: 4000, max: 100000 },
+];
+
+function budgetBucketsFor(v) {
+  const b = parseBudget(v.budgetDinner);
+  if (!b) return [];
+  return BUDGET_BUCKETS.filter((x) => b.min <= x.max && b.max >= x.min).map((x) => x.value);
+}
+
+// 支払い方法の文字列 → ["card", "cashless", "cash"] のトークン
+function paymentTokens(s) {
+  if (!s) return [];
+  const t = normalizeText(s);
+  const tokens = [];
+  const cashOnly = /現金のみ/.test(t);
+  if (cashOnly) {
+    tokens.push("cash");
+    return tokens;
+  }
+  const card = !/カード不可/.test(t) && (/カード可/.test(t) || /VISA|Visa|JCB|Master|MASTER|AMEX|Amex|ダイナース/.test(t));
+  const emoney = /電子マネー可|楽天Edy|QUICPay|iD|交通系/.test(t) && !/電子マネー不可/.test(t);
+  const qr = /QR可|QRコード決済可|PayPay可|PayPay|d払い|auPay|楽天ペイ|スマート支払い/.test(t);
+  if (card) tokens.push("card");
+  if (card || emoney || qr) tokens.push("cashless");
+  // カード・電子マネー・QRのいずれも「不可」と明記されている場合は実質的に現金のみ
+  if (tokens.length === 0 && /カード不可/.test(t) && /電子マネー不可/.test(t) && /QR不可|PayPay不可/.test(t)) {
+    tokens.push("cash");
+  }
+  return tokens;
+}
+
+// 喫煙可否の文字列 → "no"(禁煙) / "mixed"(分煙) / "yes"(喫煙可)
+function smokingToken(s) {
+  if (!s) return "";
+  const t = normalizeText(s);
+  const fullNoSmoking = /全席禁煙|店内全面禁煙|店内禁煙|全面禁煙/.test(t);
+  if (/分煙/.test(t)) return "mixed";
+  if (!fullNoSmoking && /禁煙/.test(t) && /喫煙可|喫煙OK/.test(t)) return "mixed";
+  if (fullNoSmoking || /^禁煙/.test(t.trim())) return "no";
+  if (/喫煙可|喫煙OK/.test(t)) return "yes";
+  return "";
+}
+
+// チャージ/お通しの文字列が「なし(無料)」を明言しているか。
+// 時間帯・条件によっては料金が発生する店(例: 「Cafe Timeはチャージ無料、Bar Timeは550円」)を
+// 「なし」と誤って断定しないよう、チャージ/お通し/席料の金額表記が併記されている場合は対象外にする。
+function isChargeFree(s) {
+  if (!s) return false;
+  const t = normalizeText(s);
+  const declaresFree = /お通し(代|料)?(は)?(なし|無し|無料)|チャージ(料|代)?(は)?(なし|無し|無料|不要)|席料(は)?(なし|無し|無料)|お席料なし/.test(t);
+  const hasAmount = /(チャージ|お通し|席料|サービス料)[^、。]{0,12}\d+\s*円/.test(t);
+  return declaresFree && !hasAmount;
 }
 
 // ============================================================
@@ -567,8 +787,101 @@ function mapSectionHtml(v) {
 }
 
 // ============================================================
-// 絞り込み(エリア・業態・タグを横断して組み合わせられるファセット絞り込みUI)
+// 絞り込み(エリア・業態・タグ・営業時間・予算・支払い・喫煙を組み合わせるファセット絞り込みUI)
 // ============================================================
+
+// 店舗カード(および店舗ページ)に付与する機械可読な絞り込み用属性。
+// data-open は「曜日,開始分,終了分」の3つ組をセミコロン区切りで並べたもの(深夜は24:00超=1440分超で表現)。
+function venueFacetAttrs(v) {
+  const attrs = [];
+  const sched = parseSchedule(v.hours, v.closedDays);
+  if (sched.parsed) {
+    attrs.push(` data-open="${sched.slots.map((s) => `${s.day},${s.start},${s.end}`).join(";")}"`);
+    if (sched.fuzzy) attrs.push(` data-open-fuzzy="1"`);
+  }
+  const buckets = budgetBucketsFor(v);
+  if (buckets.length) attrs.push(` data-budget="${buckets.join(" ")}"`);
+  const pay = paymentTokens(v.payment);
+  if (pay.length) attrs.push(` data-pay="${pay.join(" ")}"`);
+  const smoke = smokingToken(v.smoking);
+  if (smoke) attrs.push(` data-smoke="${smoke}"`);
+  if (isChargeFree(v.charge)) attrs.push(` data-charge="free"`);
+  return attrs.join("");
+}
+
+// 追加ファセット(予算・支払い・喫煙・チャージ)の定義。値は venueFacetAttrs が出す属性値と対応する。
+const EXTRA_FACETS = [
+  {
+    key: "budget",
+    title: "予算(夜)",
+    options: BUDGET_BUCKETS.map((b) => ({ value: b.value, label: b.label })),
+    match: (v) => budgetBucketsFor(v),
+  },
+  {
+    key: "pay",
+    title: "支払い",
+    options: [
+      { value: "card", label: "カード可" },
+      { value: "cashless", label: "キャッシュレス可" },
+      { value: "cash", label: "現金のみ" },
+    ],
+    match: (v) => paymentTokens(v.payment),
+  },
+  {
+    key: "smoke",
+    title: "喫煙",
+    options: [
+      { value: "no", label: "禁煙" },
+      { value: "mixed", label: "分煙" },
+      { value: "yes", label: "喫煙可" },
+    ],
+    match: (v) => (smokingToken(v.smoking) ? [smokingToken(v.smoking)] : []),
+  },
+  {
+    key: "charge",
+    title: "チャージ",
+    options: [{ value: "free", label: "お通し・チャージなし" }],
+    match: (v) => (isChargeFree(v.charge) ? ["free"] : []),
+  },
+];
+
+// 追加ファセットのチェックボックス群。該当0件の選択肢は出さない(押しても0件になる選択肢を減らす)。
+function extraFacetHtml(venues, facet) {
+  const counts = new Map();
+  for (const v of venues) for (const val of facet.match(v)) counts.set(val, (counts.get(val) || 0) + 1);
+  const items = facet.options
+    .filter((o) => counts.get(o.value))
+    .map(
+      (o) =>
+        `<label class="tag-filter-item"><input type="checkbox" data-facet="${facet.key}" value="${escapeHtml(o.value)}"> ${escapeHtml(o.label)}<span class="count">(${counts.get(o.value)})</span></label>`
+    );
+  if (items.length === 0) return "";
+  return `<div class="facet-group">
+  <p class="facet-group-title">${escapeHtml(facet.title)}で絞り込む</p>
+  <div class="tag-filter-list">
+${items.join("\n")}
+  </div>
+</div>`;
+}
+
+// 「今から行ける店」の絞り込みUI。曜日・時刻は既定で端末の現在時刻を使い、任意で変更できる。
+function openNowFacetHtml(venues) {
+  const withSchedule = venues.filter((v) => parseSchedule(v.hours, v.closedDays).parsed).length;
+  if (withSchedule === 0) return "";
+  const hourOptions = Array.from({ length: 24 }, (_, h) => `<option value="${h * 60}">${h}:00</option>`).join("");
+  const dayOptions = ["日", "月", "火", "水", "木", "金", "土"]
+    .map((d, i) => `<option value="${i}">${d}曜</option>`)
+    .join("");
+  return `<div class="facet-group facet-open">
+  <label class="open-now-toggle"><input type="checkbox" data-facet="open" value="now"> <strong>🕒 いま営業中の店だけ</strong><span class="count">(営業時間が分かる${withSchedule}件が対象)</span></label>
+  <div class="open-now-time" hidden>
+    <span class="small">時間を指定:</span>
+    <select class="open-day" aria-label="曜日">${dayOptions}</select>
+    <select class="open-hour" aria-label="時刻">${hourOptions}</select>
+    <button type="button" class="open-now-reset">今に戻す</button>
+  </div>
+</div>`;
+}
 
 // 与えられた店舗一覧から、指定した軸(area/category/tags)の件数を集計する。
 function collectFacetCounts(venues, key) {
@@ -631,24 +944,46 @@ function filterWidgetHtml(venues, venueListId, areas, categories) {
   const tagCounts = new Map(collectTagCounts(venues));
 
   const groups = [];
+  const openHtml = openNowFacetHtml(venues);
+  if (openHtml) groups.push(openHtml);
   if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false));
   if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false));
+  for (const facet of EXTRA_FACETS) {
+    const html = extraFacetHtml(venues, facet);
+    if (html) groups.push(html);
+  }
   if (tagCounts.size > 0) groups.push(facetGroupHtml("tags", "タグ", tagCounts, null, true));
 
   if (groups.length === 0) return "";
 
   return `<div class="tag-filter" data-target="${venueListId}">
-  <p class="tag-filter-title">絞り込む <button type="button" class="tag-filter-reset">条件をクリア</button></p>
+  <p class="tag-filter-title">条件で絞り込む <button type="button" class="tag-filter-reset">条件をクリア</button></p>
 ${groups.join("\n")}
   <p class="filter-result-count small"></p>
+  <p class="filter-note small">営業時間・予算・支払い・喫煙の条件は、その項目の情報を確認できた店舗のみが対象です(情報が未取得の店舗は絞り込むと表示されません)。掲載内容は最新でない場合があります。</p>
 </div>`;
 }
 
 // 絞り込みウィジェットを動かすクライアントサイドJS(外部ライブラリ不使用)。
-// area・category は「選択した値のいずれかに一致(OR)」、tags は「選択したタグを
-// すべて含む(AND)」で絞り込む。3軸をまたぐ場合はAND(エリアAND業態ANDタグ)。
+// area・category・budget・pay・smoke は「選択した値のいずれかに一致(OR)」、tags は
+// 「選択したタグをすべて含む(AND)」、軸をまたぐ場合はAND。
+// 「いま営業中」は data-open(曜日,開始分,終了分)を端末の現在時刻(または指定時刻)と突き合わせる。
+// 深夜営業(24:00超)は前日の枠として判定するため、前日の枠も +1440分 でチェックする。
+// URLクエリ(?open=now&budget=2000-3000&pay=card ...)で初期条件を指定できる(トップからの導線用)。
 const FILTER_SCRIPT = `<script>
 (function () {
+  function isOpenAt(card, day, minutes) {
+    var raw = card.getAttribute('data-open');
+    if (!raw) return false;
+    var slots = raw.split(';');
+    for (var i = 0; i < slots.length; i++) {
+      var p = slots[i].split(',');
+      var d = +p[0], s = +p[1], e = +p[2];
+      if (d === day && minutes >= s && minutes < e) return true;
+      if (d === (day + 6) % 7 && minutes + 1440 >= s && minutes + 1440 < e) return true;
+    }
+    return false;
+  }
   document.querySelectorAll('.tag-filter').forEach(function (widget) {
     var targetId = widget.getAttribute('data-target');
     var list = document.getElementById(targetId);
@@ -656,39 +991,87 @@ const FILTER_SCRIPT = `<script>
     var cards = list.querySelectorAll('.venue-card');
     var allInputs = widget.querySelectorAll('input[type=checkbox]');
     var countEl = widget.querySelector('.filter-result-count');
+    var openBox = widget.querySelector('input[data-facet=open]');
+    var timeWrap = widget.querySelector('.open-now-time');
+    var daySel = widget.querySelector('.open-day');
+    var hourSel = widget.querySelector('.open-hour');
+    function setToNow() {
+      var now = new Date();
+      if (daySel) daySel.value = String(now.getDay());
+      if (hourSel) hourSel.value = String(now.getHours() * 60);
+    }
+    setToNow();
     function selectedByFacet(facet) {
       return Array.prototype.filter.call(allInputs, function (c) {
         return c.checked && c.getAttribute('data-facet') === facet;
       }).map(function (c) { return c.value; });
     }
+    function anyOf(card, attr, selected) {
+      if (selected.length === 0) return true;
+      var vals = (card.getAttribute(attr) || '').split(' ');
+      for (var i = 0; i < selected.length; i++) if (vals.indexOf(selected[i]) !== -1) return true;
+      return false;
+    }
     function apply() {
       var selArea = selectedByFacet('area');
       var selCategory = selectedByFacet('category');
       var selTags = selectedByFacet('tags');
+      var selBudget = selectedByFacet('budget');
+      var selPay = selectedByFacet('pay');
+      var selSmoke = selectedByFacet('smoke');
+      var selCharge = selectedByFacet('charge');
+      var openOn = openBox && openBox.checked;
+      if (timeWrap) timeWrap.hidden = !openOn;
+      var day = daySel ? +daySel.value : 0;
+      var minutes = hourSel ? +hourSel.value : 0;
+      if (openOn && !daySel) { var n = new Date(); day = n.getDay(); minutes = n.getHours() * 60 + n.getMinutes(); }
       var visible = 0;
       cards.forEach(function (card) {
         var area = card.getAttribute('data-area') || '';
         var category = card.getAttribute('data-category') || '';
         var tags = (card.getAttribute('data-tags') || '').split('|');
-        var areaMatch = selArea.length === 0 || selArea.indexOf(area) !== -1;
-        var categoryMatch = selCategory.length === 0 || selCategory.indexOf(category) !== -1;
-        var tagsMatch = selTags.every(function (t) { return tags.indexOf(t) !== -1; });
-        var match = areaMatch && categoryMatch && tagsMatch;
+        var match =
+          (selArea.length === 0 || selArea.indexOf(area) !== -1) &&
+          (selCategory.length === 0 || selCategory.indexOf(category) !== -1) &&
+          selTags.every(function (t) { return tags.indexOf(t) !== -1; }) &&
+          anyOf(card, 'data-budget', selBudget) &&
+          anyOf(card, 'data-pay', selPay) &&
+          anyOf(card, 'data-smoke', selSmoke) &&
+          anyOf(card, 'data-charge', selCharge) &&
+          (!openOn || isOpenAt(card, day, minutes));
         card.style.display = match ? '' : 'none';
         if (match) visible++;
       });
       var anyChecked = Array.prototype.some.call(allInputs, function (c) { return c.checked; });
-      if (countEl) countEl.textContent = anyChecked ? visible + '件表示中(全' + cards.length + '件中)' : '';
+      if (countEl) countEl.textContent = anyChecked ? visible + '件該当(全' + cards.length + '件中)' : '';
     }
     allInputs.forEach(function (c) { c.addEventListener('change', apply); });
+    if (daySel) daySel.addEventListener('change', apply);
+    if (hourSel) hourSel.addEventListener('change', apply);
+    var nowBtn = widget.querySelector('.open-now-reset');
+    if (nowBtn) nowBtn.addEventListener('click', function (e) { e.preventDefault(); setToNow(); apply(); });
     var resetBtn = widget.querySelector('.tag-filter-reset');
     if (resetBtn) {
       resetBtn.addEventListener('click', function (e) {
         e.preventDefault();
         allInputs.forEach(function (c) { c.checked = false; });
+        setToNow();
         apply();
       });
     }
+    // URLクエリによる初期条件(トップページの「いま営業中」「予算で探す」などからの導線)
+    var params = new URLSearchParams(window.location.search);
+    var applied = false;
+    ['open', 'area', 'category', 'budget', 'pay', 'smoke', 'charge', 'tags'].forEach(function (facet) {
+      var raw = params.get(facet);
+      if (!raw) return;
+      raw.split(',').forEach(function (val) {
+        Array.prototype.forEach.call(allInputs, function (c) {
+          if (c.getAttribute('data-facet') === facet && c.value === val) { c.checked = true; applied = true; }
+        });
+      });
+    });
+    if (applied) apply();
   });
 })();
 </script>`;
@@ -760,7 +1143,7 @@ function venueCardHtml(v, categories, areas) {
         .map((t) => `<span class="tag tag-small">${escapeHtml(t)}</span>`)
         .join(" ")}${tags.length > 3 ? `<span class="tag tag-small tag-more">+${tags.length - 3}</span>` : ""}</span>`
     : "";
-  return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}" style="--cat-color:${color}">
+  return `<li class="venue-card" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}" data-tags="${tagsAttr}"${venueFacetAttrs(v)} style="--cat-color:${color}">
   <a href="${url(`/venues/${v.id}/`)}">
     <span class="venue-card-head">
       ${venueIconSlotHtml(v, "card")}
@@ -790,11 +1173,44 @@ function renderTop(venues, areas, categories) {
     .join("\n");
   const newest = venues.slice(0, 12).map((v) => venueCardHtml(v, categories, areas)).join("\n");
 
+  // 「今すぐ探す」のショートカット。リンク先の /search/ はURLクエリを読んで初期条件を適用する。
+  const countBy = (fn) => venues.filter(fn).length;
+  const quickPick = (href, label, count, primary) =>
+    `<a class="quick-pick${primary ? " quick-pick-primary" : ""}" href="${href}">${label}${count !== null ? `<span class="count">(${count})</span>` : ""}</a>`;
+  const budgetChips = BUDGET_BUCKETS.map((b) =>
+    quickPick(url(`/search/?budget=${b.value}`), escapeHtml(b.label), countBy((v) => budgetBucketsFor(v).includes(b.value)), false)
+  ).join("\n");
+  const conditionChips = [
+    quickPick(url("/search/?charge=free"), "お通し・チャージなし", countBy((v) => isChargeFree(v.charge)), false),
+    quickPick(url("/search/?pay=card"), "カード可", countBy((v) => paymentTokens(v.payment).includes("card")), false),
+    quickPick(url("/search/?smoke=no"), "禁煙", countBy((v) => smokingToken(v.smoking) === "no"), false),
+    quickPick(url("/search/?smoke=yes"), "喫煙可", countBy((v) => smokingToken(v.smoking) === "yes"), false),
+    quickPick(url(`/search/?tags=${encodeURIComponent("個室あり")}`), "個室あり", countBy((v) => (v.tags || []).includes("個室あり")), false),
+    quickPick(url(`/search/?tags=${encodeURIComponent("一人客歓迎")}`), "一人客歓迎", countBy((v) => (v.tags || []).includes("一人客歓迎")), false),
+  ].join("\n");
+  const openCount = countBy((v) => parseSchedule(v.hours, v.closedDays).parsed);
+
   const body = `
 <section class="hero">
-  <h1>久留米飲み屋ナビ</h1>
-  <p>福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど、飲み屋を幅広くまとめた情報サイトです。現在 <strong>${venues.length}件</strong> の店舗情報を掲載しています。</p>
-  <a class="cta-button" href="${url("/search/")}">エリア・業態・タグで絞り込んで探す →</a>
+  <h1>久留米の飲み屋を「条件」で探す</h1>
+  <p>福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー <strong>${venues.length}件</strong> を掲載。<strong>いま営業中か・予算・カードが使えるか・禁煙か・お通しの有無</strong>まで組み合わせて絞り込めます。</p>
+  <a class="cta-button" href="${url("/search/?open=now")}">🕒 いま営業中の店を探す →</a>
+  <p class="small">営業時間を確認できた${openCount}件が対象です(ご利用の端末の時刻で判定します)。</p>
+</section>
+
+<section class="quick-section">
+  <h2>予算から探す</h2>
+  <div class="quick-picks">
+${budgetChips}
+  </div>
+</section>
+
+<section class="quick-section">
+  <h2>こだわり条件から探す</h2>
+  <div class="quick-picks">
+${conditionChips}
+  </div>
+  <p><a class="cta-button cta-button-sub" href="${url("/search/")}">エリア・業態・予算・条件を組み合わせて探す →</a></p>
 </section>
 
 <section>
@@ -828,7 +1244,7 @@ ${newest}
   return layout({
     title: null,
     description:
-      "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど飲み屋を網羅する情報サイト。",
+      "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)の飲み屋を、いま営業中か・予算・カード可否・禁煙・お通しの有無まで組み合わせて探せる情報サイト。バー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーを掲載。",
     pathname: "/",
     bodyHtml: body,
   });
@@ -972,20 +1388,56 @@ function renderSearchPage(venues, areas, categories) {
   const listId = "venue-list-search";
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; 絞り込み検索</nav>
-<h1>エリア・業態・タグで探す</h1>
-<p>エリア・業態・タグを組み合わせて、条件に合うお店を絞り込めます(複数選択可)。</p>
+<h1>条件を組み合わせて久留米の飲み屋を探す</h1>
+<p>いま営業中か・エリア・業態・予算・支払い方法・喫煙可否・お通しの有無・タグを、すべて組み合わせて絞り込めます(複数選択可)。</p>
 ${filterWidgetHtml(venues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list}
 </ul>
 `;
   return layout({
-    title: "エリア・業態・タグで探す",
-    description: "久留米飲み屋ナビの全店舗を、エリア・業態・タグを組み合わせて絞り込める検索ページ。",
+    title: "条件を組み合わせて探す(いま営業中・予算・カード可・禁煙)",
+    description: "久留米・西鉄久留米駅周辺の飲み屋を、いま営業中・予算・支払い方法・喫煙可否・エリア・業態・タグを組み合わせて絞り込める検索ページ。",
     pathname: "/search/",
     bodyHtml: body,
     extraScript: FILTER_SCRIPT,
   });
+}
+
+const SCHEMA_DAYS = [
+  "https://schema.org/Sunday",
+  "https://schema.org/Monday",
+  "https://schema.org/Tuesday",
+  "https://schema.org/Wednesday",
+  "https://schema.org/Thursday",
+  "https://schema.org/Friday",
+  "https://schema.org/Saturday",
+];
+
+function minutesToHHMM(min) {
+  const m = ((min % 1440) + 1440) % 1440;
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+}
+
+// パースできた営業時間を schema.org の OpeningHoursSpecification に変換する。
+// 終了時刻が不明な枠(「〜LAST」等)は断定できないため出力しない。
+function openingHoursSpec(v) {
+  const sched = parseSchedule(v.hours, v.closedDays);
+  if (!sched.parsed) return null;
+  const groups = new Map();
+  for (const s of sched.slots) {
+    if (s.fuzzyEnd) continue;
+    const key = `${s.start}-${s.end}`;
+    if (!groups.has(key)) groups.set(key, { start: s.start, end: s.end, days: new Set() });
+    groups.get(key).days.add(s.day);
+  }
+  if (groups.size === 0) return null;
+  return [...groups.values()].map((g) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: [...g.days].sort().map((d) => SCHEMA_DAYS[d]),
+    opens: minutesToHHMM(g.start),
+    closes: minutesToHHMM(g.end),
+  }));
 }
 
 function buildJsonLd(v, area, category) {
@@ -1004,8 +1456,52 @@ function buildJsonLd(v, area, category) {
   };
   if (v.phone) data.telephone = v.phone;
   if (v.priceRange) data.priceRange = v.priceRange;
+  else {
+    // 構造化データ用に、予算(夜)の文字列から数値の範囲だけを取り出して整形する
+    const b = parseBudget(v.budgetDinner);
+    if (b) data.priceRange = b.min === 0 ? `〜${b.max}円` : b.min === b.max ? `${b.min}円` : `${b.min}〜${b.max}円`;
+  }
+  const spec = openingHoursSpec(v);
+  if (spec) data.openingHoursSpecification = spec;
   return data;
 }
+
+// 店舗ページの「チャージ・お通し」ハイライト。
+// 飲み屋で最も知りたい情報のひとつであり、かつGoogleマップでは分からない差別化要素のため、
+// 店舗情報テーブルとは別に目立つブロックとして出す。「お通しなし」の明記もそれ自体が価値のある情報。
+function chargeCalloutHtml(v) {
+  if (!v.charge) return "";
+  const free = isChargeFree(v.charge);
+  return `<div class="charge-callout${free ? " charge-callout-free" : ""}">
+    <p class="charge-callout-head"><span class="charge-callout-icon">${free ? "🎉" : "💴"}</span>チャージ・お通し${free ? "<span class=\"charge-badge\">なし</span>" : ""}</p>
+    <p class="charge-callout-value">${escapeHtml(v.charge)}</p>
+    <p class="small">料金は変更されることがあります。ご来店前に店舗の最新情報をご確認ください。</p>
+  </div>`;
+}
+
+// 店舗ページ上部に出す営業状況バッジ(端末の現在時刻で判定するためクライアントサイドで描画)。
+const OPEN_NOW_BADGE_SCRIPT = `<script>
+(function () {
+  var el = document.getElementById('open-now-badge');
+  if (!el) return;
+  var raw = el.getAttribute('data-open');
+  if (!raw) return;
+  var now = new Date();
+  var day = now.getDay();
+  var minutes = now.getHours() * 60 + now.getMinutes();
+  var open = false;
+  raw.split(';').forEach(function (slot) {
+    var p = slot.split(',');
+    var d = +p[0], s = +p[1], e = +p[2];
+    if (d === day && minutes >= s && minutes < e) open = true;
+    if (d === (day + 6) % 7 && minutes + 1440 >= s && minutes + 1440 < e) open = true;
+  });
+  var fuzzy = el.getAttribute('data-open-fuzzy') === '1';
+  el.textContent = open ? (fuzzy ? '営業中(終了時刻は要確認)' : '営業中') : '営業時間外';
+  el.className = 'open-badge ' + (open ? 'open-badge-on' : 'open-badge-off');
+  el.hidden = false;
+})();
+</script>`;
 
 function renderVenuePage(v, area, category, allVenues, areas, categories) {
   const sourcesHtml = v.sources
@@ -1022,6 +1518,11 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
     .join("\n");
 
   const isNightBusiness = v.category === "snack" || v.category === "kyabakura";
+  const sched = parseSchedule(v.hours, v.closedDays);
+  const isUnverified = UNVERIFIED_VENUE_IDS.has(v.id);
+  const unverifiedNotice = isUnverified
+    ? `<p class="notice notice-unverified">⚠️ この店舗の営業状況を確認できていません。移転・閉店している可能性もあります。ご来店前に、最新の営業情報を出典元・店舗の公式情報で必ずご確認ください。</p>`
+    : "";
 
   const photoSource = pickPhotoSource(v);
   const igEmbed = instagramEmbedHtml(v.id);
@@ -1057,10 +1558,14 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
       <span class="venue-hero-cat">${escapeHtml(categoryLabel(v, category.name))}<span class="venue-hero-sep">・</span>${escapeHtml(area.name)}</span>
       <h1>${escapeHtml(v.name)}</h1>
       ${v.walk ? `<span class="venue-hero-walk">🚶 ${escapeHtml(v.walk)}</span>` : ""}
+      ${sched.parsed ? `<span id="open-now-badge" class="open-badge" data-open="${sched.slots.map((s) => `${s.day},${s.start},${s.end}`).join(";")}"${sched.fuzzy ? ' data-open-fuzzy="1"' : ""} hidden></span>` : ""}
     </div>
   </header>
   ${venueLogoCreditHtml(v)}
+  ${unverifiedNotice}
   ${tagsHtml ? `<p class="tags">${tagsHtml}</p>` : ""}
+
+  ${chargeCalloutHtml(v)}
 
   ${photoSectionHtml}
 
@@ -1072,8 +1577,16 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
       <tr><th>住所</th><td>${escapeHtml(v.address || "情報準備中")}</td></tr>
       <tr><th>最寄駅からの目安</th><td>${escapeHtml(v.walk || "情報準備中")}</td></tr>
       <tr><th>営業時間</th><td>${escapeHtml(v.hours || "情報準備中(出典元でご確認ください)")}</td></tr>
+      ${v.closedDays ? `<tr><th>定休日</th><td>${escapeHtml(v.closedDays)}</td></tr>` : ""}
       <tr><th>電話番号</th><td>${escapeHtml(v.phone || "情報準備中")}</td></tr>
-      <tr><th>価格帯</th><td>${escapeHtml(v.priceRange || "情報準備中")}</td></tr>
+      ${v.budgetDinner ? `<tr><th>予算(夜)</th><td>${escapeHtml(v.budgetDinner)}</td></tr>` : ""}
+      ${v.budgetLunch ? `<tr><th>予算(昼)</th><td>${escapeHtml(v.budgetLunch)}</td></tr>` : ""}
+      ${!v.budgetDinner && !v.budgetLunch ? `<tr><th>価格帯</th><td>${escapeHtml(v.priceRange || "情報準備中")}</td></tr>` : v.priceRange ? `<tr><th>価格帯</th><td>${escapeHtml(v.priceRange)}</td></tr>` : ""}
+      ${v.charge ? `<tr><th>チャージ・お通し</th><td>${escapeHtml(v.charge)}</td></tr>` : ""}
+      ${v.seats ? `<tr><th>席数</th><td>${escapeHtml(v.seats)}</td></tr>` : ""}
+      ${v.payment ? `<tr><th>支払い方法</th><td>${escapeHtml(v.payment)}</td></tr>` : ""}
+      ${v.smoking ? `<tr><th>喫煙</th><td>${escapeHtml(v.smoking)}</td></tr>` : ""}
+      ${v.reservation ? `<tr><th>予約</th><td>${escapeHtml(v.reservation)}</td></tr>` : ""}
     </table>
     ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
   </section>
@@ -1111,7 +1624,7 @@ ${relatedInArea}
     pathname: `/venues/${v.id}/`,
     bodyHtml: body,
     jsonLd: buildJsonLd(v, area, category),
-    extraScript: igEmbed ? INSTAGRAM_EMBED_SCRIPT : "",
+    extraScript: (igEmbed ? INSTAGRAM_EMBED_SCRIPT : "") + (sched.parsed ? OPEN_NOW_BADGE_SCRIPT : ""),
   });
 }
 
@@ -1161,26 +1674,63 @@ function build() {
   const areas = readJSON("areas.json");
   const allCategories = readJSON("categories.json");
 
-  // 公開対象(PUBLISHED_CATEGORIES)のみに絞り込む。
-  // 非公開の業態(スナック・キャバクラ等)は data/venues.json にはデータとして残るが、
-  // dist/ 配下にページを一切生成しない(リンクを隠すだけでなく、ファイル自体を作らない)。
-  const venues = allVenues.filter((v) => PUBLISHED_CATEGORIES.includes(v.category));
+  // 公開対象に絞り込む。非公開は2種類あり、いずれも data/venues.json にはデータとして残すが
+  // dist/ 配下にページを一切生成しない(リンクを隠すだけでなく、ファイル自体を作らない):
+  //   (a) 非公開カテゴリ(スナック・キャバクラ) … PUBLISHED_CATEGORIES 外
+  //   (b) 店舗単位のフェーズ2(接待性のある店) … PHASE2_VENUE_IDS
+  const venues = allVenues.filter(
+    (v) => PUBLISHED_CATEGORIES.includes(v.category) && !PHASE2_VENUE_IDS.has(v.id)
+  );
   const categories = allCategories.filter((c) => PUBLISHED_CATEGORIES.includes(c.id));
   const hiddenCount = allVenues.length - venues.length;
+
+  // PHASE2_VENUE_IDS のタイポ・ID変更で「非公開にしたつもりが公開されている」事故を防ぐ整合性チェック。
+  const allIds = new Set(allVenues.map((v) => v.id));
+  const missingPhase2 = [...PHASE2_VENUE_IDS].filter((id) => !allIds.has(id));
+  if (missingPhase2.length > 0) {
+    console.warn(`[warn] PHASE2_VENUE_IDS にデータ上存在しないIDがあります: ${missingPhase2.join(", ")}`);
+  }
+  const missingUnverified = [...UNVERIFIED_VENUE_IDS].filter((id) => !allIds.has(id));
+  if (missingUnverified.length > 0) {
+    console.warn(`[warn] UNVERIFIED_VENUE_IDS にデータ上存在しないIDがあります: ${missingUnverified.join(", ")}`);
+  }
+
+  const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));
   console.log(
-    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件、カテゴリ: ${allCategories
+    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件 = 非公開カテゴリ${allCategories
       .filter((c) => !PUBLISHED_CATEGORIES.includes(c.id))
       .map((c) => c.name)
-      .join("・")})`
+      .join("・")} + 店舗単位フェーズ2${phase2Published.length}件)`
   );
 
-  // ロゴ登録の整合性チェック(店舗の削除・ID変更で参照先が消えていないかを検出する)
+  // ロゴ登録の整合性チェック。
+  // - broken: データ上に存在しないID(削除・ID変更で参照先が消えた)→ 要修正なので warn。
+  // - hidden: データは在るが非公開(フェーズ2等)でページが生成されない→ 想定内なので info。
   const publishedIds = new Set(venues.map((v) => v.id));
-  const orphanLogoIds = Object.keys(VENUE_LOGOS).filter((id) => !publishedIds.has(id));
-  if (orphanLogoIds.length > 0) {
-    console.warn(`[warn] VENUE_LOGOS に公開店舗と一致しないIDがあります: ${orphanLogoIds.join(", ")}`);
+  const brokenLogoIds = Object.keys(VENUE_LOGOS).filter((id) => !allIds.has(id));
+  const hiddenLogoIds = Object.keys(VENUE_LOGOS).filter((id) => allIds.has(id) && !publishedIds.has(id));
+  if (brokenLogoIds.length > 0) {
+    console.warn(`[warn] VENUE_LOGOS にデータ上存在しないIDがあります: ${brokenLogoIds.join(", ")}`);
   }
-  console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length}件`);
+  if (hiddenLogoIds.length > 0) {
+    console.log(`[info] VENUE_LOGOS のうち非公開店舗の${hiddenLogoIds.length}件はロゴを表示しません: ${hiddenLogoIds.join(", ")}`);
+  }
+  const orphanLogoIds = brokenLogoIds;
+  console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length - hiddenLogoIds.length}件`);
+
+  // 絞り込み用の機械可読データの生成状況(パースできなかった文字列は目視で確認できるよう出力する)
+  const withHours = venues.filter((v) => v.hours);
+  const unparsedHours = withHours.filter((v) => !parseSchedule(v.hours, v.closedDays).parsed);
+  console.log(
+    `絞り込みデータ: 営業時間 ${withHours.length - unparsedHours.length}/${withHours.length}件をパース / ` +
+      `予算 ${venues.filter((v) => budgetBucketsFor(v).length).length}件 / ` +
+      `支払い ${venues.filter((v) => paymentTokens(v.payment).length).length}件 / ` +
+      `喫煙 ${venues.filter((v) => smokingToken(v.smoking)).length}件 / ` +
+      `お通し・チャージなし ${venues.filter((v) => isChargeFree(v.charge)).length}件`
+  );
+  if (unparsedHours.length > 0) {
+    console.log(`[info] 営業時間をパースできず「営業中」絞り込みの対象外になった店舗: ${unparsedHours.map((v) => `${v.id}(${v.hours})`).join(", ")}`);
+  }
 
   // クリーンビルド
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
