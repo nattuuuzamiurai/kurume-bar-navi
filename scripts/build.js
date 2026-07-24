@@ -442,7 +442,6 @@ function pickPhotoSource(v) {
 // ============================================================
 const INSTAGRAM_POST_EMBEDS = {
   "poker-ken": "https://www.instagram.com/p/DHUYDOMTOvi/",
-  "poker-aa-aces": "https://www.instagram.com/p/CbkPsDWpeei/",
   "poker-ace-and-king": "https://www.instagram.com/p/DMzHAQgzjCE/",
   "shisha-aima": "https://www.instagram.com/p/DIYIdGqBCkm/",
   // 2026-07-19 追加。ロヂウラ酒八利の公式アカウント @rodiurasyuhari 自身が投稿した
@@ -730,6 +729,141 @@ function venueLogoCreditHtml(v) {
   if (!logo) return "";
   const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
   return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(logo.siteUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(logo.siteLabel)}</a>のものを直接参照して表示しています(当サイトには保存していません)。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
+}
+
+// ============================================================
+// 公式SNS・ホームページのリンク表示(2026-07-25、社長要望
+// 「店舗のSNSやホームページがあるならそれも店舗ページに載せましょう」)
+//
+// 【方針・制約】「その店の公式発信」だけを載せる。第三者のグルメ/情報サイト・ポータル・
+// まとめサイト(食べログ・ホットペッパー・Retty・ぐるなび・Yahoo!・con-ca・town-night・
+// pokepara・cafecon・nights.fun・arne・kurumefan 等)は、このセクションには一切出さない。
+// 従来どおり店舗ページ下部の「情報源」セクション(出典表示)にのみ出す。
+//
+// 出所は2系統。いずれも「店自身の公式チャネル」であることを担保できるものに限定する:
+//   (A) sources 内の公式SNS: instagram.com / x.com・twitter.com / facebook.com・fb.com / note.com。
+//       これらのアカウントURLは既存運用で「店舗公式アカウント本人」であることを目視照合して
+//       から sources に登録している(README「Instagram公式埋め込み・公式プロフィールリンク」
+//       参照)。プラットフォームのホスト名が固定なので、第三者のグルメ/情報サイトが混入しない。
+//   (B) 公式サイト: VENUE_LOGOS[id].siteUrl / OFFICIAL_PHOTOS[id].sourceUrl。これらは
+//       ロゴ・公式写真の採用時に「禁止対象の第三者グルメサイト系列(owst.jp / r-corona.jp 等)
+//       でないか」を確認済みのキュレーション済みURL(README「ロゴ・写真の採否基準」参照)。
+//
+// 【なぜ sources から公式サイトを機械抽出しないか】公開137店の sources を全走査したところ、
+// 上記(A)のSNS以外で「店の独自ドメイン公式サイト」に当たるホストは1件も無く(独自ドメインは
+// すべて VENUE_LOGOS/OFFICIAL_PHOTOS 側に登録済み)、残りはすべて既知の第三者ポータルだった。
+// ここで blocklist 方式(既知の第三者「以外」を公式とみなす)を採ると、将来 sources に未知の
+// 第三者ポータルが増えたとき「公式」欄へ誤って混入するリスクがある。そのため公式サイトは上記
+// (B)の allowlist のみを採用する。新たに公式サイトを載せたい場合は VENUE_LOGOS もしくは
+// OFFICIAL_PHOTOS に登録する(=採否基準のチェックを通す)。
+// ============================================================
+
+// 公式SNS/サイトのアイコン(自作インラインSVG。外部リソース・外部フォントは一切使わない)。
+const OFFICIAL_LINK_ICONS = {
+  // 地球儀(公式サイト)。currentColor で着色。
+  website: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.7 3 2.7 15 0 18M12 3c-2.7 3-2.7 15 0 18"/></svg>`,
+  // Instagram(角丸四角+レンズ+右上ドット)。
+  instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.15" fill="currentColor" stroke="none"/></svg>`,
+  // X(旧Twitter)公式マーク(塗り)。
+  x: `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.53 3h3.02l-6.6 7.54L21.75 21h-6.08l-4.77-6.23L5.44 21H2.42l7.06-8.07L2.25 3h6.23l4.31 5.7L17.53 3zm-1.06 16.17h1.67L7.6 4.74H5.81l10.66 14.43z"/></svg>`,
+  // Facebook 公式マーク(塗り)。
+  facebook: `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.49-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.9h-2.34V22c4.78-.76 8.43-4.92 8.43-9.94z"/></svg>`,
+  // note(公式note)。記事(横罫)アイコンで表現。ラベル「公式note」で明示。
+  note: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>`,
+};
+
+// 公式SNSとして採用する固定ホスト → 種別。ホスト名が固定なので第三者サイトは入らない。
+const OFFICIAL_SNS_HOSTS = {
+  "instagram.com": "instagram",
+  "x.com": "x",
+  "twitter.com": "x",
+  "facebook.com": "facebook",
+  "fb.com": "facebook",
+  "note.com": "note",
+};
+
+const OFFICIAL_LINK_LABELS = {
+  website: "公式サイト",
+  instagram: "Instagram",
+  x: "X（旧Twitter）",
+  facebook: "Facebook",
+  note: "公式note",
+};
+
+// 表示順: 公式サイト → Instagram → X → Facebook → note
+const OFFICIAL_LINK_ORDER = { website: 0, instagram: 1, x: 2, facebook: 3, note: 4 };
+
+function linkHost(u) {
+  try {
+    return new URL(u).hostname.toLowerCase().replace(/^www\./, "").replace(/^m\./, "");
+  } catch (e) {
+    return "";
+  }
+}
+
+// SNSアカウントのハンドル(@xxx)をURLから推定する。
+// 投稿/リール等(プロフィールでない)の場合や取得できない場合は空文字を返す。
+function snsHandle(u) {
+  try {
+    let seg = (new URL(u).pathname.split("/").filter(Boolean)[0] || "").replace(/^@/, "");
+    if (!seg || /^(p|reel|reels|explore|stories|share|hashtag|tags)$/i.test(seg)) return "";
+    return "@" + seg;
+  } catch (e) {
+    return "";
+  }
+}
+
+// 店舗の「公式SNS・ホームページ」リンクを表示順で返す。該当が無ければ空配列。
+// 同一の公式サイトホスト・同一SNSプラットフォームの重複は1つにまとめる。
+function officialLinksFor(v) {
+  const links = [];
+  const seenHosts = new Set(); // 公式サイトのホスト重複排除(ロゴと公式写真で同一サイトを指すケース)
+  const seenTypes = new Set(); // SNSはプラットフォームごとに1つ
+
+  // (B) 公式サイト(allowlist): ロゴ・公式写真のキュレーション済みURL
+  const siteUrls = [];
+  if (VENUE_LOGOS[v.id] && VENUE_LOGOS[v.id].siteUrl) siteUrls.push(VENUE_LOGOS[v.id].siteUrl);
+  if (OFFICIAL_PHOTOS[v.id] && OFFICIAL_PHOTOS[v.id].sourceUrl) siteUrls.push(OFFICIAL_PHOTOS[v.id].sourceUrl);
+  for (const su of siteUrls) {
+    const h = linkHost(su);
+    if (!h || seenHosts.has(h)) continue;
+    seenHosts.add(h);
+    links.push({ type: "website", url: su, label: OFFICIAL_LINK_LABELS.website, sub: h });
+  }
+
+  // (A) 公式SNS(sources のうち固定ホストのプラットフォームのみ)
+  for (const s of v.sources || []) {
+    const type = OFFICIAL_SNS_HOSTS[linkHost(s.url)];
+    if (!type || seenTypes.has(type)) continue;
+    seenTypes.add(type);
+    links.push({ type, url: s.url, label: OFFICIAL_LINK_LABELS[type], sub: snsHandle(s.url) });
+  }
+
+  links.sort((a, b) => OFFICIAL_LINK_ORDER[a.type] - OFFICIAL_LINK_ORDER[b.type]);
+  return links;
+}
+
+function officialLinksSectionHtml(v) {
+  const links = officialLinksFor(v);
+  if (links.length === 0) return "";
+  const items = links
+    .map(
+      (l) =>
+        `      <a class="official-link official-link-${l.type}" href="${escapeHtml(l.url)}" rel="nofollow noopener" target="_blank">
+        <span class="official-link-ic">${OFFICIAL_LINK_ICONS[l.type]}</span>
+        <span class="official-link-body"><span class="official-link-label">${escapeHtml(l.label)}</span>${l.sub ? `<span class="official-link-sub">${escapeHtml(l.sub)}</span>` : ""}</span>
+        <span class="official-link-arrow" aria-hidden="true">↗</span>
+      </a>`
+    )
+    .join("\n");
+  return `
+  <section class="info-section">
+    <h2 class="section-heading"><span class="section-heading-icon">🌐</span>公式SNS・ホームページ</h2>
+    <p class="small">この店舗が公式に発信しているアカウント・サイトです(当サイトとは別の運営です)。</p>
+    <div class="official-links">
+${items}
+    </div>
+  </section>`;
 }
 
 // ============================================================
@@ -1775,6 +1909,8 @@ ${facts
 
   ${dtagsHtml ? `<section class="info-section"><h2 class="section-heading"><span class="section-heading-icon">🏷</span>特徴・タグ</h2><div class="dtags">${dtagsHtml}</div></section>` : ""}
 
+  ${officialLinksSectionHtml(v)}
+
   ${photoSectionHtml}
 
   ${mapSectionHtml(v)}
@@ -1903,6 +2039,22 @@ function build() {
   }
   const orphanLogoIds = brokenLogoIds;
   console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length - hiddenLogoIds.length}件`);
+
+  // Instagram投稿埋め込みの整合性チェック(VENUE_LOGOS と同じ考え方)。
+  // - broken: データ上に存在しないID(店舗削除・ID変更で参照先が消えた孤立ID)→ 削除漏れなので warn。
+  // - hidden: データは在るが非公開でページが生成されない→ 想定内なので info。
+  const brokenEmbedIds = Object.keys(INSTAGRAM_POST_EMBEDS).filter((id) => !allIds.has(id));
+  const hiddenEmbedIds = Object.keys(INSTAGRAM_POST_EMBEDS).filter((id) => allIds.has(id) && !publishedIds.has(id));
+  if (brokenEmbedIds.length > 0) {
+    console.warn(`[warn] INSTAGRAM_POST_EMBEDS にデータ上存在しないIDがあります: ${brokenEmbedIds.join(", ")}`);
+  }
+  if (hiddenEmbedIds.length > 0) {
+    console.log(`[info] INSTAGRAM_POST_EMBEDS のうち非公開店舗の${hiddenEmbedIds.length}件は埋め込みを表示しません: ${hiddenEmbedIds.join(", ")}`);
+  }
+
+  // 公式SNS・ホームページのリンクを表示できた店舗数(公開対象のみ)。
+  const officialLinkCount = venues.filter((v) => officialLinksFor(v).length > 0).length;
+  console.log(`公式SNS・ホームページ表示: ${officialLinkCount}件`);
 
   // 絞り込み用の機械可読データの生成状況(パースできなかった文字列は目視で確認できるよう出力する)
   const withHours = venues.filter((v) => v.hours);

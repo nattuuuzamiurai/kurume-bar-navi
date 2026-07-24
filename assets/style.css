@@ -591,6 +591,46 @@ details.facet-group summary {
 .instagram-embed-wrap { display: flex; justify-content: center; }
 .instagram-embed-wrap .instagram-media { margin: 0 auto !important; }
 
+/* 公式SNS・ホームページ(店の公式チャネルへのアイコン付きボタン) */
+.official-links { display: flex; flex-wrap: wrap; gap: 9px; }
+.official-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 44%;
+  min-width: 150px;
+  max-width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 13px;
+  color: var(--ink);
+  font-weight: 700;
+}
+.official-link:hover { border-color: var(--lantern); text-decoration: none; filter: brightness(1.06); }
+.official-link-ic { flex: none; display: inline-flex; }
+.official-link-ic svg { width: 22px; height: 22px; display: block; }
+.official-link-body { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.official-link-label { font-size: .9rem; }
+.official-link-sub {
+  font-size: .72rem;
+  color: var(--muted);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.official-link-arrow { margin-left: auto; color: var(--muted); font-size: .8rem; flex: none; }
+/* プラットフォーム別の差し色(アイコンのみ着色。ボタン地色は共通で落ち着かせる) */
+.official-link-website .official-link-ic { color: var(--lantern); }
+.official-link-instagram .official-link-ic { color: #e1568f; }
+.official-link-x .official-link-ic { color: var(--ink); }
+.official-link-facebook .official-link-ic { color: #6f9bff; }
+.official-link-note .official-link-ic { color: var(--open); }
+@media (min-width: 600px) {
+  .official-link { flex: 0 1 auto; }
+}
+
 .map-section { margin-bottom: 20px; }
 .map-embed-wrap {
   position: relative;
