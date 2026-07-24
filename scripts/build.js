@@ -60,7 +60,8 @@ const UNVERIFIED_VENUE_IDS = new Set([
   "izakaya-omoni",
   // 出典がInstagramのみで、Instagram側が投稿日取得をブロックしており最終更新を確認できない
   // (閉店の証拠もないため注記付きで掲載継続)
-  "poker-ace-and-king",
+  // ※poker-ace-and-king(A&K)は2026-07-24 社長確認により営業中と確定したため解除。
+  //   ただし詳細な営業データ(営業時間等)は未取得のままなのでnull据え置き。
   "shisha-0942",
 ]);
 function todayJST() {
