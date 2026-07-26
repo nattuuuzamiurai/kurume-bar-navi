@@ -22,6 +22,13 @@ const SITE_NAME = "久留米飲み屋ナビ";
 const SITE_URL = "https://nattuuuzamiurai.github.io/kurume-bar-navi";
 const BASE_PATH = "/kurume-bar-navi";
 
+// Google Maps Embed API キー(place モードでGoogleのクチコミ★カードを地図枠内に出すために使う)。
+// クライアント(iframe src)に載る性質のキーで、GitHub側でHTTPリファラー制限
+// (nattuuuzamiurai.github.io/*)+API制限(Maps Embed APIのみ)がかかっており公開されても安全。
+// ソースにはハードコードせず、必ず環境変数から読む(GitHub Secrets: GOOGLE_MAPS_EMBED_KEY)。
+// 未設定(ローカル/未登録)の場合は従来のキーレス output=embed 形式にフォールバックする。
+const GOOGLE_MAPS_EMBED_KEY = process.env.GOOGLE_MAPS_EMBED_KEY || "";
+
 // 連絡先(掲載内容の追加・修正・削除依頼の受付先)。
 // TODO: 実運用開始前に、実際に受信・監視できる会社のメールアドレスへ差し替えること。
 // 現時点ではプレースホルダーのため、本番公開前に必ず確認する。
@@ -966,13 +973,28 @@ function mapSearchLink(v) {
 }
 
 // キーレス地図埋め込みURL(APIキー不要、消費者向け output=embed 形式)。
-// クエリは「店名 住所」にして、住所だけの場合より特定店舗へ解決しやすくする
-// (店舗ピンに解決すると、埋め込み枠内にGoogleが★評価・クチコミ件数・写真カードを出しやすい)。
-// ベストエフォート(必ず出るとは限らない)。住所が番地まで明確な店のみ呼ばれる(mapSectionHtml側で制御)。
+// クエリは「店名 住所」にして、住所だけの場合より特定店舗へ解決しやすくする。
+// ベストエフォート(必ず出るとは限らない)。GOOGLE_MAPS_EMBED_KEY が未設定のときの
+// フォールバックとして使う(ローカルビルドが退行なく通るように)。
 function mapOutputEmbedUrl(name, address) {
   const a = stripAddressNotes(address);
   const q = `${name} ${a}`.trim();
   return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+}
+
+// 地図埋め込みURLを返す。
+// - GOOGLE_MAPS_EMBED_KEY がある(本番)場合: Maps Embed API の place モードを使う。
+//   q=「店名 住所」で店舗ピンに解決し、地図枠内にGoogleのクチコミ★カード(店名・★評価・件数)を出す。
+//   place_id は不要(q での解決を確認済み)。language/region で日本語・日本地域に寄せる。
+// - キーが無い(ローカル/未設定)場合: 従来のキーレス output=embed 形式にフォールバックする(退行なし)。
+// 住所が番地まで明確な店のみ呼ばれる(mapSectionHtml側で isMappableAddress で制御)。
+function mapEmbedUrl(name, address) {
+  const a = stripAddressNotes(address);
+  const q = `${name} ${a}`.trim();
+  if (GOOGLE_MAPS_EMBED_KEY) {
+    return `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(GOOGLE_MAPS_EMBED_KEY)}&q=${encodeURIComponent(q)}&language=ja&region=JP`;
+  }
+  return mapOutputEmbedUrl(name, address);
 }
 
 function mapSectionHtml(v) {
@@ -988,7 +1010,7 @@ function mapSectionHtml(v) {
   const showEmbed = isMappableAddress(v.address);
   const embedHtml = showEmbed
     ? `<div class="map-embed-wrap">
-      <iframe src="${escapeHtml(mapOutputEmbedUrl(v.name, v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="${escapeHtml(mapEmbedUrl(v.name, v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>`
     : "";
 
