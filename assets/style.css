@@ -656,6 +656,10 @@ details.facet-group summary {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 10;
+  /* Maps Embed API の place モードは地図下部にクチコミ★カードを重ねる。
+     スマホ幅では 16:10 だと高さが 200px 前後まで縮み、★カードが切れることがあるため、
+     最低高さ 300px を確保する(min-height は aspect-ratio 由来の高さより優先される)。 */
+  min-height: 300px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--line);

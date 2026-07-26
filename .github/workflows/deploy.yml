@@ -37,8 +37,13 @@ jobs:
         env:
           HOTPEPPER_API_KEY: ${{ secrets.HOTPEPPER_API_KEY }}
 
+      # GOOGLE_MAPS_EMBED_KEY(Secret)を渡すと、地図iframeが Maps Embed API の place モードになり
+      # 地図枠内にGoogleのクチコミ★カードが表示される。未設定でもキーレス形式にフォールバックし
+      # ビルドは通る。キーはリファラー制限+API制限済みのため dist に載っても安全。
       - name: Build static site
         run: node scripts/build.js
+        env:
+          GOOGLE_MAPS_EMBED_KEY: ${{ secrets.GOOGLE_MAPS_EMBED_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
