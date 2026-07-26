@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch: {}
+  # 写真(ホットペッパー グルメ)の鮮度維持のため、1日1回 再フェッチ→再ビルド→再デプロイする。
+  # 15:30 UTC = 翌 00:30 JST。
+  schedule:
+    - cron: "30 15 * * *"
 
 permissions:
   contents: read
@@ -25,6 +29,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      # 店舗写真(ホットペッパー グルメ)を取得し data/photos.generated.json を生成する。
+      # HOTPEPPER_API_KEY(Secret)が未設定でも空マップで正常終了し、ビルドは通る。
+      - name: Fetch venue photos (Hot Pepper)
+        run: node scripts/fetch-photos.js
+        env:
+          HOTPEPPER_API_KEY: ${{ secrets.HOTPEPPER_API_KEY }}
 
       - name: Build static site
         run: node scripts/build.js
