@@ -1,3 +1,6 @@
 dist/
 node_modules/
 .DS_Store
+
+# 写真フェッチ結果(CIで毎回生成=常に最新。画像URLのみでファイル本体は保存しない)
+data/photos.generated.json

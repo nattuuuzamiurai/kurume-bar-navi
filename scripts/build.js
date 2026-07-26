@@ -519,6 +519,51 @@ function officialPhotoHtml(venueId) {
 }
 
 // ============================================================
+// ホットペッパー グルメ Webサービスの店舗写真(2026-07-26、社長承認の機能追加)
+//
+// 【方針・制約】
+// - ホットペッパー グルメの無料API(規約順守)から取得した店の代表写真1枚を、店舗ページ上部の
+//   ヒーロー画像として表示する。画像は自サイトに保存せず、提供元(imgfp.hotp.jp)のURLを直接
+//   参照する <img>(ホットリンク)。**画像ファイルのホストは一切なし。**
+// - 対象は data/venues.json の sources にホットペッパー店舗ID(strJxxxxxx)を持つ店のみ。
+//   その店舗IDでの **ID直接引き** で取得(店名検索の曖昧一致による誤掲載はしない)。
+// - 写真には必須クレジット「【画像提供：ホットペッパー グルメ】」と、店舗ページ(urls.pc)への
+//   「もっと見る」リンクを付ける。フッターには「Powered by ホットペッパーグルメ Webサービス」を出す。
+//
+// 【データの出所】scripts/fetch-photos.js が data/photos.generated.json(venue id ->
+// { photo, hpUrl })を生成する。このファイルは .gitignore 対象で、CIで毎回生成=常に最新。
+// ローカル/CIでフェッチ未実行、またはAPIキー未設定なら空マップ扱いでヒーロー写真は出さない
+// (既存の「写真を見る↗」フォールバックはそのまま維持)。
+// ============================================================
+function loadGeneratedPhotos() {
+  const file = path.join(DATA_DIR, "photos.generated.json");
+  if (!fs.existsSync(file)) return {};
+  try {
+    const data = JSON.parse(fs.readFileSync(file, "utf-8"));
+    return data && typeof data === "object" ? data : {};
+  } catch (e) {
+    console.warn(`[warn] photos.generated.json の読み込みに失敗しました: ${e.message}`);
+    return {};
+  }
+}
+
+const VENUE_PHOTOS = loadGeneratedPhotos();
+
+// ヒーロー写真1枚(ホットペッパー グルメ)。写真が無ければ空文字。
+// onerror: 画像が読めなかったら figure ごと非表示にする(空クレジットだけ残るのを防ぐ)。
+function venueHeroPhotoHtml(v) {
+  const p = VENUE_PHOTOS[v.id];
+  if (!p || !p.photo) return "";
+  const moreLink = p.hpUrl
+    ? ` <a class="venue-hero-photo-more" href="${escapeHtml(p.hpUrl)}" rel="nofollow noopener" target="_blank">ホットペッパーで写真をもっと見る ↗</a>`
+    : "";
+  return `<figure class="venue-hero-photo">
+    <img src="${escapeHtml(p.photo)}" alt="${escapeHtml(v.name)}の写真(ホットペッパー グルメ)" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="this.parentNode.style.display='none'">
+    <figcaption class="small venue-hero-photo-credit">【画像提供：ホットペッパー グルメ】${moreLink}</figcaption>
+  </figure>`;
+}
+
+// ============================================================
 // 店舗ロゴのホットリンク表示(2026-07-22)
 //
 // 【方針・制約】公式サイト画像(OFFICIAL_PHOTOS)と同じ線引きを踏襲する。
@@ -920,10 +965,14 @@ function mapSearchLink(v) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
 }
 
-// キーレス地図埋め込みURL(APIキー不要、消費者向け output=embed 形式)。住所テキストから生成。
-function mapOutputEmbedUrl(address) {
+// キーレス地図埋め込みURL(APIキー不要、消費者向け output=embed 形式)。
+// クエリは「店名 住所」にして、住所だけの場合より特定店舗へ解決しやすくする
+// (店舗ピンに解決すると、埋め込み枠内にGoogleが★評価・クチコミ件数・写真カードを出しやすい)。
+// ベストエフォート(必ず出るとは限らない)。住所が番地まで明確な店のみ呼ばれる(mapSectionHtml側で制御)。
+function mapOutputEmbedUrl(name, address) {
   const a = stripAddressNotes(address);
-  return `https://maps.google.com/maps?q=${encodeURIComponent(a)}&output=embed`;
+  const q = `${name} ${a}`.trim();
+  return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
 }
 
 function mapSectionHtml(v) {
@@ -939,7 +988,7 @@ function mapSectionHtml(v) {
   const showEmbed = isMappableAddress(v.address);
   const embedHtml = showEmbed
     ? `<div class="map-embed-wrap">
-      <iframe src="${escapeHtml(mapOutputEmbedUrl(v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="${escapeHtml(mapOutputEmbedUrl(v.name, v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>`
     : "";
 
@@ -1241,7 +1290,7 @@ const FILTER_SCRIPT = `<script>
 })();
 </script>`;
 
-const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)を出典とするもののみを、提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
+const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)、またはホットペッパー グルメ Webサービス(リクルートが提供する公式API)を出典とするもののみを、提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」を表示しています。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
 
 // 下部固定タブバー(モバイルのアプリ風ナビ。PCではCSSで非表示にしヘッダーナビを使う)。
 // マップ相当の独立ページは無い(キーレス地図埋め込みは1店ずつのため全店ピンの集約地図を作れない)
@@ -1302,6 +1351,7 @@ ${bodyHtml}
 </main>
 <footer class="site-footer">
   <p>${escapeHtml(DISCLAIMER)}</p>
+  <p class="powered-by"><a href="https://webservice.recruit.co.jp/" rel="nofollow noopener" target="_blank">Powered by ホットペッパーグルメ Webサービス</a></p>
   <p><a href="${url("/about/")}">このサイトについて・掲載店舗の関係者の方へ</a></p>
   <p>&copy; ${SITE_NAME}</p>
 </footer>
@@ -1902,6 +1952,8 @@ ${facts
   ${venueLogoCreditHtml(v)}
   ${unverifiedNotice}
 
+  ${venueHeroPhotoHtml(v)}
+
   ${chargeCalloutHtml(v)}
 
   <section class="info-section">
@@ -1962,13 +2014,13 @@ function renderAboutPage() {
 <ul>
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
   <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
-  <li>他サイトの文章・写真をそのまま転載することはしていません。写真は、店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信のみ</strong>を出典として掲載しています(第三者のグルメサイト等の写真は使用していません)。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
+  <li>他サイトの文章・写真をそのまま転載(コピー・保存)することはしていません。店舗写真は、(1)店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信</strong>、または(2)<strong>ホットペッパー グルメ Webサービス</strong>(リクルートが提供する公式API)を出典とし、いずれも提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」のクレジットと同サイトへのリンクを付けています。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
   <li>店舗のロゴについても、その店(またはチェーンの運営元)の公式サイトに掲載されているものだけを、公式サイト上の画像を直接参照する形で表示しています(当サイトのサーバーには保存していません)。掲載元へのリンクは各店舗ページに記載しています。ロゴの掲載を希望されない場合は、下記の連絡先までお知らせください。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
 </ul>
 
 <h2>外部サービスの埋め込み・参照について</h2>
-<p>本サイトの各店舗ページでは、Instagram公式の投稿埋め込み、Googleマップの地図埋め込み、各店の公式サイト画像の参照などを行っています。そのため、ページ閲覧時にお使いのブラウザから Instagram(Meta)・Google・各店の公式サイト等の外部サーバーへ通信が発生する場合があります。これら外部サービス側での情報の取り扱いは、各サービスのプライバシーポリシーに従います。</p>
+<p>本サイトの各店舗ページでは、Instagram公式の投稿埋め込み、Googleマップの地図埋め込み、各店の公式サイト画像・ホットペッパー グルメ Webサービスの画像の参照などを行っています。そのため、ページ閲覧時にお使いのブラウザから Instagram(Meta)・Google・リクルート(ホットペッパー グルメ)・各店の公式サイト等の外部サーバーへ通信が発生する場合があります。これら外部サービス側での情報の取り扱いは、各サービスのプライバシーポリシーに従います。</p>
 
 <h2>商標・権利の帰属、および提携関係がないことについて</h2>
 <p>本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは、公開されている情報をもとに店舗を紹介する情報サイトであり、<strong>掲載店舗との間に提携・協賛・推奨・公認等の関係は一切ありません</strong>。ロゴは、その店舗(またはチェーンの運営元)を識別しやすくする目的で、各店の公式サイト上の画像を参照して表示しているものであり、当サイトが各店舗から掲載の許諾や対価を受けていることを示すものではありません。</p>

@@ -588,6 +588,26 @@ details.facet-group summary {
 .official-photo img { border-radius: 12px; border: 1px solid var(--line); width: 100%; }
 .official-photo figcaption { margin-top: 6px; }
 .photo-removal-notice { margin-top: 8px; }
+
+/* ヒーロー写真(ホットペッパー グルメ)。店舗ページ上部に出す代表写真1枚 */
+.venue-hero-photo { margin: 0 0 18px; }
+.venue-hero-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.venue-hero-photo-credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 7px;
+}
+.venue-hero-photo-more { color: var(--lantern); font-weight: 700; white-space: nowrap; }
 .instagram-embed-wrap { display: flex; justify-content: center; }
 .instagram-embed-wrap .instagram-media { margin: 0 auto !important; }
 
@@ -719,6 +739,7 @@ details.facet-group summary {
   margin: 0 auto;
 }
 .site-footer p { margin: 0 0 10px; }
+.site-footer .powered-by a { color: var(--lantern); font-weight: 700; }
 
 /* ============================================================
    レスポンシブ
