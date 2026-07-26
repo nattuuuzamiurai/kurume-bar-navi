@@ -1009,8 +1009,12 @@ function mapSectionHtml(v) {
   // 住所が番地まで明確な店舗すべてに iframe 埋め込みを出す(住所が曖昧な店舗は外部リンクのみ)。
   const showEmbed = isMappableAddress(v.address);
   const embedHtml = showEmbed
+    // referrerpolicy="origin": ブラウザが参照元としてオリジン(https://nattuuuzamiurai.github.io/)のみを送る。
+    // Maps Embed APIキーのHTTPリファラー制限はオリジン(ルート)は許可するが深いパス(/kurume-bar-navi/venues/...)を
+    // 弾く設定になっており、no-referrer-when-downgradeだと本番でフルパスが送られ403(not authorized)で地図が壊れる。
+    // originに固定することで、どのページからでもオリジンのみが送られ制限を確実に通過する(実測: オリジン参照元=200)。
     ? `<div class="map-embed-wrap">
-      <iframe src="${escapeHtml(mapEmbedUrl(v.name, v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="${escapeHtml(mapEmbedUrl(v.name, v.address))}" title="${escapeHtml(v.name)}の地図(Googleマップ)" loading="lazy" style="border:0;" allowfullscreen referrerpolicy="origin"></iframe>
     </div>`
     : "";
 
