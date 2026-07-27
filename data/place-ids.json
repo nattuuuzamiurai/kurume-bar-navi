@@ -905,6 +905,20 @@
     "matchBy": "店名partial+番地一致",
     "fetchedAt": "2026-07-27T08:01:37.595Z"
   },
+  "izakaya-kichi": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「鉄板居酒屋 基地」/ 先頭解決「お好み焼き 基地」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJx9tqT1GkQTURKtc2HIqEV8o",
+      "name": "お好み焼き 基地",
+      "address": "〒830-0032 福岡県久留米市東町３２−１３"
+    },
+    "query": "鉄板居酒屋 基地 福岡県久留米市東町32-13",
+    "fetchedAt": "2026-07-27T19:24:49.024Z"
+  },
   "izakaya-kiseki-tebasaki": {
     "placeId": "ChIJnQzlBwulQTURwtpV1P5qY5M",
     "resolvedName": "奇跡の手羽先 サラリーマン横丁 久留米一番街店",

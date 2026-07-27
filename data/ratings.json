@@ -2,72 +2,72 @@
   "bar-141saketen": {
     "rating": 4.4,
     "userRatingCount": 22,
-    "updatedAt": "2026-07-27T08:03:21.770Z"
+    "updatedAt": "2026-07-27T19:24:51.752Z"
   },
   "bar-adei": {
     "rating": 3.1,
     "userRatingCount": 37,
-    "updatedAt": "2026-07-27T08:03:22.193Z"
+    "updatedAt": "2026-07-27T19:24:52.065Z"
   },
   "bar-atwill": {
     "rating": 3.8,
     "userRatingCount": 13,
-    "updatedAt": "2026-07-27T08:03:22.736Z"
+    "updatedAt": "2026-07-27T19:24:52.374Z"
   },
   "bar-bigisland": {
     "rating": 5,
     "userRatingCount": 2,
-    "updatedAt": "2026-07-27T08:03:23.197Z"
+    "updatedAt": "2026-07-27T19:24:52.696Z"
   },
   "bar-bistro-theater": {
     "rating": 4.1,
     "userRatingCount": 14,
-    "updatedAt": "2026-07-27T08:03:23.645Z"
+    "updatedAt": "2026-07-27T19:24:53.007Z"
   },
   "bar-bolester": {
     "rating": 4.9,
     "userRatingCount": 10,
-    "updatedAt": "2026-07-27T08:03:24.031Z"
+    "updatedAt": "2026-07-27T19:24:53.315Z"
   },
   "bar-borracho": {
     "rating": 3.4,
     "userRatingCount": 19,
-    "updatedAt": "2026-07-27T08:03:24.435Z"
+    "updatedAt": "2026-07-27T19:24:53.629Z"
   },
   "bar-cupanddish": {
     "rating": null,
     "userRatingCount": 0,
-    "updatedAt": "2026-07-27T08:03:24.828Z"
+    "updatedAt": "2026-07-27T19:24:53.938Z"
   },
   "bar-ebisu": {
     "rating": null,
     "userRatingCount": 0,
-    "updatedAt": "2026-07-27T08:03:25.174Z"
+    "updatedAt": "2026-07-27T19:24:54.252Z"
   },
   "bar-elocho": {
     "rating": 4,
     "userRatingCount": 61,
-    "updatedAt": "2026-07-27T08:03:25.528Z"
+    "updatedAt": "2026-07-27T19:24:54.565Z"
   },
   "bar-flavor": {
     "rating": 3.7,
     "userRatingCount": 31,
-    "updatedAt": "2026-07-27T08:03:25.869Z"
+    "updatedAt": "2026-07-27T19:24:54.858Z"
   },
   "bar-kurume-standard": {
     "rating": 4.9,
     "userRatingCount": 29,
-    "updatedAt": "2026-07-27T08:03:26.207Z"
+    "updatedAt": "2026-07-27T19:24:55.145Z"
   },
   "bar-kusumi": {
     "rating": 4.4,
     "userRatingCount": 97,
-    "updatedAt": "2026-07-27T08:03:26.583Z"
+    "updatedAt": "2026-07-27T19:24:55.432Z"
   },
   "bar-lampsquare": {
     "rating": 3.9,
     "userRatingCount": 54,
-    "updatedAt": "2026-07-27T08:03:26.993Z"
+    "updatedAt": "2026-07-27T19:24:55.722Z"
   },
   "bar-le-coeur": {
     "rating": 4.7,
@@ -558,5 +558,45 @@
     "rating": 3.7,
     "userRatingCount": 187,
     "updatedAt": "2026-07-27T08:27:22.998Z"
+  },
+  "izakaya-tsukune-yokocho": {
+    "rating": 3.7,
+    "userRatingCount": 251,
+    "updatedAt": "2026-07-27T19:24:49.206Z"
+  },
+  "izakaya-warukaruma": {
+    "rating": 4.6,
+    "userRatingCount": 8,
+    "updatedAt": "2026-07-27T19:24:49.528Z"
+  },
+  "izakaya-yakiniku-zen": {
+    "rating": 4.3,
+    "userRatingCount": 24,
+    "updatedAt": "2026-07-27T19:24:49.839Z"
+  },
+  "izakaya-yakitori-susumu": {
+    "rating": 4.3,
+    "userRatingCount": 18,
+    "updatedAt": "2026-07-27T19:24:50.177Z"
+  },
+  "izakaya-yakitori-yokozuna": {
+    "rating": 3.8,
+    "userRatingCount": 21,
+    "updatedAt": "2026-07-27T19:24:50.498Z"
+  },
+  "izakaya-yolo": {
+    "rating": 3.9,
+    "userRatingCount": 80,
+    "updatedAt": "2026-07-27T19:24:50.809Z"
+  },
+  "izakaya-zaku": {
+    "rating": 4.2,
+    "userRatingCount": 89,
+    "updatedAt": "2026-07-27T19:24:51.120Z"
+  },
+  "shisha-x": {
+    "rating": 4,
+    "userRatingCount": 10,
+    "updatedAt": "2026-07-27T19:24:51.439Z"
   }
 }
