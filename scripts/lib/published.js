@@ -1,0 +1,44 @@
+/**
+ * 公開対象の店舗を判定する共有ロジック(build.js / fetch-place-ids.js / fetch-ratings.js が参照)。
+ *
+ * 【なぜ共有モジュールにするか】
+ * 「非公開店(スナック・キャバクラ、接待性のあるフェーズ2店)を一切公開しない」は本サイトで
+ * 最も守るべき制約。公開判定のコピーがスクリプトごとに分散すると、片方だけ更新されて
+ * 非公開店の評価を誤って取得・表示する事故につながる。そのため単一の真実の源としてここに集約する。
+ *
+ * ※ build.js は最終的な出力(dist)のゲートとして、ここの判定に加えて独自にも同じフィルタを
+ *    かける多重防御になっている。fetch 系スクリプトも同じ判定を使うことで、そもそも非公開店の
+ *    place_id・評価を取得しない(無料枠の無駄遣いも防ぐ)。
+ */
+
+// 一般公開する業態(カテゴリID)のallowlist。
+// スナック・キャバクラ(snack/kyabakura)は data/venues.json にデータとしては残すが、
+// 社長判断によりフェーズ1では非公開(ページ自体を生成しない)。
+// フェーズ2で公開解禁する場合はここに追加する。
+const PUBLISHED_CATEGORIES = ["bar", "izakaya", "concafe", "shisha", "poker"];
+
+// カテゴリは公開対象だが、店舗単位でフェーズ2(非公開)にするID。
+// 【フェーズ1/2の境界は「カテゴリ名」ではなく「実態(接待性)」で判定する】(レビュー部方針)。
+// キャストが客席に付いて接客する/キャストドリンク・指名料・シングルチャージ等の接待型課金がある店は、
+// 表向きのカテゴリが居酒屋・コンカフェであってもフェーズ2とする(スナック・キャバクラと同じ扱いで、
+// dist・sitemap・検索・タグ・一覧・JSON-LDのどこにも出さず、店名・IDも漏らさない)。データ自体は残す。
+const PHASE2_VENUE_IDS = new Set([
+  // 実態がガールズバー業態。シングルチャージ+キャストドリンクの接待型課金(「居酒屋(中華)」表示は誤認を招く)。
+  "izakaya-nyanko-sakaba",
+  // 公式が「ガールズバー」表記。社長判断で暫定フェーズ2。
+  "concafe-platinum-seven",
+  // 店名自体が「ガールズバー&コンセプトカフェ」。社長判断で暫定フェーズ2。
+  "concafe-axia",
+]);
+
+// 1店が公開対象か。
+function isPublished(v) {
+  return PUBLISHED_CATEGORIES.includes(v.category) && !PHASE2_VENUE_IDS.has(v.id);
+}
+
+// 公開対象の店舗だけに絞り込む。
+function publishedVenues(allVenues) {
+  return allVenues.filter(isPublished);
+}
+
+module.exports = { PUBLISHED_CATEGORIES, PHASE2_VENUE_IDS, isPublished, publishedVenues };

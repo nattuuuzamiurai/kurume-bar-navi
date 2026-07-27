@@ -13,6 +13,9 @@
 const fs = require("fs");
 const path = require("path");
 
+// 公開/非公開の判定は fetch 系スクリプトと共有する(単一の真実の源)。詳細は lib/published.js。
+const { PUBLISHED_CATEGORIES, PHASE2_VENUE_IDS } = require("./lib/published");
+
 const ROOT = path.resolve(__dirname, "..");
 const DATA_DIR = path.join(ROOT, "data");
 const DIST_DIR = path.join(ROOT, "dist");
@@ -34,28 +37,9 @@ const GOOGLE_MAPS_EMBED_KEY = process.env.GOOGLE_MAPS_EMBED_KEY || "";
 // 現時点ではプレースホルダーのため、本番公開前に必ず確認する。
 const CONTACT_EMAIL = "kurume-bar-navi-info@example.com";
 
-// 今回のフェーズで一般公開する業態(カテゴリID)のallowlist。
-// スナック・キャバクラ(snack/kyabakura)は data/venues.json にはデータとして残すが、
-// 社長判断によりフェーズ1では非公開とする(ページ自体を生成しない)。
-// フェーズ2で公開解禁する場合はここに追加すればよい。
-const PUBLISHED_CATEGORIES = ["bar", "izakaya", "concafe", "shisha", "poker"];
-
-// カテゴリは公開対象だが、店舗単位でフェーズ2(非公開)にするID。
-// 【フェーズ1/2の境界は「カテゴリ名」ではなく「実態(接待性)」で判定する】(レビュー部方針)。
-// キャストが客席に付いて接客する/キャストドリンク・指名料・シングルチャージ等の接待型課金がある店は、
-// 表向きのカテゴリが居酒屋・コンカフェであってもフェーズ2とする。
-// スナック・キャバクラ23店とまったく同じ扱い(dist/・sitemap・検索・タグ・一覧・JSON-LDのどこにも
-// 出さず、店名・IDも漏らさない)。データ自体は将来の判断のため残す。
-const PHASE2_VENUE_IDS = new Set([
-  // 実態がガールズバー業態。シングルチャージ+キャストドリンクの接待型課金(「居酒屋(中華)」表示は誤認を招く)。
-  // ※付与されていた「中華」タグは、六ツ門町の別店舗 izakaya-nyanyan-chinese(本物の中華料理店)から
-  //   混入した疑いがある。非公開化するため実害はないが、データ上のメモとしてここに残す。
-  "izakaya-nyanko-sakaba",
-  // 公式が「ガールズバー」表記。社長判断で暫定フェーズ2。
-  "concafe-platinum-seven",
-  // 店名自体が「ガールズバー&コンセプトカフェ」。社長判断で暫定フェーズ2。
-  "concafe-axia",
-]);
+// 公開対象の業態allowlist(PUBLISHED_CATEGORIES)と店舗単位フェーズ2(PHASE2_VENUE_IDS)は
+// scripts/lib/published.js に集約し、fetch 系スクリプトと共有している(単一の真実の源)。
+// 詳しい方針・各IDの理由はそのファイルのコメントを参照。
 
 // 営業状況を確認できていない店舗(削除はしないが、店舗ページに注記を出し、
 // 未確認の営業時間は「情報準備中」に寄せて「営業中」判定・営業時間表示に使わない)。
@@ -555,6 +539,71 @@ function loadGeneratedPhotos() {
 }
 
 const VENUE_PHOTOS = loadGeneratedPhotos();
+
+// ============================================================
+// Googleクチコミ★評価の表示(2026-07-27、社長承認の機能追加)
+//
+// 【データの出所】scripts/fetch-ratings.js が Places API (New) から取得した rating /
+// userRatingCount を data/ratings.json(venue id -> { rating, userRatingCount, updatedAt })
+// に保存する。build.js はこのファイルを **読むだけ**(APIは一切叩かない=デプロイでの二重課金・
+// 無限ループを防ぐ)。ファイルが無い/壊れている/評価が無い店は★を出さない(UI崩れなし)。
+//
+// 【Google帰属表示(必須・削除/改変/隠蔽NG)】★を出す店には、★と同じ視覚コンテナ内に
+// 「Google」への帰属表示を必ず併記する(店舗ページ=「Google のクチコミ評価」、
+// カード=小さな「Google」ラベル)。CSSで hidden にしたり文言を改変したりしないこと。
+// ============================================================
+function loadRatings() {
+  const file = path.join(DATA_DIR, "ratings.json");
+  if (!fs.existsSync(file)) return {};
+  try {
+    const data = JSON.parse(fs.readFileSync(file, "utf-8"));
+    return data && typeof data === "object" ? data : {};
+  } catch (e) {
+    console.warn(`[warn] ratings.json の読み込みに失敗しました: ${e.message}`);
+    return {};
+  }
+}
+
+const VENUE_RATINGS = loadRatings();
+
+// 表示に使える評価(rating が正の数値の店のみ)。無ければ null。
+function venueRating(v) {
+  const r = VENUE_RATINGS[v.id];
+  if (!r || typeof r.rating !== "number" || !(r.rating > 0)) return null;
+  return { rating: r.rating, count: typeof r.userRatingCount === "number" ? r.userRatingCount : 0 };
+}
+
+// 星のビジュアル(塗り/半分/空を rating(0〜5)から算出)。
+// グレーの空星5つの上に、金色の塗り星5つを rating/5 の幅でクリップして重ねることで、端数(半分星)も描画する。
+// 星そのものは装飾なので aria-hidden にし、読み上げ用ラベルは呼び出し側のコンテナに付ける。
+function starsHtml(rating, sizeClass) {
+  const pct = Math.max(0, Math.min(100, (rating / 5) * 100));
+  return `<span class="stars ${sizeClass}" style="--star-pct:${pct.toFixed(1)}%" aria-hidden="true"><span class="stars-empty">★★★★★</span><span class="stars-fill">★★★★★</span></span>`;
+}
+
+// 店舗ページ上部の大きな★評価ブロック(★ + 3.3 +(186件)+ Google帰属)。
+function ratingHeroHtml(v) {
+  const r = venueRating(v);
+  if (!r) return "";
+  const countText = r.count > 0 ? `（${r.count.toLocaleString("en-US")}件）` : "";
+  const aria = `Googleのクチコミ評価 5段階中${r.rating.toFixed(1)}${r.count > 0 ? ` ${r.count}件` : ""}`;
+  return `<div class="rating-hero" role="img" aria-label="${escapeHtml(aria)}">
+    <div class="rating-hero-main">
+      ${starsHtml(r.rating, "stars-lg")}
+      <span class="rating-score">${r.rating.toFixed(1)}</span>
+      <span class="rating-count">${countText}</span>
+    </div>
+    <span class="rating-source">Google のクチコミ評価</span>
+  </div>`;
+}
+
+// 一覧カード内の小さな★評価(★ + 3.3 + Google帰属)。
+function ratingCardHtml(v) {
+  const r = venueRating(v);
+  if (!r) return "";
+  const aria = `Googleのクチコミ評価 5段階中${r.rating.toFixed(1)}`;
+  return `<span class="venue-card-rating" role="img" aria-label="${escapeHtml(aria)}">${starsHtml(r.rating, "stars-sm")}<span class="rating-score-sm">${r.rating.toFixed(1)}</span><span class="rating-src-sm">Google</span></span>`;
+}
 
 // ヒーロー写真1枚(ホットペッパー グルメ)。写真が無ければ空文字。
 // onerror: 画像が読めなかったら figure ごと非表示にする(空クレジットだけ残るのを防ぐ)。
@@ -1472,6 +1521,7 @@ function venueCardHtml(v, categories, areas) {
     <span class="venue-card-body">
       <span class="venue-card-cat">${escapeHtml(categoryLabel(v, cat ? cat.name : v.category))}</span>
       <span class="venue-name">${escapeHtml(v.name)}</span>
+      ${ratingCardHtml(v)}
       <span class="venue-card-pills">${pills}</span>
       ${cardTagLineHtml(v)}
     </span>
@@ -1975,6 +2025,7 @@ ${facts
       </div>
     </div>
   </header>
+  ${ratingHeroHtml(v)}
   ${venueLogoCreditHtml(v)}
   ${unverifiedNotice}
 

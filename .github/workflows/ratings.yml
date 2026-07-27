@@ -1,0 +1,87 @@
+name: Update Google ratings (rolling)
+
+# Googleクチコミ★評価のローリング更新専用ジョブ。
+#
+# ■ トリガーは schedule と手動(workflow_dispatch)のみ。**push では起動しない**。
+#   これにより「評価更新→コミット→push→また評価更新」の無限ループを構造的に防ぐ。
+#   評価APIを叩くのはこのワークフローだけ。deploy.yml はビルド時に ratings.json を読むだけで
+#   評価APIを一切叩かない(=二重課金・ループなし)。
+#
+# ■ 無料枠($0)を守る設計:
+#   - fetch-place-ids.js は Text Search Pro SKU(無料枠 月5,000)で、未取得の店だけ一度きり取得。
+#   - fetch-ratings.js は Place Details Enterprise SKU(無料枠 月1,000)。1回あたり最大 N=22 店に制限し、
+#     日次1回 × 22 × 31日 ≒ 682回/月 < 1,000回 に必ず収める(スクリプト側で上限30もハードクランプ済み)。
+#
+# ■ 反映の流れ:
+#   1. place-ids / ratings を更新し、差分があれば data/*.json をコミットして push(GITHUB_TOKEN)。
+#   2. その後 deploy.yml を workflow_dispatch で明示的にトリガーして本番へ反映する。
+#      ※ GITHUB_TOKEN による push は他ワークフローの push トリガーを起動しない仕様のため、
+#        push だけでは deploy.yml は走らない。workflow_dispatch/repository_dispatch は
+#        GITHUB_TOKEN でも起動できる例外なので、これを使って deploy を確実に走らせる。
+#      ※ 仮にディスパッチが失敗しても、deploy.yml 自身の日次cron(15:30 UTC)が翌日には
+#        最新の ratings.json を取り込んで反映するフォールバックになっている。
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 每日 18:00 UTC = 翌 03:00 JST(deploy.yml の 15:30 UTC とはずらす)。
+    - cron: "0 18 * * *"
+
+permissions:
+  contents: write   # data/*.json をコミット & push するため
+  actions: write    # deploy.yml を workflow_dispatch でトリガーするため
+
+# 評価更新ジョブ同士が重ならないようにする(push の取りこぼし・競合を防ぐ)。
+concurrency:
+  group: ratings
+  cancel-in-progress: false
+
+jobs:
+  ratings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 未取得の公開店の place_id を Text Search で取得(不足分のみ / 一度きり)。
+      # GOOGLE_PLACES_API_KEY 未設定なら何もせず正常終了(グレースフル)。
+      - name: Fetch place_ids (missing only)
+        run: node scripts/fetch-place-ids.js
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+
+      # 評価が最も古い/未取得の店から最大 N 店だけ Place Details で更新(無料枠内)。
+      - name: Fetch ratings (rolling N venues)
+        run: node scripts/fetch-ratings.js
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          # 必要なら Secrets/Variables で N を上書き可(未設定なら既定22。コード側で上限30にクランプ)。
+          RATINGS_BATCH_SIZE: ${{ vars.RATINGS_BATCH_SIZE }}
+
+      # 差分があればコミット & push。無ければ何もしない(空コミットを作らない)。
+      - name: Commit & push data changes
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/place-ids.json data/ratings.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No rating changes. Skipping commit."
+          else
+            git commit -m "chore(ratings): update Google ratings (rolling) [skip ci]"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # データが変わったときだけ deploy.yml を明示トリガーして本番反映する。
+      - name: Trigger deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref main
