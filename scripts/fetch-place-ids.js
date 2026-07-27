@@ -19,12 +19,16 @@
  *   1店1回の問い合わせで十分。誤マッチで保留になった店は人手でレビューし、正しい候補があれば
  *   place-ids.json の placeId を手で埋める / 取り直したい場合はその店のエントリを削除して再実行する。
  *
- * ■ 誤マッチ検出(誤った店の評価を出さないことが最優先)
- *   Text Search は同名別店・別エリアの店を返すことがある。以下のいずれかに当てはまる候補は
- *   「確信が持てない」とみなし、placeId は空のまま needsReview として保留し、警告ログを出す:
- *     (a) 解決された住所に「久留米」を含まない(=別エリアの店)
- *     (b) 解決された店名が元の店名と大きく食い違う(前方/部分一致しない)
- *   → 保留店は評価を取得・表示しない。人がログを見てレビューできる。
+ * ■ 誤マッチ検出(誤った店の評価を出さないことが最優先 / 2026-07-27 品質管理部指摘により強化)
+ *   Text Search は「店名+住所」で問い合わせても、同じ町内の無関係な店や、同名の近隣別番地の店を
+ *   返すことがある。旧版は「町名だけ一致(店名照合なし)」を採用してしまい別店を多数掴んだため、
+ *   採用条件を以下の **すべて** を満たす場合のみに厳格化した(1つでも欠ければ placeId 空で保留):
+ *     (a) 解決住所に「久留米」を含む(別エリアを弾く)
+ *     (b) 店名が一致する(正規化+所在地ノイズ除去のうえ exact か強い部分一致)。**店名一致は必須**
+ *     (c) 番地が一致する(元住所の番地が解決住所にも現れる)。同名の近隣別番地(例 ミライザカ
+ *         東町33-8 と 33-5)を弾くための必須条件
+ *   さらに Text Search が返す複数候補を評価し、(a)(b)(c)を満たす最良の1件を選ぶ(先頭を機械的に採らない)。
+ *   → いずれも満たさなければ保留(placeId空・ログ出力)。「誤った店を出すより出さない方がまし」を徹底。
  *
  * ■ APIキー
  *   process.env.GOOGLE_PLACES_API_KEY(GitHub Secrets / 環境変数のみ。コード・出力・ログに出さない)。
@@ -78,59 +82,118 @@ function normalizeText(s) {
     .normalize("NFKC")
     .toLowerCase()
     .replace(/[\s　]+/g, "")
-    .replace(/[()（）【】\[\]「」『』・,.。、!！?？~〜\-−_/\\'"’”“]/g, "");
+    .replace(/[()（）【】\[\]「」『』・,.。、!！?？~〜\-−–—―ー－‐_/\\'"’”“。･]/g, "");
 }
 
-// 解決された店名が元の店名と「大きく食い違わない」か(前方/部分一致で判定)。
-// 完全一致・どちらかがもう一方を含む場合は一致とみなす。カタカナ⇄英字(例 リメンバー/Remember)の
-// ような別表記は店名だけでは一致と判定できないため、下の住所照合(町名一致)で確信度を担保する。
+// 店名から所在地ノイズ(西鉄久留米・久留米・駅前 等)を除く。
+// 例:「旨唐揚げと居酒メシ 西鉄久留米ミライザカ」⇔ Googleの「旨唐揚げと居酒メシ ミライザカ」を
+// 突合できるようにする。所在地語のみを対象にし、店名の本体(業態語・固有名)は削らない(過剰一致を防ぐ)。
+function stripLocationNoise(s) {
+  return s
+    .replace(/西鉄久留米|ｊｒ久留米|jr久留米|西鉄|久留米|駅前|駅ちか|駅チカ/gi, "");
+}
+
+// 2文字列の最長共通連続部分文字列の長さ。
+function longestCommonSubstring(a, b) {
+  if (!a || !b) return 0;
+  const dp = new Array(b.length + 1).fill(0);
+  let best = 0;
+  for (let i = 1; i <= a.length; i++) {
+    let prev = 0;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = dp[j];
+      if (a[i - 1] === b[j - 1]) {
+        dp[j] = prev + 1;
+        if (dp[j] > best) best = dp[j];
+      } else {
+        dp[j] = 0;
+      }
+      prev = tmp;
+    }
+  }
+  return best;
+}
+
+// 店名の一致判定(必須条件)。正規化+所在地ノイズ除去のうえ、以下のいずれかで一致とみなす:
+//   exact   … 完全一致
+//   partial … 短い方(2文字以上)が長い方に完全に含まれる
+//   core    … 双方に包含は無いが、識別力のある共通連続部分が十分長い(3文字以上かつ短い方の40%以上)。
+//             例:「韓ダイニング モイジャ」⇔「韓Dining モイジャ」(共通「モイジャ」)のような一部だけ英字/
+//             カナ表記が違うケースを吸収する。※番地一致が別途必須なので、これで別店を誤採用する余地は小さい。
+// カタカナ⇄英字が名前全体に及ぶ別表記(例 ALETTA/アレッタ、リメンバー/Remember)は共通部分が無く保留になる
+// =誤った店を出さない安全側の挙動。
 function nameMatchKind(venueName, resolvedName) {
-  const a = normalizeText(venueName);
-  const b = normalizeText(resolvedName);
+  const a = stripLocationNoise(normalizeText(venueName));
+  const b = stripLocationNoise(normalizeText(resolvedName));
   if (!a || !b) return null;
   if (a === b) return "exact";
-  if (a.includes(b) || b.includes(a)) return "partial";
+  const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+  if (short.length >= 2 && long.includes(short)) return "partial";
+  const lcs = longestCommonSubstring(a, b);
+  if (lcs >= 3 && lcs / short.length >= 0.4) return "core";
   return null;
 }
 
-// 元の住所から町名(丁目名)を取り出す。例:「福岡県久留米市東町39-11 …」→「東町」。
-// 括弧書きの注記(例「久留米市(文化街商店街周辺)」)は除いてから抽出する。
-function extractCho(address) {
-  const norm = String(address || "").normalize("NFKC").replace(/[(（][^)）]*[)）]/g, "");
-  const m = norm.match(/久留米市\s*([^\d\s]+?)(?=[\d]|$)/);
-  const cho = m ? m[1].trim() : "";
-  // 「大字」等の接頭辞だけ・空は無効扱い。
-  return cho && cho !== "大字" ? cho : "";
+// 住所の正規化(NFKC・各種ダッシュを「-」へ統一・「丁目/番地/番」を「-」へ・「号」を除去)。番地の突合に使う。
+// 例「7丁目33」→「7-33」、「21番7号」→「21-7」。venues.json と Google で丁目表記が違っても突合できる。
+// ※ 空白は残す(1個に圧縮)。空白を消すと「33-5 2F」の階数(2F)が番地と地続きになり「33-52f」となって
+//    番地の数字境界判定を誤らせるため。空白はそのまま非数字の区切りとして機能させる。
+function canonAddr(s) {
+  return String(s || "")
+    .normalize("NFKC")
+    .replace(/[−–—―ー－‐]/g, "-")
+    .replace(/丁目|丁|番地|番/g, "-")
+    .replace(/号(室|館)?/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/[\s　]+/g, " ");
 }
 
-// 誤マッチ判定。誤った店の評価を出さないことを最優先し、確信が持てなければ review にする。
-// 確信ありの条件: 解決住所が「久留米」を含む(=別エリアでない) かつ
-//   (元住所の町名が解決住所にも現れる=同じ町) または (店名が一致する)。
-// これによりカタカナ/英字の表記ゆれ(住所で担保)や、住所が曖昧な店(店名で担保)を吸収しつつ、
-// 別エリア・別の町の同名店は弾く。
-function evaluateMatch(venue, resolved) {
-  const reasons = [];
-  const resolvedNorm = normalizeText(resolved.formattedAddress);
-  const inKurume = /久留米/.test(resolved.formattedAddress);
-  if (!inKurume) reasons.push("解決住所に「久留米」を含まない(別エリアの疑い)");
+// 郵便番号(〒xxx-xxxx / xxx-xxxx)を除く。番地の数字と郵便番号の数字の偶発一致を防ぐ。
+function stripPostal(s) {
+  return s.replace(/〒?\d{3}-?\d{4}/g, "");
+}
 
-  const cho = extractCho(venue.address);
-  const choMatch = !!cho && resolvedNorm.includes(normalizeText(cho));
-  const nameKind = nameMatchKind(venue.name, resolved.displayName);
+// 元住所から番地(丁目・番・号の数字列)を取り出す。例:「東町33-5 ニューフタマタ第三ビル1F」→「33-5」。
+// ※ 空白は残したまま抽出する。空白を消すと番地の直後に続く階数(例「25-43 2F」の 2F)を巻き込んで
+//    「25-432」のように誤抽出してしまうため。番地は最初の空白/非(数字・ハイフン)文字で区切る。
+// 括弧書きの注記(例「久留米市(文化街商店街周辺)」)は除いてから抽出する。番地が無ければ空。
+function extractBanchi(address) {
+  const norm = canonAddr(String(address || "").replace(/[(（][^)）]*[)）]/g, ""));
+  const m = norm.match(/久留米市\s*\D*?(\d+(?:-\d+)*)/);
+  return m ? m[1] : "";
+}
 
-  // 久留米内であっても、町名も店名も一致しなければ「確信が持てない」= review。
-  if (inKurume && !choMatch && !nameKind) {
-    reasons.push(`町名も店名も一致しない(元「${venue.name}／${cho || "町名不明"}」/ 解決「${resolved.displayName}」)`);
+// 番地の一致判定(必須条件)。元住所の番地(例「33-5」)が解決住所にもそのまま現れるか。
+// これにより同名の近隣別番地(例 ミライザカ 33-8 と 33-5)を弾く。番地が取れない元住所は不一致=保留。
+// 数字境界を確認し、「2-16」が「12-16」の一部、「25-43」が「25-431」の一部…のような偶発一致を排除する。
+function banchiMatches(venueBanchi, resolvedAddress) {
+  if (!venueBanchi) return false;
+  const rc = stripPostal(canonAddr(resolvedAddress));
+  let from = 0;
+  while (true) {
+    const idx = rc.indexOf(venueBanchi, from);
+    if (idx < 0) return false;
+    const before = idx > 0 ? rc[idx - 1] : "";
+    const after = idx + venueBanchi.length < rc.length ? rc[idx + venueBanchi.length] : "";
+    if (!/\d/.test(before) && !/\d/.test(after)) return true; // 前後が数字でなければ独立した番地一致
+    from = idx + 1;
   }
-  return { ok: reasons.length === 0, reasons, choMatch, cho, nameKind };
 }
 
-// Text Search を1回叩き、先頭の候補を返す。
-//   成功 -> { id, displayName, formattedAddress }
-//   候補なし -> null
+// 1つの候補が採用条件(久留米内 かつ 店名一致 かつ 番地一致)を満たすか評価する。
+function evaluateCandidate(venue, cand, venueBanchi) {
+  const inKurume = /久留米/.test(cand.formattedAddress);
+  const nameKind = nameMatchKind(venue.name, cand.displayName);
+  const banchiOk = banchiMatches(venueBanchi, cand.formattedAddress);
+  return { inKurume, nameKind, banchiOk, ok: inKurume && !!nameKind && banchiOk };
+}
+
+// Text Search を1回叩き、候補の配列(最大10件)を返す。1リクエスト=1課金なので、複数候補を
+// 受け取っても Pro SKU の呼び出し数は増えない。呼び出し側で店名+番地により最良の1件を選ぶ。
+//   成功 -> { candidates: [{ id, displayName, formattedAddress }, ...] }(0件もあり)
 //   通信/非200 -> { error: true, status }
 function searchOnce(apiKey, textQuery) {
-  const bodyObj = { textQuery, languageCode: "ja", regionCode: "JP" };
+  const bodyObj = { textQuery, languageCode: "ja", regionCode: "JP", pageSize: 10 };
   const body = JSON.stringify(bodyObj);
   const u = new URL(SEARCH_URL);
   const options = {
@@ -163,13 +226,13 @@ function searchOnce(apiKey, textQuery) {
         }
         try {
           const data = JSON.parse(raw);
-          const p = data && data.places && data.places[0];
-          if (!p) return done(null);
-          done({
+          const places = (data && data.places) || [];
+          const candidates = places.map((p) => ({
             id: p.id || "",
             displayName: (p.displayName && p.displayName.text) || "",
             formattedAddress: p.formattedAddress || "",
-          });
+          }));
+          done({ candidates });
         } catch (e) {
           console.warn(`  [warn] Text Search JSONパース失敗 (${e.message})`);
           done({ error: true, status: 0 });
@@ -218,37 +281,64 @@ async function main() {
     const query = `${v.name} ${v.address || "久留米市"}`.trim();
     const r = await searchOnce(apiKey, query);
     const now = new Date().toISOString();
+    const venueBanchi = extractBanchi(v.address);
 
     if (!r || r.error) {
-      // 候補なし / 通信エラー: エントリは作らず(次回リトライできるように)スキップ。
-      if (r && r.error) console.warn(`  [warn] ${v.id}: 取得失敗のため保留(次回再試行)`);
-      else console.warn(`  [warn] ${v.id}: 候補ゼロのため保留(次回再試行)`);
-    } else {
-      const evalr = evaluateMatch(v, r);
-      if (!evalr.ok) {
-        // 誤マッチの疑い: placeId は空のまま保留し、候補情報を残す(人手レビュー用)。
-        store[v.id] = {
-          placeId: "",
-          needsReview: true,
-          reviewReasons: evalr.reasons,
-          candidate: { placeId: r.id, name: r.displayName, address: r.formattedAddress },
-          query,
-          fetchedAt: now,
-        };
-        reviewCount++;
-        reviewLog.push(`  - ${v.id}「${v.name}」: ${evalr.reasons.join(" / ")}`);
-      } else {
-        store[v.id] = {
-          placeId: r.id,
-          resolvedName: r.displayName,
-          resolvedAddress: r.formattedAddress,
-          query,
-          // 確信の根拠を残す(町名一致 / 店名一致)。人手監査用。
-          matchBy: [evalr.choMatch ? "町名一致" : "", evalr.nameKind ? `店名${evalr.nameKind}` : ""].filter(Boolean).join("+"),
-          fetchedAt: now,
-        };
-        resolved++;
+      // 通信エラー: エントリは作らず(次回リトライできるように)スキップ。
+      console.warn(`  [warn] ${v.id}: 取得失敗のため保留(次回再試行)`);
+      if (i < batch.length - 1) await sleep(SLEEP_MS);
+      continue;
+    }
+
+    const candidates = r.candidates || [];
+    // 全候補を評価し、(久留米内 かつ 店名一致 かつ 番地一致)を満たす最良の1件を選ぶ。
+    let best = null;
+    let bestEval = null;
+    for (const c of candidates) {
+      const e = evaluateCandidate(v, c, venueBanchi);
+      if (e.ok) {
+        best = c;
+        bestEval = e;
+        break; // 条件を満たす先頭を採用(Text Searchは関連度順)
       }
+    }
+
+    if (best) {
+      store[v.id] = {
+        placeId: best.id,
+        resolvedName: best.displayName,
+        resolvedAddress: best.formattedAddress,
+        query,
+        // 採用根拠を残す(店名一致の種別 + 番地一致)。人手監査用。
+        matchBy: `店名${bestEval.nameKind}+番地一致`,
+        fetchedAt: now,
+      };
+      resolved++;
+    } else {
+      // 採用条件を満たす候補なし: placeId 空で保留。なぜ弾いたかと先頭候補を残す(人手レビュー用)。
+      const top = candidates[0] || null;
+      let reason;
+      if (candidates.length === 0) {
+        reason = "候補ゼロ(店名+住所で解決できず)";
+      } else {
+        const anyKurume = candidates.some((c) => /久留米/.test(c.formattedAddress));
+        const anyName = candidates.some((c) => nameMatchKind(v.name, c.displayName));
+        const anyNameKurume = candidates.some((c) => /久留米/.test(c.formattedAddress) && nameMatchKind(v.name, c.displayName));
+        if (!anyKurume) reason = "全候補が別エリア(久留米を含まない)";
+        else if (!anyName) reason = `店名が一致する候補なし(元「${v.name}」/ 先頭解決「${top ? top.displayName : ""}」)`;
+        else if (!anyNameKurume) reason = "店名一致の候補が久留米外";
+        else reason = `番地が一致する候補なし(元「${venueBanchi || "番地不明"}」/ 近隣別番地または住所曖昧の疑い)`;
+      }
+      store[v.id] = {
+        placeId: "",
+        needsReview: true,
+        reviewReasons: [reason],
+        candidate: top ? { placeId: top.id, name: top.displayName, address: top.formattedAddress } : null,
+        query,
+        fetchedAt: now,
+      };
+      reviewCount++;
+      reviewLog.push(`  - ${v.id}「${v.name}」: ${reason}`);
     }
     if (i < batch.length - 1) await sleep(SLEEP_MS);
   }
@@ -266,7 +356,13 @@ async function main() {
   console.log(`[fetch-place-ids] ${path.relative(ROOT, OUT_FILE)} を更新しました(合計 ${Object.keys(sorted).length}件のエントリ)。`);
 }
 
-main().catch((e) => {
-  // 予期しない例外でもCI全体は止めない(place-ids.json はそのまま=状態は壊さない)。
-  console.warn(`[fetch-place-ids] 予期しないエラー: ${e.message}. place-ids.json は変更せず続行します。`);
-});
+// 直接実行された場合のみ main を走らせる(require で読み込んだ際はマッチング関数の単体テスト等に使える)。
+if (require.main === module) {
+  main().catch((e) => {
+    // 予期しない例外でもCI全体は止めない(place-ids.json はそのまま=状態は壊さない)。
+    console.warn(`[fetch-place-ids] 予期しないエラー: ${e.message}. place-ids.json は変更せず続行します。`);
+  });
+}
+
+// マッチングロジックの単体テスト用にエクスポート(本体の実行には影響しない)。
+module.exports = { normalizeText, stripLocationNoise, nameMatchKind, canonAddr, stripPostal, extractBanchi, banchiMatches, evaluateCandidate };

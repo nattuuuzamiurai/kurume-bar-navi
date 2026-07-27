@@ -4,14 +4,14 @@
     "resolvedName": "141酒店",
     "resolvedAddress": "〒830-0018 福岡県久留米市通町３−１ マーベラスビル 1階",
     "query": "141酒店 福岡県久留米市通町3-1 マーベラスビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:40.954Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:19.870Z"
   },
   "bar-1988": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「久留米 Bar 1988／町名不明」/ 解決「久留米バー Bar1988」)"
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
     ],
     "candidate": {
       "placeId": "ChIJnbSAx_2lQTURBmp8s-lEapk",
@@ -19,141 +19,177 @@
       "address": "〒830-0045 福岡県久留米市小頭町８−１"
     },
     "query": "久留米 Bar 1988 福岡県久留米市(文化街商店街周辺)",
-    "fetchedAt": "2026-07-27T07:09:47.471Z"
+    "fetchedAt": "2026-07-27T08:01:02.910Z"
   },
   "bar-adei": {
     "placeId": "ChIJh7LZ3P6kQTURRw4Y0ypQTN8",
     "resolvedName": "A DAY ア・デイ -こころの灯り家-",
     "resolvedAddress": "〒830-0044 福岡県久留米市本町３−８ Ａ・Ｄａｙこころの灯り家",
     "query": "アデイ 福岡県久留米市本町3-8",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:33.241Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:21.874Z"
   },
   "bar-aletta": {
-    "placeId": "ChIJjUk7-oalQTURKGNaeAOD5Ss",
-    "resolvedName": "アレッタ",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１４−３ 1F",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ALETTA」/ 先頭解決「アレッタ」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJjUk7-oalQTURKGNaeAOD5Ss",
+      "name": "アレッタ",
+      "address": "〒830-0031 福岡県久留米市六ツ門町１４−３ 1F"
+    },
     "query": "ALETTA 福岡県久留米市六ツ門町14-3 渡邉アパート1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:47.039Z"
+    "fetchedAt": "2026-07-27T08:01:35.391Z"
   },
   "bar-atwill": {
     "placeId": "ChIJKT9Q-FWkQTUR9Vvg_iAEviw",
     "resolvedName": "カラオケBAR at will",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町７−４０ 片桐ビル 3F",
     "query": "at will(アットウィル) 福岡県久留米市六ツ門町7-40 片桐ビル1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:43.005Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:31.323Z"
   },
   "bar-bigisland": {
     "placeId": "ChIJKfMyE5ylQTURnPteR8mv2mw",
     "resolvedName": "ビッグアイランド",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１０ 紺屋町ビル １階",
     "query": "ビッグアイランド 福岡県久留米市日吉町8-10",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:09.956Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:04.293Z"
   },
   "bar-bistro-theater": {
     "placeId": "ChIJyZseVUWkQTURgoPDkvXFi3w",
     "resolvedName": "ビストロシアター",
     "resolvedAddress": "〒830-0016 福岡県久留米市通東町７丁目３３−1F",
     "query": "ビストロシアター Bistro Theater 福岡県久留米市通東町7-33 1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:43.530Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:31.898Z"
   },
   "bar-bolester": {
     "placeId": "ChIJvzBnWgClQTURqAklXSaMZcY",
     "resolvedName": "BOLESTER",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２６−４ タイムビル １F",
     "query": "BOLESTER(ボレスター) 福岡県久留米市東町26-4 タイムビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:47.620Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:35.902Z"
   },
   "bar-borracho": {
     "placeId": "ChIJZWVuEVGkQTUR3MnuiVn6_4c",
     "resolvedName": "ボラーチョ",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３８−３１",
     "query": "borracho(ボラーチョ) 福岡県久留米市東町38-31 ひかりビル2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:45.354Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:33.648Z"
   },
   "bar-cherrys": {
-    "placeId": "ChIJd5iRYhalQTURPvk4h8_rPxo",
-    "resolvedName": "SHUFFLE（シャッフル 久留米）",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町34−１４",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「バーシェリーズ」/ 先頭解決「SHUFFLE（シャッフル 久留米）」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJd5iRYhalQTURPvk4h8_rPxo",
+      "name": "SHUFFLE（シャッフル 久留米）",
+      "address": "〒830-0032 福岡県久留米市東町34−１４"
+    },
     "query": "バーシェリーズ 福岡県久留米市東町34-23",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:37.798Z"
+    "fetchedAt": "2026-07-27T08:01:26.617Z"
   },
   "bar-cupanddish": {
     "placeId": "ChIJmWLcJFKkQTUR-znFM_O2u30",
     "resolvedName": "バル カフェ カップ アンド ディッシュ",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町１０３",
     "query": "bal*cafe cup&dish(バル カフェ カップアンドディッシュ) 福岡県久留米市天神町103 Kビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:44.256Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:32.476Z"
   },
   "bar-ebisu": {
     "placeId": "ChIJZYZEpVKlQTURU6xpmlZVHaE",
     "resolvedName": "BAR処 恵比寿",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町32−１０ 今村ビル",
     "query": "BAR処恵比寿 福岡県久留米市東町32-10 今村ビル",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:48.165Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:36.414Z"
   },
   "bar-elocho": {
     "placeId": "ChIJu-hKeFakQTURU3P5XbO7atM",
     "resolvedName": "エル・オーチョ",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２１−１",
     "query": "エル・オーチョ 福岡県久留米市六ツ門町21-1",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:09:44.951Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:00.293Z"
   },
   "bar-flavor": {
     "placeId": "ChIJpT73tFakQTUR8aWi-EnPWJI",
     "resolvedName": "宴場FLAVOR",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町25−２５ マルシェビル 3F",
     "query": "FLAVOR(フレーバー) 福岡県久留米市東町25-25 マルシェビル3F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:45.852Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:34.168Z"
   },
   "bar-funkydog": {
-    "placeId": "ChIJd5iRYhalQTURPvk4h8_rPxo",
-    "resolvedName": "SHUFFLE（シャッフル 久留米）",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町34−１４",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「25-25」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJm_d291ulQTURjr6TnNb5Rcs",
+      "name": "MUSIC BAR BLEND",
+      "address": "〒830-0032 福岡県久留米市東町３０−１ 青木ビル B1F"
+    },
     "query": "musicbar FUNKYDOG 福岡県久留米市東町25-25 マルシェビル1階",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:37.276Z"
+    "fetchedAt": "2026-07-27T08:01:26.038Z"
   },
   "bar-hangover": {
-    "placeId": "ChIJf1RvPtqlQTURxQ76QGEtm4o",
-    "resolvedName": "HANGOVER",
-    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−19 1 Ｃ",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ハングオーバー」/ 先頭解決「HANGOVER」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJf1RvPtqlQTURxQ76QGEtm4o",
+      "name": "HANGOVER",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−19 1 Ｃ"
+    },
     "query": "ハングオーバー 福岡県久留米市日吉町13-37 第7イズミヤビル4F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:38.940Z"
+    "fetchedAt": "2026-07-27T08:01:27.826Z"
   },
   "bar-highball-stand": {
-    "placeId": "ChIJSQXdJcOlQTURITkLqODcI1M",
-    "resolvedName": "The Highball stand 久留米店",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３６１−１９",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ザ・ハイボールスタンド 久留米店」/ 先頭解決「The Highball stand 久留米店」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJSQXdJcOlQTURITkLqODcI1M",
+      "name": "The Highball stand 久留米店",
+      "address": "〒830-0032 福岡県久留米市東町３６１−１９"
+    },
     "query": "ザ・ハイボールスタンド 久留米店 福岡県久留米市東町361-19 佐藤ビル1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:40.050Z"
+    "fetchedAt": "2026-07-27T08:01:29.018Z"
   },
   "bar-ilfaro": {
-    "placeId": "ChIJb-ZhqlGkQTURTohCN_3ZEY4",
-    "resolvedName": "ホステルイルファーロ久留米 カフェバー 1F",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３８−１３ ホステルイルファーロ久留米1階",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ilfaro kurume cafe and bar」/ 先頭解決「ホステルイルファーロ久留米 カフェバー 1F」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJb-ZhqlGkQTURTohCN_3ZEY4",
+      "name": "ホステルイルファーロ久留米 カフェバー 1F",
+      "address": "〒830-0032 福岡県久留米市東町３８−１３ ホステルイルファーロ久留米1階"
+    },
     "query": "ilfaro kurume cafe and bar 福岡県久留米市東町38-13",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:36.206Z"
+    "fetchedAt": "2026-07-27T08:01:24.911Z"
   },
   "bar-jackalope": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「ジャッカロープ／町名不明」/ 解決「Jackalope」)"
+      "店名が一致する候補なし(元「ジャッカロープ」/ 先頭解決「Jackalope」)"
     ],
     "candidate": {
       "placeId": "ChIJO427OlOlQTURLmuAD4KxOL8",
@@ -161,85 +197,97 @@
       "address": "〒830-0031 福岡県久留米市六ツ門町２２−１２"
     },
     "query": "ジャッカロープ 福岡県久留米市(西鉄久留米駅徒歩8分)",
-    "fetchedAt": "2026-07-27T07:10:15.389Z"
+    "fetchedAt": "2026-07-27T08:01:07.773Z"
   },
   "bar-jinga45": {
-    "placeId": "ChIJqaZnrcGlQTURvA58JBtGOJE",
-    "resolvedName": "バー ジンガ45",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１０−３９",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJqaZnrcGlQTURvA58JBtGOJE",
+      "name": "バー ジンガ45",
+      "address": "〒830-0031 福岡県久留米市六ツ門町１０−３９"
+    },
     "query": "バー ジンガ45 福岡県久留米市(西鉄久留米駅徒歩9分)",
-    "matchBy": "店名exact",
-    "fetchedAt": "2026-07-27T07:10:12.580Z"
+    "fetchedAt": "2026-07-27T08:01:06.442Z"
   },
   "bar-kurume-standard": {
     "placeId": "ChIJrefkjLOlQTURqR22f-nUsZw",
     "resolvedName": "久留米昼飲み酒場 くるめスタンダード",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３４−３８ 2階",
     "query": "くるめスタンダード 福岡県久留米市東町34-38 グラン久留米東町2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:41.750Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:20.478Z"
   },
   "bar-kusumi": {
     "placeId": "ChIJaX5-BoylQTURF8D3_IEXK2U",
     "resolvedName": "カフェ&ダイニングバーKUSUMI",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３６１−２９",
     "query": "カフェ&ダイニングバーKUSUMI 福岡県久留米市東町361-29",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:39.841Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:18.533Z"
   },
   "bar-lampsquare": {
     "placeId": "ChIJpT73tFakQTURvC_3AAbL-70",
     "resolvedName": "LAMP SQUARE (ランプスクエア)",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２５−２５",
     "query": "BAR & CAFE LAMP SQUARE(ランプスクエア) 福岡県久留米市東町25-25 マルシェビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:09:46.932Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:02.142Z"
   },
   "bar-le-coeur": {
     "placeId": "ChIJT3Am9vikQTURH4Z26lqFiFU",
     "resolvedName": "Bar ルクール",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町９−３６",
     "query": "バー ル・クール 福岡県久留米市日吉町9-36 1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:32.660Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:21.392Z"
   },
   "bar-live-actor": {
     "placeId": "ChIJdY_5JvmkQTURzPjNFdd-eUg",
     "resolvedName": "Live Bar Actor（アクター）",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町４−１８ 姫野パークインビル 4階",
     "query": "Live Bar Actor 福岡県久留米市日吉町4-18 姫野ビル4F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:35.637Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:24.361Z"
   },
   "bar-lucy": {
-    "placeId": "ChIJKUX73VWkQTURyDkcs502naQ",
-    "resolvedName": "Cafe & Bar LUCY",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１０−４６",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「カフェアンドバー ルーシー(LUCY)」/ 先頭解決「Cafe & Bar LUCY」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJKUX73VWkQTURyDkcs502naQ",
+      "name": "Cafe & Bar LUCY",
+      "address": "〒830-0031 福岡県久留米市六ツ門町１０−４６"
+    },
     "query": "カフェアンドバー ルーシー(LUCY) 福岡県久留米市六ツ門町10-46 TRビル2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:44.809Z"
+    "fetchedAt": "2026-07-27T08:01:33.066Z"
   },
   "bar-manuka": {
     "placeId": "ChIJU_JbFVGkQTURcEuqYw-heBs",
     "resolvedName": "Dining＆Party MANUQA（マヌーカ）",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−５ 第3二又ビル B1F",
     "query": "マヌーカ 福岡県久留米市東町33-5 第3二又ビルB1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:09:44.413Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:00:59.786Z"
   },
   "bar-mix": {
     "placeId": "ChIJyT_bs0ulQTURcDf6HP8qmZs",
     "resolvedName": "BAR MIX",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２５−４３",
     "query": "BAR MIX(バー ミックス) 福岡県久留米市東町25-43 2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:11.297Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:05.686Z"
   },
   "bar-nightin-philippine": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「NIGHTIN PHILIPPINE／六ツ門町」/ 解決「ナイトイン洋子」)"
+      "店名が一致する候補なし(元「NIGHTIN PHILIPPINE」/ 先頭解決「ナイトイン洋子」)"
     ],
     "candidate": {
       "placeId": "ChIJ20TY6vikQTURE5iNNtiAUG8",
@@ -247,101 +295,137 @@
       "address": "〒830-0017 福岡県久留米市日吉町１４−７３ 浄ビル"
     },
     "query": "NIGHTIN PHILIPPINE 福岡県久留米市六ツ門町2丁目6 第五イズミヤビル5F",
-    "fetchedAt": "2026-07-27T07:10:38.370Z"
+    "fetchedAt": "2026-07-27T08:01:27.230Z"
   },
   "bar-nikka-kuma": {
-    "placeId": "ChIJu-hKeFakQTURH-r1_-6WVZ8",
-    "resolvedName": "ニッカバー熊",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２１−１ 山中店舗",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJu-hKeFakQTURH-r1_-6WVZ8",
+      "name": "ニッカバー熊",
+      "address": "〒830-0031 福岡県久留米市六ツ門町２１−１ 山中店舗"
+    },
     "query": "ニッカバー熊 福岡県久留米市(西鉄久留米駅徒歩7分)",
-    "matchBy": "店名exact",
-    "fetchedAt": "2026-07-27T07:10:13.799Z"
+    "fetchedAt": "2026-07-27T08:01:07.093Z"
   },
   "bar-olive": {
-    "placeId": "ChIJnUU6dVGkQTURl1SeQOnGmlY",
-    "resolvedName": "角打ちBarオリーブ",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町４０−１５ 森川ビル",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJnUU6dVGkQTURl1SeQOnGmlY",
+      "name": "角打ちBarオリーブ",
+      "address": "〒830-0032 福岡県久留米市東町４０−１５ 森川ビル"
+    },
     "query": "角打ちBarオリーブ 福岡県久留米市(久留米一番街商店街周辺)",
-    "matchBy": "店名exact",
-    "fetchedAt": "2026-07-27T07:09:43.383Z"
+    "fetchedAt": "2026-07-27T08:00:58.455Z"
   },
   "bar-oneshot": {
     "placeId": "ChIJpXrIc1GkQTURcrORJi5eBBc",
     "resolvedName": "ワンショット",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町４０−８ 石橋ビル 5F",
     "query": "ワン ショット 福岡県久留米市東町40-8 石橋ビル5F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:09:41.502Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:00:57.093Z"
   },
   "bar-oshu-kitchen-alma": {
-    "placeId": "ChIJf1_4_lKlQTURV0dAvqzXazk",
-    "resolvedName": "欧州キッチン アルマ",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２１−７",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「21-7-102」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJf1_4_lKlQTURV0dAvqzXazk",
+      "name": "欧州キッチン アルマ",
+      "address": "〒830-0031 福岡県久留米市六ツ門町２１−７"
+    },
     "query": "欧州キッチンアルマ 福岡県久留米市六ツ門町21-7-102",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:09:45.446Z"
+    "fetchedAt": "2026-07-27T08:01:00.920Z"
   },
   "bar-papermoon": {
     "placeId": "ChIJ8deVa1GkQTURHZ_0Z5GAkTU",
     "resolvedName": "ペーパームーン",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３９−２８ パレットビル 2F",
     "query": "ペーパームーン 福岡県久留米市東町39-28 パレットビル",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:09:43.872Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:00:58.970Z"
   },
   "bar-remember": {
-    "placeId": "ChIJk7V1ElGkQTUR-md3aqPqHtw",
-    "resolvedName": "Remember",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町39−１１ 2F 一番街",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「リメンバー」/ 先頭解決「Remember」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJk7V1ElGkQTUR-md3aqPqHtw",
+      "name": "Remember",
+      "address": "〒830-0032 福岡県久留米市東町39−１１ 2F 一番街"
+    },
     "query": "リメンバー 福岡県久留米市東町39-11 一番街灘小ビル2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:09:40.945Z"
+    "fetchedAt": "2026-07-27T08:00:56.534Z"
   },
   "bar-replica": {
     "placeId": "ChIJqZMvKyylQTUR8DqMe1H0p9E",
     "resolvedName": "REPLICA",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−２６ 田中ビル 2F",
     "query": "BAR REPLICA(バーレプリカ) 福岡県久留米市日吉町8-26 田中ビル2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:41.389Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:30.171Z"
   },
   "bar-rojiura-sakahari": {
-    "placeId": "ChIJEbFNGqylQTUR8kdBKAQtY-Q",
-    "resolvedName": "立ち呑み酒場 ロヂウラ酒八利 (しゅはり)",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３４−４５",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJEbFNGqylQTUR8kdBKAQtY-Q",
+      "name": "立ち呑み酒場 ロヂウラ酒八利 (しゅはり)",
+      "address": "〒830-0032 福岡県久留米市東町３４−４５"
+    },
     "query": "ロヂウラ酒八利 福岡県久留米市(久留米一番街商店街周辺)",
-    "matchBy": "店名partial",
-    "fetchedAt": "2026-07-27T07:09:42.703Z"
+    "fetchedAt": "2026-07-27T08:00:57.718Z"
   },
   "bar-roulette": {
-    "placeId": "ChIJZUWSqFCkQTUR0GDJUGVnhOk",
-    "resolvedName": "ルーレットジャズ喫茶",
-    "resolvedAddress": "〒830-0018 福岡県久留米市通町１０５−２２",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「Roulette」/ 先頭解決「ルーレットジャズ喫茶」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJZUWSqFCkQTUR0GDJUGVnhOk",
+      "name": "ルーレットジャズ喫茶",
+      "address": "〒830-0018 福岡県久留米市通町１０５−２２"
+    },
     "query": "Roulette 福岡県久留米市通町105-22",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:36.716Z"
+    "fetchedAt": "2026-07-27T08:01:25.445Z"
   },
   "bar-secondo": {
     "placeId": "ChIJ__9rEVGkQTUROo0nRxnel8E",
     "resolvedName": "SECONDO WINE MEAT ITALY",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３８−３１",
     "query": "SECONDO Cafe&Bar 福岡県久留米市東町38-31 ひかりビル1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:33.800Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:22.416Z"
   },
   "bar-shuffle": {
     "placeId": "ChIJd5iRYhalQTURPvk4h8_rPxo",
     "resolvedName": "SHUFFLE（シャッフル 久留米）",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町34−１４",
     "query": "SHUFFLE(シャッフル) 福岡県久留米市東町34-14",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:39.475Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:28.460Z"
   },
   "bar-sling": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「バー スリング／町名不明」/ 解決「BAR sling」)"
+      "店名が一致する候補なし(元「バー スリング」/ 先頭解決「BAR sling」)"
     ],
     "candidate": {
       "placeId": "ChIJXz7WdU-lQTURp4OH4zXol-8",
@@ -349,69 +433,87 @@
       "address": "〒830-0032 福岡県久留米市東町２６−１ 日吉ビル 2F"
     },
     "query": "バー スリング 福岡県久留米市(西鉄久留米駅徒歩6分)",
-    "fetchedAt": "2026-07-27T07:10:10.661Z"
+    "fetchedAt": "2026-07-27T08:01:05.011Z"
   },
   "bar-stown": {
-    "placeId": "ChIJBZRdMv-kQTURsBiFiqHLgOc",
-    "resolvedName": "バーズタウン",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２−７９ 上野第７ビル",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「BAR'S TOWN」/ 先頭解決「バーズタウン」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJBZRdMv-kQTURsBiFiqHLgOc",
+      "name": "バーズタウン",
+      "address": "〒830-0031 福岡県久留米市六ツ門町２−７９ 上野第７ビル"
+    },
     "query": "BAR'S TOWN 福岡県久留米市六ツ門町2-79 明星ビル",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:35.078Z"
+    "fetchedAt": "2026-07-27T08:01:23.710Z"
   },
   "bar-tabetaria": {
     "placeId": "ChIJj1_y51GkQTURwd2vfpu0S14",
     "resolvedName": "タベタリア",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町１５１ セイコービル １F",
     "query": "久留米バル タベタリア 福岡県久留米市天神町151",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:41.999Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:30.805Z"
   },
   "bar-tico": {
-    "placeId": "ChIJuYx88VWlQTURgullzoYHAUc",
-    "resolvedName": "Bar.Tico",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町２５−２４",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJuYx88VWlQTURgullzoYHAUc",
+      "name": "Bar.Tico",
+      "address": "〒830-0032 福岡県久留米市東町２５−２４"
+    },
     "query": "Bar．Tico 福岡県久留米市(文化街商店街周辺)",
-    "matchBy": "店名exact",
-    "fetchedAt": "2026-07-27T07:09:48.009Z"
+    "fetchedAt": "2026-07-27T08:01:03.551Z"
   },
   "bar-welmona": {
     "placeId": "ChIJfS2mPIKlQTUR4BDQcCd1cLQ",
     "resolvedName": "ウェルモナ",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１５ 三共第2ビル 5F",
     "query": "BAR WELMONA(バー ウェルモナ) 福岡県久留米市日吉町8-15 三共第2ビル501",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:40.785Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:29.642Z"
   },
   "bar-zetton": {
-    "placeId": "ChIJx4NhVFGkQTURQkVPPKhgJSU",
-    "resolvedName": "ＺＥＴＴＯＮ",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−２７ 永渕ビル",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ゼットン」/ 先頭解決「ＺＥＴＴＯＮ」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJx4NhVFGkQTURQkVPPKhgJSU",
+      "name": "ＺＥＴＴＯＮ",
+      "address": "〒830-0032 福岡県久留米市東町３２−２７ 永渕ビル"
+    },
     "query": "ゼットン 福岡県久留米市東町32-27 2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:09:45.929Z"
+    "fetchedAt": "2026-07-27T08:01:01.432Z"
   },
   "concafe-hakuchumu": {
     "placeId": "ChIJM6e6WpGlQTUR36km8PdV_6g",
     "resolvedName": "メイド Cafe & Bar 白昼夢",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−３０ イーストビル",
     "query": "メイドCafe&Bar 白昼夢 福岡県久留米市東町32-30 イーストビル",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:04.998Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:47.607Z"
   },
   "concafe-kurukuru-bakyun": {
     "placeId": "ChIJfdlA0VekQTURyGnYgxaO_V8",
     "resolvedName": "アニソンバーくるくるばきゅーん",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１２−３３ トマトビル 4階",
     "query": "くるくるばきゅ〜ん 福岡県久留米市日吉町12-33 トマトビル4階A号室",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:05.822Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:48.222Z"
   },
   "concafe-neko-maid-seven": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「猫メイドBar Seven／東町」/ 解決「Live Cafe Seventh Heaven」)"
+      "番地が一致する候補なし(元「32-29」/ 近隣別番地または住所曖昧の疑い)"
     ],
     "candidate": {
       "placeId": "ChIJjXJgf1qkQTURqyD2DhAb94M",
@@ -419,205 +521,223 @@
       "address": "〒830-0018 福岡県久留米市通町１０９−２ 貝田ビル ２階"
     },
     "query": "猫メイドBar Seven 福岡県久留米市東町32-29 井上ビル2F",
-    "fetchedAt": "2026-07-27T07:11:07.536Z"
+    "fetchedAt": "2026-07-27T08:01:49.966Z"
   },
   "concafe-paracora": {
     "placeId": "ChIJsxupWgClQTURHd1dfZ6Y7zk",
     "resolvedName": "Cafe & Bar ぱらコラ",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２６−４ タイムビル ２Ｆ",
     "query": "天使×悪魔コンセプトCafe＆Bar ぱらコラッ!! 福岡県久留米市東町26-4 ザ・タイムビル2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:06.364Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:48.836Z"
   },
   "concafe-seventh-heaven": {
     "placeId": "ChIJjXJgf1qkQTURqyD2DhAb94M",
     "resolvedName": "Live Cafe Seventh Heaven",
     "resolvedAddress": "〒830-0018 福岡県久留米市通町１０９−２ 貝田ビル ２階",
     "query": "ライブカフェ セブンスヘブン(Live Cafe Seventh Heaven) 福岡県久留米市通町109-2 貝田ビル2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:29.599Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:20.280Z"
   },
   "concafe-soul-one": {
-    "placeId": "ChIJbzJXDiSlQTURskxBssXt4KQ",
-    "resolvedName": "こもれび久留米文化街",
-    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 3F 3階",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-22」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJbzJXDiSlQTURskxBssXt4KQ",
+      "name": "こもれび久留米文化街",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 3F 3階"
+    },
     "query": "ConceptBar SOUL_ONE 福岡県久留米市日吉町13-22 ミーユービル1階",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:06.944Z"
+    "fetchedAt": "2026-07-27T08:01:49.396Z"
   },
   "izakaya-akachochin-bunkagai": {
-    "placeId": "ChIJCzRYQjylQTURg6vejcRpmc8",
-    "resolvedName": "とり酒場炭人",
-    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１８−２５",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「14-34」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJCzRYQjylQTURg6vejcRpmc8",
+      "name": "とり酒場炭人",
+      "address": "〒830-0017 福岡県久留米市日吉町１８−２５"
+    },
     "query": "九州あかちょうちん 久留米文化街市場(日吉町店) 福岡県久留米市日吉町14-34",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:54.081Z"
+    "fetchedAt": "2026-07-27T08:02:32.411Z"
   },
   "izakaya-amenita-pizzeria": {
     "placeId": "ChIJiVcLclqkQTUR_4xqATmqyUg",
     "resolvedName": "Pizzeria Amenita (ピッツェリア アメニータ)",
     "resolvedAddress": "〒830-0015 福岡県久留米市螢川町１０−１",
     "query": "Pizzeria Amenita(ピッツェリア アメニータ) 福岡県久留米市螢川町10-1",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:25.652Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:05.744Z"
   },
   "izakaya-arbequina": {
     "placeId": "ChIJKY77ZFakQTURbb43gVoTQOs",
     "resolvedName": "アルベキーナ",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２２−１",
     "query": "アルベキーナ(Arbequina) 福岡県久留米市六ツ門町22-1",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:22.414Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:02.084Z"
   },
   "izakaya-bansun": {
     "placeId": "ChIJYWJq_XGlQTURxhM_wkwKUOQ",
     "resolvedName": "久留米 和洋/創作酒場 晩餐-Bansun-",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町１５２−４ 第6 富太 屋ビル101",
     "query": "和洋 創作酒場 晩餐 BANSUN 福岡県久留米市天神町152-4 トミタヤビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:58.156Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:42.044Z"
   },
   "izakaya-bonbori": {
     "placeId": "ChIJ5dxKY1akQTURX2mdkC3U-E4",
     "resolvedName": "鍋居酒屋ぼんぼり",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２２−１５",
     "query": "居酒屋 ぼんぼり 福岡県久留米市六ツ門町22-15",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:24.509Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:15.450Z"
   },
   "izakaya-bracca-brocco": {
     "placeId": "ChIJKXR5fFakQTURu8JF24mFvd4",
     "resolvedName": "ブラッカ·ブロッコ",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２２−２０",
     "query": "ブラッカ・ブロッコ 福岡県久留米市六ツ門町22-20",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:23.979Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:14.921Z"
   },
   "izakaya-brioso": {
     "placeId": "ChIJzzp2ilGkQTUR2EWMnSZkS4E",
     "resolvedName": "Dining BRIOSO",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町７５−３ アンデルセンビル B1F",
     "query": "Dining BRIOSO(ダイニング ブリオッソ) 福岡県久留米市天神町75-3 アンデルセンビルB1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:25.138Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:05.119Z"
   },
   "izakaya-buonricordo": {
     "placeId": "ChIJHaRXC1ekQTURRSrHxC9cWOQ",
     "resolvedName": "ブオンリコルドイタリア料理",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町２０−８",
     "query": "ブオンリコルド 福岡県久留米市日吉町20-8",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:21.298Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:00.814Z"
   },
   "izakaya-choutei": {
     "placeId": "ChIJE2lPkVakQTURDtkiNUkco8M",
     "resolvedName": "中国家庭料理 丁丁(ちょうちょう)",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２５−４７ 観光ビル",
     "query": "中国家庭料理丁丁 福岡県久留米市東町25-47 観光ビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:18.170Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:58.462Z"
   },
   "izakaya-ciaogola-van": {
     "placeId": "ChIJkZWIEFSkQTURyz_iSph7CvE",
     "resolvedName": "イタリア食堂 チャオ ゴーラ バン",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３０−３９ ライオンズマンション 久留米",
     "query": "チャオ・ゴーラ バン 福岡県久留米市東町30-39",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:15.340Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:56.063Z"
   },
   "izakaya-daisen": {
     "placeId": "ChIJ3ZXwGVSkQTURHPgh-OEACSU",
     "resolvedName": "久留米だいせん",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３０−１ 青木ビル 1F",
     "query": "久留米だいせん 福岡県久留米市東町30-1 青木ビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:50.767Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:29.489Z"
   },
   "izakaya-delica-amenita": {
     "placeId": "ChIJ71L3XrqlQTUR40Nd87A2ITA",
     "resolvedName": "Delica & Bal Amenita（デリカ&バル アメニータ）",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３１６−２ バスセンター内",
     "query": "Delica&Bal Amenita 福岡県久留米市東町316-2 西鉄久留米駅1Fバスセンター",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:15.988Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:08.340Z"
   },
   "izakaya-gekkoyoku": {
     "placeId": "ChIJO8uEq1akQTURrnwrTlAXx50",
     "resolvedName": "月光浴",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２５−３ ブラザービル 1F",
     "query": "月光浴 福岡県久留米市東町25-3 ブラザービル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:25.658Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:16.784Z"
   },
   "izakaya-geta": {
     "placeId": "ChIJ3UK8qSqlQTURCX0E2Zr3gzk",
     "resolvedName": "下駄",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−２６",
     "query": "下駄 福岡県久留米市東町32-26",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:18.440Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:10.644Z"
   },
   "izakaya-ginshari": {
     "placeId": "ChIJO9lIxfikQTUR1DuLCqa12as",
     "resolvedName": "焼肉銀しゃり 直球 久留米店",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−１８",
     "query": "焼肉 銀しゃり 直球 久留米店 福岡県久留米市日吉町6-18",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:02.302Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:45.796Z"
   },
   "izakaya-goju-ban": {
     "placeId": "ChIJn7gXFlGkQTUR3J3KHM0lFAA",
     "resolvedName": "ギョウザ 五十番",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３４−４２",
     "query": "五十番 福岡県久留米市東町34-42",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:09.125Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:51.161Z"
   },
   "izakaya-gokuu": {
     "placeId": "ChIJDXErM_-kQTUR_H-bSux4CQg",
     "resolvedName": "悟空",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２−８２",
     "query": "中華料理悟空 福岡県久留米市六ツ門町2-82",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:16.395Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:56.721Z"
   },
   "izakaya-gonanbou": {
     "placeId": "ChIJDWUCOxelQTURwG1nox35cLo",
     "resolvedName": "やきにく五男坊",
     "resolvedAddress": "〒830-0023 福岡県久留米市中央町２３−１",
     "query": "やきにく 五男坊 福岡県久留米市中央町23-1",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:27.376Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:07.574Z"
   },
   "izakaya-grill-party": {
     "placeId": "ChIJ05yXsTSlQTUR_ZsX7MmNqMQ",
     "resolvedName": "炭火焼肉Grill Party久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町39−２７ 第一森光ビル 1F",
     "query": "Grill Party(グリルパーティー) 久留米店 福岡県久留米市東町39-27 第一森光ビル1階",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:38.113Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:16.670Z"
   },
   "izakaya-gui-ya": {
     "placeId": "ChIJtScODCmlQTURnEuaj5qUuYs",
     "resolvedName": "韓国炭火焼き グイ屋",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町39−３１ 1F",
     "query": "韓国炭火焼き グイ屋 福岡県久留米市東町39-31",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:34.269Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:14.141Z"
   },
   "izakaya-gyoza-gokutora-toorimachi": {
-    "placeId": "ChIJwSebFfikQTURiWEUnrvFEtE",
-    "resolvedName": "極虎餃子 通町店『 ｳﾙﾄﾗｷﾞｮｳｻﾞ』【久留米 食べ飲み放題】",
-    "resolvedAddress": "〒830-0018 福岡県久留米市通町４−３",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「4-4」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJwSebFfikQTURiWEUnrvFEtE",
+      "name": "極虎餃子 通町店『 ｳﾙﾄﾗｷﾞｮｳｻﾞ』【久留米 食べ飲み放題】",
+      "address": "〒830-0018 福岡県久留米市通町４−３"
+    },
     "query": "ウルトラギョーザ 極虎餃子 通町店 福岡県久留米市通町4-4",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:24.560Z"
+    "fetchedAt": "2026-07-27T08:02:04.510Z"
   },
   "izakaya-gyoza-sakaba": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「餃子酒場 ギョウザサカバ／日吉町」/ 解決「ぎょうざ家TAKA」)"
+      "番地が一致する候補なし(元「13-7」/ 近隣別番地または住所曖昧の疑い)"
     ],
     "candidate": {
       "placeId": "ChIJWfKoy6alQTURcDKziAbYo4U",
@@ -625,517 +745,575 @@
       "address": "〒830-0038 福岡県久留米市西町１２０１−２"
     },
     "query": "餃子酒場 ギョウザサカバ 福岡県久留米市日吉町13-7",
-    "fetchedAt": "2026-07-27T07:11:30.820Z"
+    "fetchedAt": "2026-07-27T08:02:11.268Z"
   },
   "izakaya-hamada": {
     "placeId": "ChIJh07EZvikQTURUrMzAuxksGc",
     "resolvedName": "串乃宴 はま田",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町９−１２",
     "query": "串乃宴 はま田 久留米 福岡県久留米市日吉町9-12 いわ井ビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:54.785Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:33.089Z"
   },
   "izakaya-hanhan": {
     "placeId": "ChIJs2vXFlGkQTURWSlN3buoOkY",
     "resolvedName": "炭火焼肉 絆繁（はんはん）",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３８−３７ 岩崎ビル 2F",
     "query": "炭火焼肉 絆繁(ハンハン) 福岡県久留米市東町38-37 岩崎ビル2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:51.828Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:30.624Z"
   },
   "izakaya-hidamari-hiyoshi": {
     "placeId": "ChIJjaH26lekQTURidjP56Srmyg",
     "resolvedName": "炭焼き･海鮮 陽溜(ひだまり)食堂 日吉店",
     "resolvedAddress": "〒830-0018 福岡県久留米市通町７−１",
     "query": "陽溜(ひだまり)食堂 日吉町店 福岡県久留米市通町7-1",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:01.744Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:45.185Z"
   },
   "izakaya-hidamari-honten": {
     "placeId": "ChIJVVWMylakQTURLLPiB1OUIt8",
     "resolvedName": "名物骨付きカルビと海鮮 陽溜(ひだまり)食堂 本店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２５−２１",
     "query": "陽溜(ひだまり)食堂 本店 福岡県久留米市東町25-21",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:01.180Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:44.594Z"
   },
   "izakaya-hiroya": {
     "placeId": "ChIJw5lzYuilQTURDE5xuu2YqME",
     "resolvedName": "焼肉ホルモンひろ屋",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町１−２０ 大和ビル",
     "query": "焼肉ホルモン ひろ屋 久留米 福岡県久留米市東町1-20",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:30.277Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:10.750Z"
   },
   "izakaya-hirukara-shinkichi": {
     "placeId": "ChIJn_KSOv-kQTURCEa5PaspYCU",
     "resolvedName": "昼カラ酒場 焼鳥しん吉",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３６−６",
     "query": "昼カラ酒場しん吉 福岡県久留米市東町36-6",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:26.809Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:06.846Z"
   },
   "izakaya-hitokuchi": {
     "placeId": "ChIJjW6W_tmlQTURQv58l8YYrLU",
     "resolvedName": "居酒屋HITOKUCHI（ひとくち）",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町２６−３４ 守谷第２ビル",
     "query": "居酒屋HITOKUCHI(ひとくち) 久留米 福岡県久留米市日吉町26-34 守谷第二ビル",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:49.559Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:28.057Z"
   },
   "izakaya-inatomi": {
     "placeId": "ChIJqVJ_IQClQTURDnQUyxHP1o4",
     "resolvedName": "イナトミ",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ッ門町2−９３ 新京極通り",
     "query": "舶来居酒屋 イナトミ 福岡県久留米市六ツ門町2-93",
-    "matchBy": "店名partial",
-    "fetchedAt": "2026-07-27T07:10:30.857Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:20.770Z"
   },
   "izakaya-isomaru": {
     "placeId": "ChIJAYGVOIelQTURrjT5QW_R5Qg",
     "resolvedName": "磯丸水産 西鉄久留米店",
     "resolvedAddress": "〒830-0034 福岡県久留米市大手町１−７",
     "query": "磯丸水産 西鉄久留米店 福岡県久留米市大手町1-7",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:50.598Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:39.070Z"
   },
   "izakaya-kadoya": {
     "placeId": "ChIJ_Uao2PikQTUR8sisQgackn4",
     "resolvedName": "酒処かどや",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町５−２１",
     "query": "酒処かどや 福岡県久留米市日吉町5-21",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:55.323Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:33.632Z"
   },
   "izakaya-kairakutei": {
-    "placeId": "ChIJK95lyFWkQTURcIwNhFFdWN0",
-    "resolvedName": "六ツ門町１８−５",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１８−５",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「偕楽亭」/ 先頭解決「六ツ門町１８−５」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJK95lyFWkQTURcIwNhFFdWN0",
+      "name": "六ツ門町１８−５",
+      "address": "〒830-0031 福岡県久留米市六ツ門町１８−５"
+    },
     "query": "偕楽亭 福岡県久留米市六ツ門町18-5",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:14.716Z"
+    "fetchedAt": "2026-07-27T08:01:55.573Z"
   },
   "izakaya-kakomian": {
     "placeId": "ChIJO-bfRlGkQTURuGe4uwVY1Ps",
     "resolvedName": "かこみ庵 西鉄久留米駅前店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−１",
     "query": "全席個室 居酒屋 九州料理 かこみ庵 西鉄久留米駅前店 福岡県久留米市東町33-1 1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:17.238Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:09.603Z"
   },
   "izakaya-kalbi-yokocho": {
     "placeId": "ChIJgwtikIqlQTURV46OzNkBHcY",
     "resolvedName": "久留米焼肉 カルビ横丁",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５ キャニオンシティビル 1F",
     "query": "久留米焼肉 カルビ横丁 福岡県久留米市日吉町13-45 キャニオンシティビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:29.155Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:09.495Z"
   },
   "izakaya-kamusa": {
     "placeId": "ChIJO2r9ikakQTURv8xhKv9kuSU",
     "resolvedName": "焼肉 カムサ",
     "resolvedAddress": "〒839-0862 福岡県久留米市野中町９９８−２８",
     "query": "焼肉 カムサ 福岡県久留米市野中町998-28",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:22.917Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:02.664Z"
   },
   "izakaya-kaneitsuho": {
     "placeId": "ChIJhbYrPFGkQTURdpOWeaq-gHs",
     "resolvedName": "寛永通宝",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町34−３２",
     "query": "和食旬彩庵 寛永通宝 久留米店 福岡県久留米市東町34-32 久留米一番街 松竹会館B1F・1F・2F・3F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:43.309Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:22.007Z"
   },
   "izakaya-karisamu": {
     "placeId": "ChIJA4StfUOlQTURCqOSBfNUEBY",
     "resolvedName": "カリサム /久留米・韓国料理・焼肉",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１−１",
     "query": "カリサム 福岡県久留米市六ツ門町1-1 久留米Yビル1階",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:38.647Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:17.222Z"
   },
   "izakaya-kasuriya": {
     "placeId": "ChIJURn54lWkQTURQOTdqmRHuOM",
     "resolvedName": "かすり屋",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町７−１８",
     "query": "レタしゃぶと馬刺のお店 かすり屋 福岡県久留米市六ツ門町7-18",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:53.383Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:31.774Z"
   },
   "izakaya-kawakko": {
     "placeId": "ChIJC1ZTL1qlQTURlEK1iNF9V-o",
     "resolvedName": "とりかわ博多かわっこ久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町39−２４ 天神愛眼ビル 1F",
     "query": "とりかわ博多かわっこ 久留米店 福岡県久留米市東町39-24 天神愛眼ビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:45.637Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:23.961Z"
   },
   "izakaya-kengohyaku": {
     "placeId": "ChIJ_2q_ylakQTURHkVjmt7Ab9g",
     "resolvedName": "旬魚馬菜 憲五百 久留米本店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町34−３",
     "query": "憲五百 久留米 福岡県久留米市東町34-3",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:49.368Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:37.595Z"
   },
   "izakaya-kiseki-tebasaki": {
     "placeId": "ChIJnQzlBwulQTURwtpV1P5qY5M",
     "resolvedName": "奇跡の手羽先 サラリーマン横丁 久留米一番街店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−９ 鷲崎ビル",
     "query": "奇跡の手羽先 久留米一番街店 福岡県久留米市東町33-9",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:22.164Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:13.201Z"
   },
   "izakaya-koguetsu": {
-    "placeId": "ChIJlyTQB2GlQTURt_uMIlopKKg",
-    "resolvedName": "ぎょうざ専門店湖月 工房",
-    "resolvedAddress": "〒830-0045 福岡県久留米市小頭町６−１",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「21-4」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJlyTQB2GlQTURt_uMIlopKKg",
+      "name": "ぎょうざ専門店湖月 工房",
+      "address": "〒830-0045 福岡県久留米市小頭町６−１"
+    },
     "query": "ぎょうざ専門店 湖月 福岡県久留米市六ツ門町21-4 くるめ二番街内",
-    "matchBy": "店名partial",
-    "fetchedAt": "2026-07-27T07:11:19.451Z"
+    "fetchedAt": "2026-07-27T08:01:59.710Z"
   },
   "izakaya-kokaro": {
     "placeId": "ChIJbZya2lWkQTURT4pRZx5-lGA",
     "resolvedName": "ライオンパーク 光華楼",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２０−１８",
     "query": "光華楼 福岡県久留米市六ツ門町20-18",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:09.624Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:51.687Z"
   },
   "izakaya-korean-mutsumon-pocha": {
     "placeId": "ChIJJXSrtl-lQTURCqkzoDe69Qg",
     "resolvedName": "韓流屋台 六ツ門ポチャ",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１０−９",
     "query": "韓流屋台 六ツ門 ポチャ 福岡県久留米市六ツ門町10-9",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:27.897Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:08.295Z"
   },
   "izakaya-kourin": {
-    "placeId": "ChIJEySFNVGkQTURvNKDm5R2t7A",
-    "resolvedName": "久留米ワシントンホテルプラザ",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町34−２",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「光臨」/ 先頭解決「久留米ワシントンホテルプラザ」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJEySFNVGkQTURvNKDm5R2t7A",
+      "name": "久留米ワシントンホテルプラザ",
+      "address": "〒830-0032 福岡県久留米市東町34−２"
+    },
     "query": "光臨 福岡県久留米市東町34-2 ワシントンプラザ1階",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:20.174Z"
+    "fetchedAt": "2026-07-27T08:02:00.247Z"
   },
   "izakaya-kuimonoya-wan": {
     "placeId": "ChIJF1ZcDFGkQTURmrtf7ViNaVo",
     "resolvedName": "くいもの屋わん 西鉄久留米駅前店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３９−8 第21 上野ビル 1・2F",
     "query": "くいもの屋わん 西鉄久留米駅前店 福岡県久留米市東町39-8 第21上野ビル1・2F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:50.019Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:38.391Z"
   },
   "izakaya-kunsei-mammauto": {
     "placeId": "ChIJOSsmZFWkQTUR7blpsom-LuM",
     "resolvedName": "燻製ビストロ マンマ·ユート",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３０−９ 1階",
     "query": "燻製ビストロ マンマ・ユート 福岡県久留米市東町30-9",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:31.336Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:11.911Z"
   },
   "izakaya-kushi-tanaka": {
     "placeId": "ChIJdZ1VP6OlQTUR_seTXoIvL44",
     "resolvedName": "串カツ田中 西鉄久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町39−１",
     "query": "串カツ田中 西鉄久留米店 福岡県久留米市東町39-1",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:50.137Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:28.775Z"
   },
   "izakaya-lucky-raku": {
     "placeId": "ChIJj5Ip1tmlQTUR4q4ahAcR3V8",
     "resolvedName": "愛酒場 楽㐂-LUCKY-",
     "resolvedAddress": "〒830-0018 福岡県久留米市通町105−１ 1F",
     "query": "愛酒場 楽㐂-LUCKY- 福岡県久留米市通町105-1 1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:52.423Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:31.239Z"
   },
   "izakaya-makanai-dojo": {
     "placeId": "ChIJ_RiOFVGkQTURp-09YMScipg",
     "resolvedName": "昼呑み処 まかない道場",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−７",
     "query": "昼呑み処 まかない道場 福岡県久留米市東町32-7",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:43.864Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:22.575Z"
   },
   "izakaya-marukichi": {
     "placeId": "ChIJk7OrV3mlQTUR0a3Yv49fGEQ",
     "resolvedName": "和処 まる吉",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町５−３３ ちとせビル 1階",
     "query": "焼き鳥 まる吉 久留米 福岡県久留米市日吉町5-33 ちとせビル1階",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:53.628Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:40.918Z"
   },
   "izakaya-matabee": {
     "placeId": "ChIJ3-_molakQTURF4EOjkIOMDo",
     "resolvedName": "又兵衛",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２６−１５",
     "query": "餃子の又兵衛 福岡県久留米市東町26-15",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:10.895Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:52.833Z"
   },
   "izakaya-matsuo": {
     "placeId": "ChIJdUsakVOkQTURGwjKPd_8-9o",
     "resolvedName": "海専松魚",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町４００−１４",
     "query": "海専 松魚(かいせん まつうお) 福岡県久留米市東町400-14 ハウス21ビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:48.324Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:26.783Z"
   },
   "izakaya-miraizaka": {
-    "placeId": "ChIJH-bD0JKlQTURcUOaoqfHQZ4",
-    "resolvedName": "旨唐揚げと居酒メシ ミライザカ",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−８",
+    "placeId": "ChIJU_JbFVGkQTURsasAI3yZ6OA",
+    "resolvedName": "旨唐揚げと居酒メシ 西鉄久留米 ミライザカ",
+    "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−５ ニューフタマタ第三ビル １Ｆ",
     "query": "旨唐揚げと居酒メシ 西鉄久留米ミライザカ 福岡県久留米市東町33-5 ニューフタマタ第三ビル1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:42.473Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:21.199Z"
   },
   "izakaya-moija": {
     "placeId": "ChIJiUlVFVGkQTURl8iZQGLpY1g",
     "resolvedName": "韓Dining モイジャ",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−５ ２F",
     "query": "韓ダイニング モイジャ 福岡県久留米市東町33-5 ニューフタマタ第3ビル2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:23.503Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:03.276Z"
   },
   "izakaya-momolabo": {
     "placeId": "ChIJ0Xn0l_ikQTURDpSazldge3A",
     "resolvedName": "モモラボ",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町日吉町 14−50 文化街三共ビル１F",
     "query": "Italian bar MOMOLABO(イタリアンバル モモラボ) 福岡県久留米市日吉町14-50 文化街三共ビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:26.298Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:06.358Z"
   },
   "izakaya-momonosuke": {
     "placeId": "ChIJTz2zQAClQTURHVUvDSy4xjo",
     "resolvedName": "居酒屋 とっとっと酒場 もものすけ",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−２９",
     "query": "とっとっと酒場 もものすけ 福岡県久留米市日吉町13-29",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:59.682Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:43.306Z"
   },
   "izakaya-motsunabe-sato": {
     "placeId": "ChIJaSFONAClQTURGYBl2g9uueE",
     "resolvedName": "もつ鍋 佐藤",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１−２ 1階",
     "query": "もつ鍋 佐藤 久留米 福岡県久留米市六ツ門町1-2",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:57.222Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:41.474Z"
   },
   "izakaya-mui": {
     "placeId": "ChIJnUU6dVGkQTUR2ni_qEr3LFw",
     "resolvedName": "無為",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町４０−１５ 森川ビル 3Ｆ",
     "query": "韓国家庭料理 無為 福岡県久留米市東町40-15 森川ビル2・3F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:18.760Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:59.069Z"
   },
   "izakaya-muttsumon-biyori": {
     "placeId": "ChIJB-oqDLOlQTURuW72l7JhUKA",
     "resolvedName": "酒と肉料理 六ツ門日和",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１０−３１",
     "query": "酒と肉料理 六ツ門日和 福岡県久留米市六ツ門町10-31",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:26.201Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:17.401Z"
   },
   "izakaya-nyanyan-chinese": {
     "placeId": "ChIJNfyy3VWkQTURN2Oh8x-8b9Q",
     "resolvedName": "ぎょうざ 娘娘",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１０−３４",
     "query": "娘娘 福岡県久留米市六ツ門町10-34",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:10.166Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:52.255Z"
   },
   "izakaya-okinawa-kizuna": {
     "placeId": "ChIJV9ONvlOkQTURn3GLhz02MkM",
     "resolvedName": "沖縄風居酒屋 絆",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町１５２−４ 第6 富太 屋ビル 1F",
     "query": "沖縄風居酒屋 絆 福岡県久留米市天神町152-4 第6富太屋ビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:17.009Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:57.336Z"
   },
   "izakaya-omoni": {
-    "placeId": "ChIJo-Tg6_ikQTUR5ve-8m0RgyA",
-    "resolvedName": "SouL in SeouL",
-    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−５ M.K.1ビル 101号",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「4-11」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJo-Tg6_ikQTUR5ve-8m0RgyA",
+      "name": "SouL in SeouL",
+      "address": "〒830-0017 福岡県久留米市日吉町７−５ M.K.1ビル 101号"
+    },
     "query": "韓国家庭料理 オモニ 福岡県久留米市日吉町4-11 2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:21.883Z"
+    "fetchedAt": "2026-07-27T08:02:01.536Z"
   },
   "izakaya-oregon": {
-    "placeId": "ChIJjdOzZFakQTURmQT-uvdss3Y",
-    "resolvedName": "ひとくち餃子 てん屋",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２２−３６",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「おれごん」/ 先頭解決「銀のすぷーん シティプラザ店」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJaU-QAVakQTUREKg-pbFsuoI",
+      "name": "銀のすぷーん シティプラザ店",
+      "address": "〒830-0031 福岡県久留米市六ツ門町８−１"
+    },
     "query": "おれごん 福岡県久留米市六ツ門町22-18",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:39.222Z"
+    "fetchedAt": "2026-07-27T08:02:17.802Z"
   },
   "izakaya-oubu": {
     "placeId": "ChIJ9yubg1GkQTURSQfYp6VSx5Q",
     "resolvedName": "創作和食Dining 櫻舞(さくらまい)",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町１１４ ターミナルホテル",
     "query": "櫻舞 福岡県久留米市天神町114 ターミナルホテル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:16.605Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:08.989Z"
+  },
+  "izakaya-pachino": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "候補ゼロ(店名+住所で解決できず)"
+    ],
+    "candidate": null,
+    "query": "パキーノ 福岡県久留米市東町39-28",
+    "fetchedAt": "2026-07-27T08:01:53.842Z"
   },
   "izakaya-rakuen": {
     "placeId": "ChIJMxKfalGkQTURdOoqx5LYM08",
     "resolvedName": "久留米居酒屋楽園",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３３−９ 鷲崎ビル 1F",
     "query": "居酒屋 楽園 福岡県久留米市東町33-9 鷲崎ビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:17.780Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:10.152Z"
   },
   "izakaya-ryuoukan-honten": {
     "placeId": "ChIJ37Po91OkQTURaRNTBcJqAKI",
     "resolvedName": "焼肉龍王館 久留米本店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町２９−１５ 第2サンシャインビル 1F",
     "query": "焼肉龍王館 久留米本店 福岡県久留米市東町29-15 第二サンシャインビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:13.995Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:55.085Z"
   },
   "izakaya-sakagura-shochiku": {
     "placeId": "ChIJhbYrPFGkQTURM58SPE7bFBw",
     "resolvedName": "酒蔵 松竹本店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３４−３２",
     "query": "酒蔵松竹 本店 福岡県久留米市東町34-32",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:20.025Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:11.265Z"
   },
   "izakaya-sakana-to-kushi-tsubomi": {
     "placeId": "ChIJVVVVVVakQTURvgmQaUjUZ5I",
     "resolvedName": "魚、串料理 つぼみ 一番街店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町25−３４",
     "query": "魚と串 つぼみ 福岡県久留米市東町25-34(一番街アーケード内)",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:25.096Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:16.038Z"
   },
   "izakaya-sakuraya": {
-    "placeId": "ChIJId7n4XalQTURR7J49roKWPg",
-    "resolvedName": "Grill Party 久留米店",
-    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１７ 文化街サンビル １F",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「もんじゃ焼き＆鉄板料理 SAKURAYA」/ 先頭解決「Grill Party 久留米店」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJId7n4XalQTURR7J49roKWPg",
+      "name": "Grill Party 久留米店",
+      "address": "〒830-0017 福岡県久留米市日吉町８−１７ 文化街サンビル １F"
+    },
     "query": "もんじゃ焼き＆鉄板料理 SAKURAYA 福岡県久留米市日吉町8-17 文化街サンビル1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:34.439Z"
+    "fetchedAt": "2026-07-27T08:01:23.001Z"
   },
   "izakaya-sanzoku-dining": {
     "placeId": "ChIJS66hHimlQTURSkd17HNZO3A",
     "resolvedName": "SANZOKU DINING さっさん",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３０−８ 野田ビル 2F",
     "query": "SANZOKU DINING さっさん 福岡県久留米市東町30-8 野田ビル2F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:51.175Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:39.718Z"
   },
   "izakaya-sengoku-ieyasu": {
     "placeId": "ChIJJY90FlGkQTURzTo38o2bVrY",
     "resolvedName": "戦国焼鳥家康 久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３４−４６",
     "query": "戦国焼鳥 家康 久留米店 福岡県久留米市東町34-46",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:48.715Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:37.042Z"
   },
   "izakaya-seppun": {
     "placeId": "ChIJD2uNn1CkQTURJdA93AM4Yno",
     "resolvedName": "通町 接吻",
     "resolvedAddress": "〒830-0018 福岡県久留米市通町５−１６",
     "query": "通町 接吻 福岡県久留米市通町5-16",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:47.211Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:25.655Z"
   },
   "izakaya-shanghai-shuka": {
-    "placeId": "ChIJdbxMsvikQTURlYLsA3P1v2s",
-    "resolvedName": "中国料理 上海酒家",
-    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２−６ 第五泉屋ﾋﾞﾙ ６階",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「2-16」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJdbxMsvikQTURlYLsA3P1v2s",
+      "name": "中国料理 上海酒家",
+      "address": "〒830-0031 福岡県久留米市六ツ門町２−６ 第五泉屋ﾋﾞﾙ ６階"
+    },
     "query": "上海酒家 福岡県久留米市六ツ門町2-16 泉屋ビル6F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:13.255Z"
+    "fetchedAt": "2026-07-27T08:01:54.368Z"
   },
   "izakaya-shinshin-tei": {
     "placeId": "ChIJgVqxY0GlQTURfKf6I6tVAvQ",
     "resolvedName": "辛辛亭",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町34−５６",
     "query": "大衆焼肉 辛辛亭 福岡県久留米市東町34-56",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:32.603Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:12.519Z"
   },
   "izakaya-shiroichi": {
     "placeId": "ChIJoRDxBFGkQTURVF-AoLIGuh8",
     "resolvedName": "ホルモン家しろ壱",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町38−４ 井上ビル 1F",
     "query": "ホルモン家 しろ壱 福岡県久留米市東町38-4 井上ビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:37.480Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:16.077Z"
   },
   "izakaya-shuntei": {
-    "placeId": "ChIJl13alFOkQTURMxdlgRXqNyU",
-    "resolvedName": "居酒屋 旬亭（しゅんてい）",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３６１−９",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJl13alFOkQTURMxdlgRXqNyU",
+      "name": "居酒屋 旬亭（しゅんてい）",
+      "address": "〒830-0032 福岡県久留米市東町３６１−９"
+    },
     "query": "居酒屋 旬亭(しゅんてい) 福岡県久留米市東町(番地要確認)",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:47.760Z"
+    "fetchedAt": "2026-07-27T08:02:26.201Z"
   },
   "izakaya-soul-in-seoul": {
     "placeId": "ChIJo-Tg6_ikQTUR5ve-8m0RgyA",
     "resolvedName": "SouL in SeouL",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−５ M.K.1ビル 101号",
     "query": "SouL in SeouL 福岡県久留米市日吉町7-5 m.k.1ビル101号",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:29.740Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:10.090Z"
   },
   "izakaya-sumibi-kushiya": {
     "placeId": "ChIJPzkPGAClQTURuX0l14_dIys",
     "resolvedName": "炭火ノ串や。ニューハカタスタイル 西鉄久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３９−８ 1階",
     "query": "炭火ノ串や ニューハカタスタイル 西鉄久留米駅前店 福岡県久留米市東町39-8 1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:59.151Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:42.641Z"
   },
   "izakaya-sumibi-sakagura-kita": {
     "placeId": "ChIJKXR5fFakQTUR9PjUUOmE4pc",
     "resolvedName": "炭火酒蔵 喜多 久留米店",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２２−２０",
     "query": "炭火 酒蔵 喜多 福岡県久留米市六ツ門町22-20 プリンス会館ビル1・2F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:23.478Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:14.370Z"
   },
   "izakaya-tacchan": {
     "placeId": "ChIJYX0vTv-lQTURdfjB6jPiTgE",
     "resolvedName": "大衆酒場餃子のたっちゃん久留米一番街店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３４−５４",
     "query": "大衆酒場餃子のたっちゃん 久留米一番街店 福岡県久留米市東町34-54",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:21.555Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:12.512Z"
   },
   "izakaya-taketora": {
     "placeId": "ChIJYdG1AEulQTURJUu5PQ724S4",
     "resolvedName": "博多一口餃子たけとら久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３９−８ 第21 上野ビル 1F",
     "query": "博多一口餃子たけとら 久留米店 福岡県久留米市東町39-8 上野ビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:00.322Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:44.029Z"
   },
   "izakaya-tashu": {
     "placeId": "ChIJB1Hxa1GkQTUR4sIkxPCkNPc",
     "resolvedName": "もつ鍋 田しゅう 久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町39−２４ 天神愛眼ビル 2F",
     "query": "もつ鍋 田しゅう 久留米店 福岡県久留米市東町39-24 天神愛眼ビル2F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:45.043Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:23.219Z"
   },
   "izakaya-tatami": {
     "placeId": "ChIJ4840UralQTURkVPY_XNnmU8",
     "resolvedName": "居酒屋TATAMI",
     "resolvedAddress": "〒830-0038 福岡県久留米市西町１４８６−１ 北村ビル 2階",
     "query": "居酒屋 たたみ 久留米店 福岡県久留米市西町1486-1 北村ビル2",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:51.922Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:40.296Z"
   },
   "izakaya-tetsunabe-nagata": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「鉄鍋ぎょうざながた／日吉町」/ 解決「創作焼鳥と鉄鍋餃子の店 虎徹」)"
+      "番地が一致する候補なし(元「15-57」/ 近隣別番地または住所曖昧の疑い)"
     ],
     "candidate": {
       "placeId": "ChIJ-d832lWkQTURSs032sXh220",
@@ -1143,165 +1321,183 @@
       "address": "〒830-0031 福岡県久留米市六ツ門町２１−１１ 翁ビル 1F"
     },
     "query": "鉄鍋ぎょうざながた 福岡県久留米市日吉町15-57",
-    "fetchedAt": "2026-07-27T07:11:11.512Z"
+    "fetchedAt": "2026-07-27T08:01:53.378Z"
   },
   "izakaya-todoit": {
     "placeId": "ChIJDTO6sT6lQTUR0IIyk8l52nc",
     "resolvedName": "todoit.つどい",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３１−１６ 1F",
     "query": "to do it. -つどい- 福岡県久留米市東町31-16 1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:40.362Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:19.146Z"
   },
   "izakaya-tomosuke": {
     "placeId": "ChIJ732X_VCkQTURJQH9yf1xyvg",
     "resolvedName": "串麺 ともすけ 久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３７−４",
     "query": "串・麺 ともすけ 久留米店 福岡県久留米市東町37-4",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:46.695Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:25.150Z"
   },
   "izakaya-tonya-donya": {
     "placeId": "ChIJYSh-E1GkQTURQLaKTlSMKZw",
     "resolvedName": "とんやどんや 久留米一番街店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３９−２ 馬場ビル 2F",
     "query": "とんやどんや 久留米一番街店 福岡県久留米市東町39-2 馬場ビル2F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:20.951Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:11.908Z"
   },
   "izakaya-tori-shiki": {
     "placeId": "ChIJDxMIvb2lQTURXMG0OXqNjTU",
     "resolvedName": "焼き鳥とり四季",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４９ ウルトラビル No.12",
     "query": "焼き鳥とり四季 福岡県久留米市日吉町13-49 ウルトラビルNo.12",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:36.834Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:15.483Z"
   },
   "izakaya-toriichizu": {
     "placeId": "ChIJEypbeQClQTURyvTpJllOJQM",
     "resolvedName": "とりいちず 久留米店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３９−４ マルマルビル1 1 3階",
     "query": "とりいちず 久留米店 福岡県久留米市東町39-4 マルマルビル1 1〜3階",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:03.956Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:46.941Z"
   },
   "izakaya-torimero": {
     "placeId": "ChIJ5d8SdPWlQTURDV2MsBqg_Q8",
     "resolvedName": "三代目鳥メロ 西鉄久留米一番街店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町34−４７ 原口剣生ビル 1階",
     "query": "三代目 鳥メロ 西鉄久留米一番街店 福岡県久留米市東町34-47 原口剣生ビル1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:10:22.925Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:13.845Z"
   },
   "izakaya-toriya-torisuke": {
     "placeId": "ChIJpWImqmOlQTURB7laBSJFDy8",
     "resolvedName": "備長焼 鳥助 西鉄久留米駅前店",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３８−３７",
     "query": "焼鳥 鳥助 西鉄久留米駅前店 福岡県久留米市東町38-37 岩崎ビル1F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:28.501Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:08.878Z"
   },
   "izakaya-torizakaba-sumibito": {
     "placeId": "ChIJCzRYQjylQTURg6vejcRpmc8",
     "resolvedName": "とり酒場炭人",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１８−２５",
     "query": "とり酒場 炭人 福岡県久留米市日吉町18-25",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:33.682Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:13.619Z"
   },
   "izakaya-toyfull-brewery": {
-    "placeId": "ChIJifE6xiOlQTUR8qphkuG0wVI",
-    "resolvedName": "クラフトビール醸造所&レストランTOYFULL BREWERY(トイフルブルワリー)",
-    "resolvedAddress": "〒830-0015 福岡県久留米市螢川町1F",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「59-1」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJifE6xiOlQTUR8qphkuG0wVI",
+      "name": "クラフトビール醸造所&レストランTOYFULL BREWERY(トイフルブルワリー)",
+      "address": "〒830-0015 福岡県久留米市螢川町1F"
+    },
     "query": "TOYFULL BREWERY 福岡県久留米市螢川町59-1 1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:46.138Z"
+    "fetchedAt": "2026-07-27T08:02:24.576Z"
   },
   "izakaya-tsukasa": {
     "placeId": "ChIJwaV5sHalQTURSTU8i_Sf_kQ",
     "resolvedName": "久留米焼鳥つかさ",
     "resolvedAddress": "〒830-0033 福岡県久留米市天神町５２−４ TSUKASA Building 1F",
     "query": "久留米焼鳥 つかさ 福岡県久留米市天神町52-4 TSUKASA Building 1F",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:48.901Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:27.326Z"
   },
   "izakaya-tsukune-yokocho": {
     "placeId": "ChIJ4cG4TFGkQTURbXsy6yznsQE",
     "resolvedName": "つくね横丁",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−１ 江頭ビル",
     "query": "つくね横丁 福岡県久留米市東町32-1",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:17.529Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:57.863Z"
   },
   "izakaya-warukaruma": {
     "placeId": "ChIJX-JQCr-lQTUR5PixNuGbDUk",
     "resolvedName": "バル カルマ",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町７−３５",
     "query": "洋風居酒屋 バルカルマ 久留米 福岡県久留米市六ツ門町7-35 秋山ビル1F",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:10:46.420Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:01:34.712Z"
   },
   "izakaya-yakiniku-zen": {
     "placeId": "ChIJdyNFEwClQTUR9C1zN0evSQI",
     "resolvedName": "やきにく善（ぜん）",
     "resolvedAddress": "〒830-0037 福岡県久留米市諏訪野町２７８０−２",
     "query": "やきにく 善 福岡県久留米市諏訪野町2780-2",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:35.350Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:14.845Z"
   },
   "izakaya-yakitori-susumu": {
     "placeId": "ChIJD27vtQylQTURP-flK1o-F5g",
     "resolvedName": "焼鳥 進",
     "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町２２−２７",
     "query": "焼鳥 進 福岡県久留米市六ツ門町22-27",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:02.845Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:01:46.358Z"
   },
   "izakaya-yakitori-yokozuna": {
     "placeId": "ChIJpYd2xPikQTURQoINiOeCEic",
     "resolvedName": "二代目 ヤキトリ横綱",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−１３",
     "query": "ヤキトリ横綱 福岡県久留米市日吉町6-13",
-    "matchBy": "町名一致+店名partial",
-    "fetchedAt": "2026-07-27T07:11:33.143Z"
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-27T08:02:13.084Z"
   },
   "izakaya-yolo": {
     "placeId": "ChIJJWwiFFGkQTURlqS86YA5rN0",
     "resolvedName": "肉酒場YOLO ヨロ",
     "resolvedAddress": "〒830-0032 福岡県久留米市東町38−３４",
     "query": "肉酒場 YOLO(ヨロ) 福岡県久留米市東町38-34",
-    "matchBy": "町名一致+店名exact",
-    "fetchedAt": "2026-07-27T07:11:51.293Z"
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-27T08:02:30.035Z"
   },
   "izakaya-zaku": {
     "placeId": "ChIJJ-nYxFSkQTURj6ZVh4ruH9E",
     "resolvedName": "炉端焼き 作゛",
     "resolvedAddress": "〒830-0038 福岡県久留米市西町１１７３−１−１０１",
     "query": "炉端焼き ざく作゛ 福岡県久留米市西町1173-1-101",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:24.038Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:02:03.891Z"
   },
   "poker-ace-and-king": {
-    "placeId": "ChIJJchwJQClQTURlmBwv0pdcj8",
-    "resolvedName": "久留米 KEN POKER",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−３",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「アミューズメントポーカー A&K」/ 先頭解決「久留米 KEN POKER」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJJchwJQClQTURlmBwv0pdcj8",
+      "name": "久留米 KEN POKER",
+      "address": "〒830-0032 福岡県久留米市東町３２−３"
+    },
     "query": "アミューズメントポーカー A&K 福岡県久留米市東町38-19 富田屋ビル3F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:28.980Z"
+    "fetchedAt": "2026-07-27T08:01:19.694Z"
   },
   "poker-ken": {
-    "placeId": "ChIJJchwJQClQTURlmBwv0pdcj8",
-    "resolvedName": "久留米 KEN POKER",
-    "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−３",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJJchwJQClQTURlmBwv0pdcj8",
+      "name": "久留米 KEN POKER",
+      "address": "〒830-0032 福岡県久留米市東町３２−３"
+    },
     "query": "KEN POKER(久留米KEN POKER) 福岡県久留米市(西鉄久留米駅徒歩5分)",
-    "matchBy": "店名partial",
-    "fetchedAt": "2026-07-27T07:10:28.421Z"
+    "fetchedAt": "2026-07-27T08:01:19.174Z"
   },
   "shisha-0942": {
     "placeId": "",
     "needsReview": true,
     "reviewReasons": [
-      "町名も店名も一致しない(元「SHISHA BAR 0942／町名不明」/ 解決「SHI SHA BAR X (シーシャバー エックス)」)"
+      "番地が一致する候補なし(元「番地不明」/ 近隣別番地または住所曖昧の疑い)"
     ],
     "candidate": {
       "placeId": "ChIJ3VkzKFakQTURM8WH9ZWoWmY",
@@ -1309,22 +1505,28 @@
       "address": "〒830-0017 福岡県久留米市日吉町１３−３２ 立花ビル 2F"
     },
     "query": "SHISHA BAR 0942 福岡県久留米市(西鉄久留米駅徒歩2分)",
-    "fetchedAt": "2026-07-27T07:10:27.081Z"
+    "fetchedAt": "2026-07-27T08:01:18.002Z"
   },
   "shisha-aima": {
-    "placeId": "ChIJFa4bMsalQTURalvUt4UA1xM",
-    "resolvedName": "炭火串焼 とり久",
-    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町５−２２ リバーパークビル １F",
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「5-22」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJFa4bMsalQTURalvUt4UA1xM",
+      "name": "炭火串焼 とり久",
+      "address": "〒830-0017 福岡県久留米市日吉町５−２２ リバーパークビル １F"
+    },
     "query": "久留米シーシャ あいま 福岡県久留米市日吉町5-22 リバーパークビル2F南",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:11:08.179Z"
+    "fetchedAt": "2026-07-27T08:01:50.493Z"
   },
   "shisha-x": {
     "placeId": "ChIJ3VkzKFakQTURM8WH9ZWoWmY",
     "resolvedName": "SHI SHA BAR X (シーシャバー エックス)",
     "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−３２ 立花ビル 2F",
     "query": "シーシャバーX 福岡県久留米市日吉町13-32 立花ビル2F",
-    "matchBy": "町名一致",
-    "fetchedAt": "2026-07-27T07:10:27.736Z"
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-27T08:01:18.531Z"
   }
 }
