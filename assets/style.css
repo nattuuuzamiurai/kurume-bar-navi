@@ -381,16 +381,76 @@ a.pill:hover { text-decoration: none; filter: brightness(1.1); }
 .facet-group { margin-bottom: 14px; }
 .facet-group:last-of-type { margin-bottom: 0; }
 .facet-group-title { margin: 0 0 8px; font-size: .8rem; font-weight: 700; color: var(--muted); }
-details.facet-group summary {
+
+/* 絞り込みアコーディオン(タグなど選択肢が多い軸)。
+   「ただの文字」で押せると気づきにくかったので、summary を明確に押せるピル型ボタンにし、
+   自前のシェブロンで開閉を示す(v2の提灯アンバー配色を踏襲)。 */
+details.facet-accordion { margin-bottom: 14px; }
+details.facet-accordion > summary {
+  list-style: none;               /* 既定の三角マーカーを消す(自前のシェブロンに置き換え) */
   cursor: pointer;
-  font-size: .8rem;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 8px;
-  min-height: 34px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 9px 15px;
+  margin-bottom: 10px;
+  font-size: .86rem;
+  font-weight: 800;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .05s ease;
 }
+details.facet-accordion > summary::-webkit-details-marker { display: none; }
+details.facet-accordion > summary::marker { content: ""; }
+details.facet-accordion > summary:hover {
+  border-color: var(--lantern);
+  background: var(--panel-3);
+  box-shadow: 0 0 0 2px rgba(255, 184, 77, .12);
+}
+details.facet-accordion > summary:active { transform: translateY(1px); }
+details.facet-accordion > summary:focus-visible {
+  outline: none;
+  border-color: var(--lantern);
+  box-shadow: 0 0 0 3px rgba(255, 184, 77, .30);
+}
+/* 開いている間は提灯アンバーで「選択中」を示す */
+details.facet-accordion[open] > summary {
+  border-color: rgba(255, 184, 77, .55);
+  background: rgba(255, 184, 77, .10);
+}
+.facet-summary-label { display: inline-flex; align-items: center; gap: 7px; }
+.facet-summary-count {
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--ground);
+  background: var(--lantern);
+  border-radius: 999px;
+  padding: 1px 8px;
+  min-width: 20px;
+  text-align: center;
+}
+.facet-chevron {
+  font-size: .9rem;
+  line-height: 1;
+  color: var(--lantern);
+  transition: transform .2s ease;
+}
+details.facet-accordion[open] > summary .facet-chevron { transform: rotate(180deg); }
+/* 「タップして選択」のマイクロコピー(押せる+複数選べることを伝える) */
+.facet-hint { margin: 0 0 9px; color: var(--muted); }
+/* 開いた状態でタグが多いと縦に伸びすぎるので、高さ上限+内部スクロールで収める */
+details.facet-accordion[open] > .tag-filter-list {
+  max-height: 216px;
+  overflow-y: auto;
+  padding: 2px 4px 2px 0;
+}
+
 .tag-filter-list { display: flex; flex-wrap: wrap; gap: 8px 10px; }
 .tag-filter-item {
   display: inline-flex;

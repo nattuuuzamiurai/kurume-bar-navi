@@ -179,6 +179,9 @@ const CUISINE_TAGS = new Set([
   // 2026-07-25 掲載漏れ24店の追加にともない、その店の看板となる料理ジャンルを併記できるよう追加。
   // いずれも既存の公開店舗では未使用のタグのため、既存店の業態表示ラベルには影響しない。
   "唐揚げ", "串カツ", "しゃぶしゃぶ", "水炊き", "ステーキ", "肉寿司", "馬刺し", "ラーメン",
+  // 2026-07-27 鉄板居酒屋 基地(お好み焼き店)の追加にともない併記。
+  // どちらも既存の公開店舗では未使用のタグのため、既存店の業態表示ラベルには影響しない。
+  "お好み焼き", "鉄板焼き",
 ]);
 
 // 店舗の料理ジャンル併記文字列を返す(izakaya かつ料理ジャンルタグがある場合のみ。
@@ -1193,7 +1196,10 @@ function collectTagCounts(venues) {
 
 // facetGroupHtml: エリア/業態/タグそれぞれのチェックボックス群を生成する。
 // idToLabel: {id: 表示名} のマップ(エリア名・業態名を出すため)。省略時はidをそのまま表示。
-function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge) {
+// collapsedIfLarge: 選択肢が多い軸を <details> アコーディオンにまとめる。
+// openByDefault: そのアコーディオンを既定で開いた状態で出す(タグのように「押せると気づきにくい」
+//                主要な軸は、中身が一目で見えるよう開いておく)。
+function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge, openByDefault = false) {
   if (counts.size === 0) return "";
   const entries = [...counts.entries()].sort((a, b) => {
     if (idToLabel) return 0; // エリア/業態は元の並び順を維持
@@ -1209,8 +1215,15 @@ function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge) {
 ${items}
   </div>`;
   if (collapsedIfLarge && entries.length > 8) {
-    return `<details class="facet-group">
-  <summary>${escapeHtml(title)}で絞り込む(${entries.length})</summary>
+    // summary を「押せると一目で分かる」ピル型ボタン + シェブロンにする(見た目は assets/style.css)。
+    // 既定のマーカー(三角)は list-style:none / ::marker で消し、自前のシェブロンを回転させる。
+    const openAttr = openByDefault ? " open" : "";
+    return `<details class="facet-group facet-accordion"${openAttr}>
+  <summary class="facet-summary">
+    <span class="facet-summary-label">${escapeHtml(title)}で絞り込む<span class="facet-summary-count">${entries.length}</span></span>
+    <span class="facet-chevron" aria-hidden="true">▾</span>
+  </summary>
+  <p class="facet-hint small">タップして選択(複数選べます)</p>
   ${inner}
 </details>`;
   }
@@ -1241,7 +1254,8 @@ function filterWidgetHtml(venues, venueListId, areas, categories) {
     const html = extraFacetHtml(venues, facet);
     if (html) groups.push(html);
   }
-  if (tagCounts.size > 0) groups.push(facetGroupHtml("tags", "タグ", tagCounts, null, true));
+  // タグは「押せると気づきにくい」という指摘を受け、既定で開いた状態(open)にして中身を見せる。
+  if (tagCounts.size > 0) groups.push(facetGroupHtml("tags", "タグ", tagCounts, null, true, true));
 
   if (groups.length === 0) return "";
 
