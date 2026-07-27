@@ -521,6 +521,52 @@ details.facet-group summary {
   font-size: .74rem;
 }
 
+/* ---------- Googleクチコミ★評価 ----------
+   空星(グレー)の上に金色の塗り星を --star-pct の幅でクリップして重ね、端数(半分星)も描画する。
+   提灯アンバー(--lantern)を塗り色に使い、v2の夜の繁華街テイストに馴染ませる。
+   Google帰属(.rating-source / .rating-src-sm)は★と同じコンテナ内に常時表示(隠さない・改変しない)。 */
+.stars { position: relative; display: inline-block; white-space: nowrap; line-height: 1; }
+.stars-empty { color: rgba(255, 255, 255, .20); }
+.stars-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  width: var(--star-pct, 0%);
+  color: var(--lantern);
+  text-shadow: 0 0 8px rgba(255, 184, 77, .45);
+}
+.stars-lg { font-size: 1.85rem; letter-spacing: 2px; }
+.stars-sm { font-size: .92rem; letter-spacing: 1px; }
+
+.rating-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, rgba(255, 184, 77, .12), rgba(255, 184, 77, .04));
+  border: 1px solid rgba(255, 184, 77, .30);
+  border-radius: var(--r);
+}
+.rating-hero-main { display: flex; align-items: center; gap: 10px; }
+.rating-score { font-size: 1.65rem; font-weight: 900; color: var(--ink); line-height: 1; }
+.rating-count { color: var(--muted); font-size: .92rem; }
+.rating-source { color: var(--muted); font-size: .74rem; letter-spacing: .02em; }
+
+.venue-card-rating { display: inline-flex; align-items: center; gap: 5px; }
+.rating-score-sm { font-weight: 800; color: var(--ink); font-size: .82rem; }
+.rating-src-sm {
+  color: var(--muted);
+  font-size: .62rem;
+  letter-spacing: .02em;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0 4px;
+  line-height: 1.5;
+}
+
 /* 情報セクション */
 .info-section { margin-bottom: 20px; }
 .section-heading {

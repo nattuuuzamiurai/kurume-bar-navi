@@ -95,6 +95,21 @@ GitHub Pages で公開
 - **鮮度**: 写真の最新性のため、`.github/workflows/deploy.yml` に日次cron(`30 15 * * *` = JST 00:30)を追加し毎日再取得・再デプロイする。push時トリガーも維持。
 - **リスク階層**: 本機能は「(1)公式ソース限定・(2)自サイトに保存しない・(3)出典明記・(4)削除依頼導線あり」という最低リスク形態の範囲内(上記「著作権リスク階層の線引き」参照)。ただし写真掲載店舗数が大きく増える((b)大規模展開に相当)ため、有料枠導入((d))など営利誘因を強める施策と併せる際は、必ずレビュー部の再判定を経ること。
 
+## Googleクチコミ★評価の自前表示(2026-07-27、社長承認)
+
+店の信頼性・選びやすさを高めるため、**Googleのクチコミ★評価**(例 `★★★★☆ 3.3(186件)`)を自前で描画して表示する。実装は `scripts/fetch-place-ids.js` + `scripts/fetch-ratings.js`(評価取得)+ `scripts/build.js`(★の描画)+ `.github/workflows/ratings.yml`(日次ローリング更新)。
+
+- **表示場所**: 店舗ページ上部に大きな★+`3.3(186件)`(`.rating-hero`)、一覧/検索カード内に小さな`★3.3`(`.venue-card-rating`)。★は空星の上に金色(提灯アンバー `--lantern`)の塗り星を `rating/5` の幅でクリップして重ね、端数(半分星)も描画する。評価が無い店は★を出さない(UI崩れなし)。
+- **Google帰属表示(必須・削除/改変/隠蔽NG)**: ★と同じ視覚コンテナ内に、店舗ページは「Google のクチコミ評価」、カードは小さな「Google」ラベルを常時表示する。CSSで hidden にしたり文言を変えたりしないこと(Google Places の利用規約の帰属要件)。
+- **コスト$0を厳守する取得設計(無料枠を絶対に超えない)**:
+  - `fetch-place-ids.js`: 公開店のうち **まだ place_id が無い店だけ** Text Search (New) で解決(FieldMask=`places.id,places.displayName,places.formattedAddress` → Pro SKU=無料枠 月5,000)。約161店を一度きり取得するだけなので実質$0。結果は `data/place-ids.json` に保存し**コミット**(状態を永続化・再取得しない)。
+  - `fetch-ratings.js`: `updatedAt` が最古/未取得の店から **1回最大 N=22 店だけ** Place Details (New) で `rating,userRatingCount` を取得(rating を含むと Enterprise SKU=無料枠 **月1,000**)。日次1回 × 22 × 31日 ≒ **682回/月 < 1,000回**。誤設定対策としてスクリプト内で N の上限を **30 にハードクランプ**(30×31=930 < 1,000)。結果は `data/ratings.json` に保存し**コミット**。161店なら各店およそ週1回更新。
+  - **build.js は評価APIを叩かない**。`data/ratings.json` を読むだけ。これにより deploy 時の二重課金・無限ループを防ぐ。
+- **誤マッチ検出(誤った店の評価を出さないことが最優先 / 2026-07-27 品質管理部指摘で強化)**: Text Search は同じ町内の無関係な店や同名の近隣別番地の店を返すことがある。採用は次の **すべて** を満たす候補のみ(1つでも欠ければ placeId を空のまま `needsReview` で保留し、警告ログ+先頭候補を残す): (a)解決住所に「久留米」を含む、(b)**店名が一致**(正規化+所在地ノイズ除去のうえ exact/部分一致/識別力のある共通部分。※店名一致は必須)、(c)**番地が一致**(元住所の番地が解決住所にも現れる。同名の近隣別番地(例 ミライザカ 東町33-8 と 33-5)を弾く)。Text Search の複数候補を評価して最良の1件を選ぶ(先頭を機械的に採らない)。保留店は評価を取得・表示しない。人が確認して正しければ `place-ids.json` の `placeId` を手で埋める / 取り直すならエントリを削除して再実行する。
+- **APIキー**: GitHub Secrets `GOOGLE_PLACES_API_KEY`(ratings.yml のジョブにのみ渡す。deploy.yml には渡さない)。コード・コミット・出力(dist)・ログに一切残さない。dist に出るのは数値(3.3 等)のみで、キーも place_id も出力しない。
+- **無限ループ防止・反映**: `ratings.yml` は **schedule/手動のみ**でトリガー(pushでは起動しない)。評価APIを叩くのはこのジョブだけ。更新で差分が出たら `data/*.json` をコミット/push し、その後 `deploy.yml` を `workflow_dispatch` で明示トリガーして本番反映する(GITHUB_TOKEN の push は他ワークフローの push トリガーを起動しないため。dispatch は例外的に起動可)。仮に dispatch が失敗しても deploy.yml の日次cronが翌日に最新 ratings.json を取り込むフォールバックになる。
+- **JSON-LD**: Google由来の第三者評価を自社の構造化データ(`aggregateRating`)として載せることは Google のリッチリザルト方針上のリスクがあるため、**JSON-LD には評価を出さない**(視覚表示+帰属のみ)。既存のJSON-LDは変更なし。
+
 ## 店舗ロゴ(2026-07-22)
 
 社長要望の最優先項目として、店舗ごとのロゴ表示を実装した。実装は `scripts/build.js` の `VENUE_LOGOS` / `venueIconSlotHtml()` / `venueLogoCreditHtml()`、スタイルは `assets/style.css` の「店舗ロゴ」節。
@@ -248,9 +263,15 @@ GitHub Pages で公開
 | `data/areas.json` | エリア定義(一番街・二番街・文化街・西鉄久留米駅周辺) |
 | `data/categories.json` | 業態定義(バー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラ) |
 | `data/venue-audit-log.md` | 削除(閉店)・フェーズ2移動した店舗の記録(店名・住所・理由・根拠URL・日付)。誤削除の検証・再判断用 |
+| `data/place-ids.json` | 各公開店の Google place_id(Text Searchで解決)。**コミットして状態を永続化**。誤マッチ疑いは placeId空+needsReviewで保留 |
+| `data/ratings.json` | 各公開店のGoogleクチコミ★評価(rating/userRatingCount/updatedAt)。ローリング更新の結果を**コミットして保持** |
 | `scripts/build.js` | 静的サイトビルドスクリプト(Node標準モジュールのみ、外部依存なし) |
+| `scripts/lib/published.js` | 公開/非公開の判定(業態allowlist+フェーズ2ID)。build.jsとfetch系スクリプトが共有する単一の真実の源 |
+| `scripts/fetch-place-ids.js` | Text Search (New) で place_id を解決(未取得分のみ / 誤マッチ検出付き)。→ `data/place-ids.json` |
+| `scripts/fetch-ratings.js` | Place Details (New) で★評価をローリング更新(1回最大N=22店 / 無料枠月1,000内)。→ `data/ratings.json` |
 | `assets/style.css` | 共通スタイルシート |
-| `.github/workflows/deploy.yml` | pushをトリガーにビルド→GitHub Pagesへ自動デプロイ |
+| `.github/workflows/deploy.yml` | pushをトリガーにビルド→GitHub Pagesへ自動デプロイ(評価APIは叩かず ratings.json を読むだけ) |
+| `.github/workflows/ratings.yml` | 日次cronで★評価をローリング更新→data/*.jsonをコミット/push→deploy.ymlをトリガー(scheduleのみ・pushでは起動せずループ防止) |
 | `dist/` | ビルド生成物(gitignore対象、コミットしない) |
 
 ## 店舗データの追加・更新方法

@@ -1,0 +1,452 @@
+{
+  "bar-141saketen": {
+    "rating": 4.4,
+    "userRatingCount": 22,
+    "updatedAt": "2026-07-27T08:03:21.770Z"
+  },
+  "bar-adei": {
+    "rating": 3.1,
+    "userRatingCount": 37,
+    "updatedAt": "2026-07-27T08:03:22.193Z"
+  },
+  "bar-atwill": {
+    "rating": 3.8,
+    "userRatingCount": 13,
+    "updatedAt": "2026-07-27T08:03:22.736Z"
+  },
+  "bar-bigisland": {
+    "rating": 5,
+    "userRatingCount": 2,
+    "updatedAt": "2026-07-27T08:03:23.197Z"
+  },
+  "bar-bistro-theater": {
+    "rating": 4.1,
+    "userRatingCount": 14,
+    "updatedAt": "2026-07-27T08:03:23.645Z"
+  },
+  "bar-bolester": {
+    "rating": 4.9,
+    "userRatingCount": 10,
+    "updatedAt": "2026-07-27T08:03:24.031Z"
+  },
+  "bar-borracho": {
+    "rating": 3.4,
+    "userRatingCount": 19,
+    "updatedAt": "2026-07-27T08:03:24.435Z"
+  },
+  "bar-cupanddish": {
+    "rating": null,
+    "userRatingCount": 0,
+    "updatedAt": "2026-07-27T08:03:24.828Z"
+  },
+  "bar-ebisu": {
+    "rating": null,
+    "userRatingCount": 0,
+    "updatedAt": "2026-07-27T08:03:25.174Z"
+  },
+  "bar-elocho": {
+    "rating": 4,
+    "userRatingCount": 61,
+    "updatedAt": "2026-07-27T08:03:25.528Z"
+  },
+  "bar-flavor": {
+    "rating": 3.7,
+    "userRatingCount": 31,
+    "updatedAt": "2026-07-27T08:03:25.869Z"
+  },
+  "bar-kurume-standard": {
+    "rating": 4.9,
+    "userRatingCount": 29,
+    "updatedAt": "2026-07-27T08:03:26.207Z"
+  },
+  "bar-kusumi": {
+    "rating": 4.4,
+    "userRatingCount": 97,
+    "updatedAt": "2026-07-27T08:03:26.583Z"
+  },
+  "bar-lampsquare": {
+    "rating": 3.9,
+    "userRatingCount": 54,
+    "updatedAt": "2026-07-27T08:03:26.993Z"
+  },
+  "bar-le-coeur": {
+    "rating": 4.7,
+    "userRatingCount": 15,
+    "updatedAt": "2026-07-27T08:03:27.391Z"
+  },
+  "bar-live-actor": {
+    "rating": 4.5,
+    "userRatingCount": 27,
+    "updatedAt": "2026-07-27T08:03:27.794Z"
+  },
+  "bar-manuka": {
+    "rating": 4.1,
+    "userRatingCount": 23,
+    "updatedAt": "2026-07-27T08:03:28.195Z"
+  },
+  "bar-mix": {
+    "rating": 5,
+    "userRatingCount": 4,
+    "updatedAt": "2026-07-27T08:03:28.573Z"
+  },
+  "bar-oneshot": {
+    "rating": 4.5,
+    "userRatingCount": 88,
+    "updatedAt": "2026-07-27T08:03:28.928Z"
+  },
+  "bar-papermoon": {
+    "rating": 4.6,
+    "userRatingCount": 101,
+    "updatedAt": "2026-07-27T08:03:29.308Z"
+  },
+  "bar-replica": {
+    "rating": 5,
+    "userRatingCount": 1,
+    "updatedAt": "2026-07-27T08:03:29.725Z"
+  },
+  "bar-secondo": {
+    "rating": 4.1,
+    "userRatingCount": 98,
+    "updatedAt": "2026-07-27T08:03:30.076Z"
+  },
+  "bar-shuffle": {
+    "rating": 4.2,
+    "userRatingCount": 6,
+    "updatedAt": "2026-07-27T08:03:30.428Z"
+  },
+  "bar-tabetaria": {
+    "rating": 3.6,
+    "userRatingCount": 111,
+    "updatedAt": "2026-07-27T08:03:30.771Z"
+  },
+  "bar-welmona": {
+    "rating": 4.9,
+    "userRatingCount": 22,
+    "updatedAt": "2026-07-27T08:03:31.163Z"
+  },
+  "concafe-hakuchumu": {
+    "rating": 3.8,
+    "userRatingCount": 18,
+    "updatedAt": "2026-07-27T08:03:31.554Z"
+  },
+  "concafe-kurukuru-bakyun": {
+    "rating": 4.7,
+    "userRatingCount": 6,
+    "updatedAt": "2026-07-27T08:03:31.952Z"
+  },
+  "concafe-paracora": {
+    "rating": 5,
+    "userRatingCount": 1,
+    "updatedAt": "2026-07-27T08:03:32.310Z"
+  },
+  "concafe-seventh-heaven": {
+    "rating": 4.4,
+    "userRatingCount": 37,
+    "updatedAt": "2026-07-27T08:03:32.674Z"
+  },
+  "izakaya-amenita-pizzeria": {
+    "rating": 4.2,
+    "userRatingCount": 302,
+    "updatedAt": "2026-07-27T08:03:33.073Z"
+  },
+  "izakaya-arbequina": {
+    "rating": 4.3,
+    "userRatingCount": 74,
+    "updatedAt": "2026-07-27T08:03:33.341Z"
+  },
+  "izakaya-bansun": {
+    "rating": 4.6,
+    "userRatingCount": 44,
+    "updatedAt": "2026-07-27T08:03:33.684Z"
+  },
+  "izakaya-bonbori": {
+    "rating": 4,
+    "userRatingCount": 44,
+    "updatedAt": "2026-07-27T08:03:34.019Z"
+  },
+  "izakaya-bracca-brocco": {
+    "rating": 4.3,
+    "userRatingCount": 36,
+    "updatedAt": "2026-07-27T08:03:34.440Z"
+  },
+  "izakaya-brioso": {
+    "rating": 4.3,
+    "userRatingCount": 157,
+    "updatedAt": "2026-07-27T08:03:34.774Z"
+  },
+  "izakaya-buonricordo": {
+    "rating": null,
+    "userRatingCount": 0,
+    "updatedAt": "2026-07-27T08:03:35.162Z"
+  },
+  "izakaya-choutei": {
+    "rating": 4.4,
+    "userRatingCount": 162,
+    "updatedAt": "2026-07-27T08:03:35.548Z"
+  },
+  "izakaya-ciaogola-van": {
+    "rating": 4.1,
+    "userRatingCount": 42,
+    "updatedAt": "2026-07-27T08:03:35.887Z"
+  },
+  "izakaya-daisen": {
+    "rating": 3.9,
+    "userRatingCount": 82,
+    "updatedAt": "2026-07-27T08:03:36.277Z"
+  },
+  "izakaya-delica-amenita": {
+    "rating": 3.8,
+    "userRatingCount": 29,
+    "updatedAt": "2026-07-27T08:03:36.628Z"
+  },
+  "izakaya-gekkoyoku": {
+    "rating": 3.8,
+    "userRatingCount": 147,
+    "updatedAt": "2026-07-27T08:03:37.073Z"
+  },
+  "izakaya-geta": {
+    "rating": 4.2,
+    "userRatingCount": 92,
+    "updatedAt": "2026-07-27T08:03:37.468Z"
+  },
+  "izakaya-ginshari": {
+    "rating": 4.7,
+    "userRatingCount": 554,
+    "updatedAt": "2026-07-27T08:03:37.823Z"
+  },
+  "izakaya-goju-ban": {
+    "rating": 4.3,
+    "userRatingCount": 403,
+    "updatedAt": "2026-07-27T08:03:38.197Z"
+  },
+  "izakaya-gokuu": {
+    "rating": 4.1,
+    "userRatingCount": 44,
+    "updatedAt": "2026-07-27T08:03:38.584Z"
+  },
+  "izakaya-gonanbou": {
+    "rating": 4.3,
+    "userRatingCount": 79,
+    "updatedAt": "2026-07-27T08:03:38.938Z"
+  },
+  "izakaya-grill-party": {
+    "rating": 4.6,
+    "userRatingCount": 14,
+    "updatedAt": "2026-07-27T08:03:39.311Z"
+  },
+  "izakaya-gui-ya": {
+    "rating": 5,
+    "userRatingCount": 16,
+    "updatedAt": "2026-07-27T08:03:39.702Z"
+  },
+  "izakaya-hamada": {
+    "rating": 4.2,
+    "userRatingCount": 30,
+    "updatedAt": "2026-07-27T08:03:40.060Z"
+  },
+  "izakaya-hanhan": {
+    "rating": 4.3,
+    "userRatingCount": 110,
+    "updatedAt": "2026-07-27T08:03:40.432Z"
+  },
+  "izakaya-hidamari-hiyoshi": {
+    "rating": 4.4,
+    "userRatingCount": 314,
+    "updatedAt": "2026-07-27T08:03:40.826Z"
+  },
+  "izakaya-hidamari-honten": {
+    "rating": 4.5,
+    "userRatingCount": 568,
+    "updatedAt": "2026-07-27T08:03:41.234Z"
+  },
+  "izakaya-hiroya": {
+    "rating": 4.2,
+    "userRatingCount": 214,
+    "updatedAt": "2026-07-27T08:03:41.576Z"
+  },
+  "izakaya-hirukara-shinkichi": {
+    "rating": 4,
+    "userRatingCount": 233,
+    "updatedAt": "2026-07-27T08:03:41.949Z"
+  },
+  "izakaya-hitokuchi": {
+    "rating": 4.2,
+    "userRatingCount": 139,
+    "updatedAt": "2026-07-27T08:03:42.349Z"
+  },
+  "izakaya-inatomi": {
+    "rating": 5,
+    "userRatingCount": 2,
+    "updatedAt": "2026-07-27T08:03:42.703Z"
+  },
+  "izakaya-isomaru": {
+    "rating": 3.2,
+    "userRatingCount": 345,
+    "updatedAt": "2026-07-27T08:03:43.070Z"
+  },
+  "izakaya-kadoya": {
+    "rating": 4.3,
+    "userRatingCount": 58,
+    "updatedAt": "2026-07-27T08:03:43.467Z"
+  },
+  "izakaya-kakomian": {
+    "rating": 3.5,
+    "userRatingCount": 307,
+    "updatedAt": "2026-07-27T08:03:43.831Z"
+  },
+  "izakaya-kalbi-yokocho": {
+    "rating": 4.6,
+    "userRatingCount": 32,
+    "updatedAt": "2026-07-27T08:03:44.188Z"
+  },
+  "izakaya-kamusa": {
+    "rating": 4.1,
+    "userRatingCount": 340,
+    "updatedAt": "2026-07-27T08:03:44.437Z"
+  },
+  "izakaya-kaneitsuho": {
+    "rating": 3.7,
+    "userRatingCount": 581,
+    "updatedAt": "2026-07-27T08:03:44.828Z"
+  },
+  "izakaya-karisamu": {
+    "rating": 4.7,
+    "userRatingCount": 6,
+    "updatedAt": "2026-07-27T08:03:45.249Z"
+  },
+  "izakaya-kasuriya": {
+    "rating": 3.6,
+    "userRatingCount": 68,
+    "updatedAt": "2026-07-27T08:03:45.607Z"
+  },
+  "izakaya-kawakko": {
+    "rating": 4.2,
+    "userRatingCount": 376,
+    "updatedAt": "2026-07-27T08:03:45.957Z"
+  },
+  "izakaya-kengohyaku": {
+    "rating": 3.7,
+    "userRatingCount": 222,
+    "updatedAt": "2026-07-27T08:03:46.342Z"
+  },
+  "izakaya-kiseki-tebasaki": {
+    "rating": 3.1,
+    "userRatingCount": 31,
+    "updatedAt": "2026-07-27T08:03:46.749Z"
+  },
+  "izakaya-kokaro": {
+    "rating": null,
+    "userRatingCount": 0,
+    "updatedAt": "2026-07-27T08:03:47.143Z"
+  },
+  "izakaya-korean-mutsumon-pocha": {
+    "rating": 3.6,
+    "userRatingCount": 46,
+    "updatedAt": "2026-07-27T08:03:47.493Z"
+  },
+  "izakaya-kuimonoya-wan": {
+    "rating": 3.4,
+    "userRatingCount": 139,
+    "updatedAt": "2026-07-27T08:03:47.863Z"
+  },
+  "izakaya-kunsei-mammauto": {
+    "rating": 4.3,
+    "userRatingCount": 70,
+    "updatedAt": "2026-07-27T08:03:48.267Z"
+  },
+  "izakaya-kushi-tanaka": {
+    "rating": 4.1,
+    "userRatingCount": 378,
+    "updatedAt": "2026-07-27T08:03:48.614Z"
+  },
+  "izakaya-lucky-raku": {
+    "rating": 4.4,
+    "userRatingCount": 51,
+    "updatedAt": "2026-07-27T08:03:48.992Z"
+  },
+  "izakaya-makanai-dojo": {
+    "rating": 3.8,
+    "userRatingCount": 107,
+    "updatedAt": "2026-07-27T08:03:49.397Z"
+  },
+  "izakaya-marukichi": {
+    "rating": 3.6,
+    "userRatingCount": 40,
+    "updatedAt": "2026-07-27T08:03:49.745Z"
+  },
+  "izakaya-matabee": {
+    "rating": 4,
+    "userRatingCount": 476,
+    "updatedAt": "2026-07-27T08:03:50.085Z"
+  },
+  "izakaya-matsuo": {
+    "rating": 4,
+    "userRatingCount": 61,
+    "updatedAt": "2026-07-27T08:03:50.503Z"
+  },
+  "izakaya-miraizaka": {
+    "rating": 3.3,
+    "userRatingCount": 186,
+    "updatedAt": "2026-07-27T08:03:50.852Z"
+  },
+  "izakaya-moija": {
+    "rating": 3.8,
+    "userRatingCount": 91,
+    "updatedAt": "2026-07-27T08:03:51.231Z"
+  },
+  "izakaya-momolabo": {
+    "rating": 4,
+    "userRatingCount": 25,
+    "updatedAt": "2026-07-27T08:03:51.617Z"
+  },
+  "izakaya-momonosuke": {
+    "rating": 3.4,
+    "userRatingCount": 54,
+    "updatedAt": "2026-07-27T08:03:52.021Z"
+  },
+  "izakaya-motsunabe-sato": {
+    "rating": 4.4,
+    "userRatingCount": 9,
+    "updatedAt": "2026-07-27T08:03:52.375Z"
+  },
+  "izakaya-mui": {
+    "rating": 3.9,
+    "userRatingCount": 65,
+    "updatedAt": "2026-07-27T08:03:52.763Z"
+  },
+  "izakaya-muttsumon-biyori": {
+    "rating": 4.5,
+    "userRatingCount": 22,
+    "updatedAt": "2026-07-27T08:03:53.143Z"
+  },
+  "izakaya-nyanyan-chinese": {
+    "rating": 4.1,
+    "userRatingCount": 403,
+    "updatedAt": "2026-07-27T08:03:53.492Z"
+  },
+  "izakaya-okinawa-kizuna": {
+    "rating": 4.1,
+    "userRatingCount": 134,
+    "updatedAt": "2026-07-27T08:03:53.821Z"
+  },
+  "izakaya-oubu": {
+    "rating": 3.7,
+    "userRatingCount": 80,
+    "updatedAt": "2026-07-27T08:03:54.182Z"
+  },
+  "izakaya-rakuen": {
+    "rating": 3.8,
+    "userRatingCount": 126,
+    "updatedAt": "2026-07-27T08:03:54.592Z"
+  },
+  "izakaya-ryuoukan-honten": {
+    "rating": 4.4,
+    "userRatingCount": 277,
+    "updatedAt": "2026-07-27T08:03:54.986Z"
+  },
+  "izakaya-sakagura-shochiku": {
+    "rating": 3.9,
+    "userRatingCount": 480,
+    "updatedAt": "2026-07-27T08:03:55.388Z"
+  }
+}
