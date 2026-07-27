@@ -448,5 +448,115 @@
     "rating": 3.9,
     "userRatingCount": 480,
     "updatedAt": "2026-07-27T08:03:55.388Z"
+  },
+  "izakaya-sakana-to-kushi-tsubomi": {
+    "rating": 4.3,
+    "userRatingCount": 128,
+    "updatedAt": "2026-07-27T08:27:16.152Z"
+  },
+  "izakaya-sanzoku-dining": {
+    "rating": 4.2,
+    "userRatingCount": 45,
+    "updatedAt": "2026-07-27T08:27:16.487Z"
+  },
+  "izakaya-sengoku-ieyasu": {
+    "rating": 3.5,
+    "userRatingCount": 134,
+    "updatedAt": "2026-07-27T08:27:16.816Z"
+  },
+  "izakaya-seppun": {
+    "rating": 4,
+    "userRatingCount": 92,
+    "updatedAt": "2026-07-27T08:27:17.149Z"
+  },
+  "izakaya-shinshin-tei": {
+    "rating": 4.6,
+    "userRatingCount": 27,
+    "updatedAt": "2026-07-27T08:27:17.479Z"
+  },
+  "izakaya-shiroichi": {
+    "rating": 4,
+    "userRatingCount": 114,
+    "updatedAt": "2026-07-27T08:27:17.817Z"
+  },
+  "izakaya-soul-in-seoul": {
+    "rating": 4.7,
+    "userRatingCount": 24,
+    "updatedAt": "2026-07-27T08:27:18.143Z"
+  },
+  "izakaya-sumibi-kushiya": {
+    "rating": 4.3,
+    "userRatingCount": 519,
+    "updatedAt": "2026-07-27T08:27:18.471Z"
+  },
+  "izakaya-sumibi-sakagura-kita": {
+    "rating": 3.9,
+    "userRatingCount": 111,
+    "updatedAt": "2026-07-27T08:27:18.800Z"
+  },
+  "izakaya-tacchan": {
+    "rating": 3.8,
+    "userRatingCount": 229,
+    "updatedAt": "2026-07-27T08:27:19.132Z"
+  },
+  "izakaya-taketora": {
+    "rating": 4.7,
+    "userRatingCount": 358,
+    "updatedAt": "2026-07-27T08:27:19.458Z"
+  },
+  "izakaya-tashu": {
+    "rating": 4.7,
+    "userRatingCount": 1056,
+    "updatedAt": "2026-07-27T08:27:19.781Z"
+  },
+  "izakaya-tatami": {
+    "rating": 4,
+    "userRatingCount": 64,
+    "updatedAt": "2026-07-27T08:27:20.117Z"
+  },
+  "izakaya-todoit": {
+    "rating": 4.8,
+    "userRatingCount": 220,
+    "updatedAt": "2026-07-27T08:27:20.449Z"
+  },
+  "izakaya-tomosuke": {
+    "rating": 3.9,
+    "userRatingCount": 258,
+    "updatedAt": "2026-07-27T08:27:20.773Z"
+  },
+  "izakaya-tonya-donya": {
+    "rating": 3.5,
+    "userRatingCount": 35,
+    "updatedAt": "2026-07-27T08:27:21.106Z"
+  },
+  "izakaya-tori-shiki": {
+    "rating": 4.2,
+    "userRatingCount": 19,
+    "updatedAt": "2026-07-27T08:27:21.432Z"
+  },
+  "izakaya-toriichizu": {
+    "rating": 4.6,
+    "userRatingCount": 540,
+    "updatedAt": "2026-07-27T08:27:21.762Z"
+  },
+  "izakaya-torimero": {
+    "rating": 3.5,
+    "userRatingCount": 200,
+    "updatedAt": "2026-07-27T08:27:22.089Z"
+  },
+  "izakaya-toriya-torisuke": {
+    "rating": 4.1,
+    "userRatingCount": 72,
+    "updatedAt": "2026-07-27T08:27:22.393Z"
+  },
+  "izakaya-torizakaba-sumibito": {
+    "rating": 4.6,
+    "userRatingCount": 25,
+    "updatedAt": "2026-07-27T08:27:22.695Z"
+  },
+  "izakaya-tsukasa": {
+    "rating": 3.7,
+    "userRatingCount": 187,
+    "updatedAt": "2026-07-27T08:27:22.998Z"
   }
 }
