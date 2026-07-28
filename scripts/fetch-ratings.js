@@ -1,40 +1,39 @@
 #!/usr/bin/env node
 /**
- * Googleクチコミ★評価 ローリング更新スクリプト(Place Details / Places API New)
+ * Googleクチコミ★評価 + Googleマップ店舗写真 ローリング更新スクリプト(Places API New)
  *
- * data/place-ids.json の place_id を使い、Place Details (New) で rating / userRatingCount を
- * 取得し data/ratings.json を更新する。全店を一度に更新せず、更新日時(updatedAt)が最も古い
- * (または未取得の)店から N 店だけを毎回更新する「ローリング更新」にすることで、
- * Enterprise SKU の無料枠(月1,000回)を絶対に超えないようにする。
+ * data/place-ids.json の place_id を使い、Place Details (New) で rating / userRatingCount /
+ * photos を取得する。全店を一度に更新せず、更新日時(updatedAt)が最も古い(または未取得の)
+ * 店から N 店だけを毎回更新する「ローリング更新」にすることで、無料枠を絶対に超えないようにする。
  *
- * ■ 使うAPIとコスト(無料枠を絶対に超えない設計)
+ * ■ ①★評価(既存): Place Details の rating / userRatingCount を data/ratings.json に保存。
  *   GET https://places.googleapis.com/v1/places/{place_id}
- *   FieldMask: rating,userRatingCount
- *   → rating / userRatingCount を含む取得は Places API (New) の Enterprise SKU。無料枠は【月1,000回】。
+ *   FieldMask: rating,userRatingCount,photos
+ *   → rating を含む取得は Places API (New) Enterprise SKU。無料枠【月1,000回】。
+ *     photos フィールドを FieldMask に足してもSKUは変わらない(SKUは最上位で決まる)ので **追加課金ゼロ**。
+ *   1回の実行で最大 N 店(N = RATINGS_BATCH_SIZE、既定22、上限30にハードクランプ)。
+ *   日次1回なので概ね 22×31=682回/月 < 1,000回(=$0)。
  *
- *   1回の実行で最大 N 店だけ取得する(N = 環境変数 RATINGS_BATCH_SIZE、既定 22)。
- *   ワークフロー(ratings.yml)は日次で1回だけ走るので、月間呼び出し数は概ね:
- *       N(=22) × 31日 = 682回 / 月  < 1,000回(無料枠)  ← $0 を厳守
- *   誤設定で N を大きくしても無料枠を超えないよう、コード側で N の上限を MAX_BATCH(=30)に
- *   ハードクランプする(30 × 31 = 930回/月 < 1,000)。**この上限は無料枠($0)を守る安全装置なので
- *   引き上げないこと。**
+ * ■ ②Googleマップ店舗写真(2026-07-28 追加、社長承認「無料なら実践」):
+ *   上の Place Details 応答に含まれる photos[0].name(=photo resource name)を使い、
+ *   GET https://places.googleapis.com/v1/{photoName}/media?maxWidthPx=800&skipHttpRedirect=true
+ *   を叩いて表示用URL(photoUri = lh3.googleusercontent.com…)を得る。この「実画像取得」だけが
+ *   別SKU(Place Photo)で、無料枠は【月1,000回】(★評価の枠とは別)。
+ *   - **対象は「公式ロゴ(VENUE_LOGOS)にもホットペッパー logo_image にも無いロゴなし店」だけ**
+ *     (=サイト上でネームタイルになる店)。ロゴがある店には写真を出さない=無駄に叩かない。
+ *   - **日次の取得件数を上限クランプ**(PHOTOS_DAILY_MAX、既定20、上限30=30×31=930回/月<1,000回)。
+ *     ★評価の枠とは別だが、安全側で同じ上限にしている。**この上限は $0 を守る安全装置。引き上げないこと。**
+ *   - 出力 data/google-photos.json には **表示用の photoUri と投稿者attribution(displayName/uri)だけ**を
+ *     保存する。**画像バイナリ・photo name(参照)は保存しない**(Google規約: 保存/キャッシュ禁止)。
+ *   - lh3 URL は失効前提。ローリング(google-photos の updatedAt が古い店から)で取り直す。
+ *     build.js は失効時 <img onerror> でネームタイルにフォールバックする。
  *
- *   公開店 約161店を N=22 で回すと、各店およそ週1回のペースで評価が更新される(161 / 22 ≒ 7.3日)。
+ * ■ APIキー: process.env.GOOGLE_PLACES_API_KEY(GitHub Secrets / 環境変数のみ)。
+ *   未設定なら何もせず正常終了(グレースフル)。キーは X-Goog-Api-Key ヘッダで渡し、URL・ログに出さない。
  *
- * ■ 最古から更新するロジック
- *   ratings.json の各店 updatedAt(ISO日時文字列)を昇順に並べ、未取得(updatedAt無し)を最優先、
- *   次に古い順に N 店選ぶ。取得できたら updatedAt を現在時刻に更新するので、次回は自然と別の店が回る。
- *
- * ■ 評価が無い店の扱い
- *   Google側に評価が無い(userRatingCount=0 等)場合も updatedAt は更新して rating:null で記録する
- *   (毎回同じ店を選び続けないため=ローテーションを進めるため)。build.js は rating が数値の店だけ★表示する。
- *
- * ■ APIキー
- *   process.env.GOOGLE_PLACES_API_KEY(GitHub Secrets / 環境変数のみ。コード・出力・ログに出さない)。
- *   未設定なら何もせず正常終了(グレースフル)。
- *
- * ■ 出力: data/ratings.json(コミットして各店の評価を次の更新まで保持する)
- *   { [venueId]: { rating:Number|null, userRatingCount:Number, updatedAt:ISO文字列 } }
+ * ■ 出力:
+ *   - data/ratings.json      { [venueId]: { rating, userRatingCount, updatedAt } }
+ *   - data/google-photos.json{ [venueId]: { photoUri, attributions:[{displayName,uri}], updatedAt } }
  *
  * ■ 実行方法
  *   GOOGLE_PLACES_API_KEY=xxxx RATINGS_BATCH_SIZE=5 node scripts/fetch-ratings.js
@@ -44,24 +43,37 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 const { publishedVenues } = require("./lib/published");
+const { VENUE_LOGOS } = require("./lib/venue-logos");
 
 const ROOT = path.resolve(__dirname, "..");
 const DATA_DIR = path.join(ROOT, "data");
 const VENUES_FILE = path.join(DATA_DIR, "venues.json");
 const PLACE_IDS_FILE = path.join(DATA_DIR, "place-ids.json");
 const OUT_FILE = path.join(DATA_DIR, "ratings.json");
+const PHOTOS_HP_FILE = path.join(DATA_DIR, "photos.generated.json"); // ホットペッパー logo 判定用(存在すれば)
+const PHOTOS_OUT_FILE = path.join(DATA_DIR, "google-photos.json");
 
-const DETAILS_BASE = "https://places.googleapis.com/v1/places/";
+const API_BASE = "https://places.googleapis.com/v1/";
+const DETAILS_BASE = API_BASE + "places/";
 const SLEEP_MS = 250;
 
-// 1回の実行で更新する店数 N。無料枠(月1,000回)を守るための安全上限 MAX_BATCH でクランプする。
-// MAX_BATCH は $0 を守る安全装置。引き上げると無料枠超過=課金の恐れがあるため変更しないこと。
+// ①★評価: 1回の実行で更新する店数 N。無料枠(月1,000回)を守るため MAX_BATCH でクランプ。
 const DEFAULT_BATCH = 22;
-const MAX_BATCH = 30; // 30 × 31日 = 930回/月 < 1,000回(無料枠)
+const MAX_BATCH = 30; // 30 × 31日 = 930回/月 < 1,000回(無料枠)。$0を守る安全装置。引き上げないこと。
 const BATCH_SIZE = Math.min(
   MAX_BATCH,
   Math.max(1, parseInt(process.env.RATINGS_BATCH_SIZE || String(DEFAULT_BATCH), 10) || DEFAULT_BATCH)
 );
+
+// ②写真: 1回の実行で「実画像取得(Place Photo media)」を叩く最大件数。
+// PHOTOS_MAX_DAILY は $0(月<1,000回)を守る安全装置。30 × 31日 = 930回/月 < 1,000回。引き上げないこと。
+const PHOTOS_DEFAULT_DAILY = 20;
+const PHOTOS_MAX_DAILY = 30;
+const PHOTOS_DAILY = Math.min(
+  PHOTOS_MAX_DAILY,
+  Math.max(0, parseInt(process.env.PHOTOS_DAILY_MAX || String(PHOTOS_DEFAULT_DAILY), 10) || PHOTOS_DEFAULT_DAILY)
+);
+const PHOTO_MAX_WIDTH = 800;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -82,9 +94,9 @@ function readJSONSafe(file, fallback) {
   }
 }
 
-// Place Details を1回叩く。
-//   成功 -> { rating:Number|null, userRatingCount:Number }
-//   place_id無効(404/NOT_FOUND等) -> { invalid: true, status }
+// Place Details を1回叩く。FieldMask に photos を含める(SKUは変わらない=$0)。
+//   成功 -> { rating:Number|null, userRatingCount:Number, photoName:String|null, photoAttributions:Array }
+//   place_id無効(404/400) -> { invalid: true, status }
 //   通信/その他エラー(リトライ対象) -> { error: true, status }
 function fetchDetailsOnce(apiKey, placeId) {
   const u = new URL(DETAILS_BASE + encodeURIComponent(placeId));
@@ -94,7 +106,7 @@ function fetchDetailsOnce(apiKey, placeId) {
     path: u.pathname,
     headers: {
       "X-Goog-Api-Key": apiKey,
-      "X-Goog-FieldMask": "rating,userRatingCount",
+      "X-Goog-FieldMask": "rating,userRatingCount,photos",
     },
   };
   return new Promise((resolve) => {
@@ -113,13 +125,22 @@ function fetchDetailsOnce(apiKey, placeId) {
             const data = JSON.parse(raw);
             const rating = typeof data.rating === "number" ? data.rating : null;
             const userRatingCount = typeof data.userRatingCount === "number" ? data.userRatingCount : 0;
-            return done({ rating, userRatingCount });
+            // 先頭の写真1枚だけ採用(1店1枚)。name は media 取得に使うだけで保存しない。
+            let photoName = null;
+            let photoAttributions = [];
+            if (Array.isArray(data.photos) && data.photos.length > 0) {
+              const p0 = data.photos[0];
+              if (p0 && typeof p0.name === "string" && p0.name) {
+                photoName = p0.name;
+                photoAttributions = normalizeAttributions(p0.authorAttributions);
+              }
+            }
+            return done({ rating, userRatingCount, photoName, photoAttributions });
           } catch (e) {
             console.warn(`  [warn] Place Details JSONパース失敗 (${e.message})`);
             return done({ error: true, status: 0 });
           }
         }
-        // 404/400 は place_id 自体が無効な可能性が高い(リトライしても直らない)。
         if (res.statusCode === 404 || res.statusCode === 400) {
           console.warn(`  [warn] Place Details HTTP ${res.statusCode}(place_id無効の疑い)`);
           return done({ invalid: true, status: res.statusCode });
@@ -141,6 +162,20 @@ function fetchDetailsOnce(apiKey, placeId) {
   });
 }
 
+// authorAttributions([{displayName, uri, photoUri}, ...])から、保存してよい displayName / uri だけを抽出。
+// (photoUri=投稿者アイコン等は保存不要。displayName が無いものは捨てる。)
+function normalizeAttributions(list) {
+  if (!Array.isArray(list)) return [];
+  const out = [];
+  for (const a of list) {
+    if (!a || typeof a.displayName !== "string" || !a.displayName) continue;
+    const entry = { displayName: a.displayName };
+    if (typeof a.uri === "string" && a.uri) entry.uri = a.uri;
+    out.push(entry);
+  }
+  return out;
+}
+
 // 通信起因の失敗のみ1回だけ再試行(place_id無効・成功は再試行しない)。
 async function fetchDetails(apiKey, placeId) {
   let r = await fetchDetailsOnce(apiKey, placeId);
@@ -151,43 +186,121 @@ async function fetchDetails(apiKey, placeId) {
   return r;
 }
 
+// Place Photo media を1回叩く(skipHttpRedirect=true でJSON応答)。
+//   成功 -> { photoUri:String }(lh3.googleusercontent.com… の表示用URL。キーは含まれない)
+//   その他 -> { error: true, status }
+// キーは X-Goog-Api-Key ヘッダで渡す(URL・ログにキーを出さないため)。
+function fetchPhotoMediaOnce(apiKey, photoName) {
+  const u = new URL(`${API_BASE}${photoName}/media?maxWidthPx=${PHOTO_MAX_WIDTH}&skipHttpRedirect=true`);
+  const options = {
+    method: "GET",
+    hostname: u.hostname,
+    path: u.pathname + u.search,
+    headers: { "X-Goog-Api-Key": apiKey },
+  };
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = (v) => {
+      if (settled) return;
+      settled = true;
+      resolve(v);
+    };
+    const req = https.request(options, (res) => {
+      let raw = "";
+      res.on("data", (c) => (raw += c));
+      res.on("end", () => {
+        if (res.statusCode === 200) {
+          try {
+            const data = JSON.parse(raw);
+            const photoUri = typeof data.photoUri === "string" ? data.photoUri : "";
+            if (/^https:\/\/lh3\.googleusercontent\.com\//.test(photoUri)) {
+              return done({ photoUri });
+            }
+            console.warn("  [warn] Place Photo media: photoUri が想定外(lh3 でない)");
+            return done({ error: true, status: 0 });
+          } catch (e) {
+            console.warn(`  [warn] Place Photo media JSONパース失敗 (${e.message})`);
+            return done({ error: true, status: 0 });
+          }
+        }
+        console.warn(`  [warn] Place Photo media HTTP ${res.statusCode}`);
+        return done({ error: true, status: res.statusCode });
+      });
+    });
+    req.on("error", (e) => {
+      console.warn(`  [warn] Place Photo media リクエスト失敗 (${e.message})`);
+      done({ error: true, status: 0 });
+    });
+    req.setTimeout(15000, () => {
+      req.destroy();
+      console.warn("  [warn] Place Photo media タイムアウト");
+      done({ error: true, status: 0 });
+    });
+    req.end();
+  });
+}
+
+async function fetchPhotoMedia(apiKey, photoName) {
+  let r = await fetchPhotoMediaOnce(apiKey, photoName);
+  if (r && r.error) {
+    await sleep(SLEEP_MS * 2);
+    r = await fetchPhotoMediaOnce(apiKey, photoName);
+  }
+  return r;
+}
+
 async function main() {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
   if (!apiKey) {
-    console.log("[fetch-ratings] GOOGLE_PLACES_API_KEY 未設定のためスキップします(ratings.json は変更しません)。");
+    console.log("[fetch-ratings] GOOGLE_PLACES_API_KEY 未設定のためスキップします(ratings/google-photos は変更しません)。");
     return;
   }
 
   const placeIds = readJSONSafe(PLACE_IDS_FILE, {});
   const ratings = readJSONSafe(OUT_FILE, {});
-  const publishedIds = new Set(publishedVenues(readJSON(VENUES_FILE)).map((v) => v.id));
+  const googlePhotos = readJSONSafe(PHOTOS_OUT_FILE, {});
+  const hpPhotos = readJSONSafe(PHOTOS_HP_FILE, {}); // 存在しなければ {}(ホットペッパーlogo判定は空扱い)
+  const published = publishedVenues(readJSON(VENUES_FILE));
+  const publishedIds = new Set(published.map((v) => v.id));
+  // venueId -> venue(name/category を写真の付随情報に使わないが、将来の拡張用に保持)。
+  const venueById = new Map(published.map((v) => [v.id, v]));
 
-  // 有効な place_id を持ち、かつ現在公開対象の店だけを更新候補にする
-  // (非公開店の評価は取得しない = 無料枠の無駄遣いと漏洩リスクを避ける)。
+  // 「ロゴなし店(=サイト上でネームタイルになる店)」判定:
+  //   公式ロゴ(VENUE_LOGOS)が無く、かつホットペッパー logo_image も無い。
+  //   ※ photos.generated.json が無い環境(このジョブで fetch-photos 未実行など)では
+  //     ホットペッパーlogoは空扱いになる。その場合 build.js 側も同じく空扱いなので表示と整合する。
+  const isNameTileStore = (id) => {
+    if (VENUE_LOGOS[id]) return false;
+    const hp = hpPhotos[id];
+    if (hp && typeof hp.logo === "string" && hp.logo) return false;
+    return true;
+  };
+
+  // 有効な place_id を持ち、かつ現在公開対象の店だけを更新候補にする。
   const candidates = Object.keys(placeIds)
     .filter((id) => publishedIds.has(id))
     .filter((id) => placeIds[id] && typeof placeIds[id].placeId === "string" && placeIds[id].placeId.length > 0);
 
-  console.log(`[fetch-ratings] place_id保有かつ公開中の候補: ${candidates.length}件 / 1回の更新上限 N=${BATCH_SIZE}`);
+  console.log(`[fetch-ratings] place_id保有かつ公開中の候補: ${candidates.length}件 / ★更新上限 N=${BATCH_SIZE} / 写真取得上限=${PHOTOS_DAILY}/日`);
   if (candidates.length === 0) {
     console.log("[fetch-ratings] 更新対象なし(place-ids.json に有効な place_id がまだありません)。終了します。");
     return;
   }
 
-  // updatedAt が古い順(未取得=最優先)に並べ、先頭 N 店を選ぶ。
-  const sortKey = (id) => {
+  // ★評価の updatedAt が古い順(未取得=最優先)に並べ、先頭 N 店を選ぶ。
+  const ratingSortKey = (id) => {
     const r = ratings[id];
-    if (!r || !r.updatedAt) return ""; // 未取得は空文字=最小=最優先
+    if (!r || !r.updatedAt) return "";
     return r.updatedAt;
   };
   const selected = candidates
     .slice()
     .sort((a, b) => {
-      const ka = sortKey(a);
-      const kb = sortKey(b);
+      const ka = ratingSortKey(a);
+      const kb = ratingSortKey(b);
       if (ka < kb) return -1;
       if (ka > kb) return 1;
-      return a < b ? -1 : 1; // 同順位は venueId で安定化
+      return a < b ? -1 : 1;
     })
     .slice(0, BATCH_SIZE);
 
@@ -195,6 +308,10 @@ async function main() {
   let withRating = 0;
   let invalidCount = 0;
   let transientSkip = 0;
+
+  // 写真候補: 選ばれた店のうち「ロゴなし店」で photoName が取れたもの。
+  // { id, photoName, attributions }
+  const photoCandidates = [];
 
   for (let i = 0; i < selected.length; i++) {
     const id = selected[i];
@@ -206,33 +323,85 @@ async function main() {
       ratings[id] = { rating: r.rating, userRatingCount: r.userRatingCount, updatedAt: now };
       updated++;
       if (typeof r.rating === "number") withRating++;
+      // ロゴなし店で写真がある場合のみ、media取得の候補に積む($0のPlace Details応答から取得済み)。
+      if (r.photoName && isNameTileStore(id)) {
+        photoCandidates.push({ id, photoName: r.photoName, attributions: r.photoAttributions || [] });
+      }
     } else if (r && r.invalid) {
-      // place_id 無効: 以後ローテーションで回り続けないよう updatedAt は進め、評価は null にする。
       ratings[id] = { rating: null, userRatingCount: 0, updatedAt: now, note: "place_id_invalid" };
       updated++;
       invalidCount++;
       console.warn(`  [warn] ${id}: place_id が無効な可能性(要レビュー)`);
     } else {
-      // 一時的な通信エラー: updatedAt を進めず、次回リトライ(このバッチ分は消費)。
       transientSkip++;
     }
     if (i < selected.length - 1) await sleep(SLEEP_MS);
   }
 
-  // venueId でソートして安定出力。
-  const sorted = {};
-  for (const k of Object.keys(ratings).sort()) sorted[k] = ratings[k];
-  fs.writeFileSync(OUT_FILE, JSON.stringify(sorted, null, 2) + "\n", "utf-8");
+  // ratings.json を安定出力(venueId昇順)。
+  const sortedRatings = {};
+  for (const k of Object.keys(ratings).sort()) sortedRatings[k] = ratings[k];
+  fs.writeFileSync(OUT_FILE, JSON.stringify(sortedRatings, null, 2) + "\n", "utf-8");
 
-  const totalWithRating = Object.values(sorted).filter((r) => typeof r.rating === "number").length;
+  // ---- ②Googleマップ店舗写真の取得(無料枠内・上限クランプ・ローリング)----
+  // 写真候補を「google-photos の updatedAt が古い順(未取得=最優先)」に並べ、上限 PHOTOS_DAILY まで media 取得。
+  const photoSortKey = (id) => {
+    const g = googlePhotos[id];
+    if (!g || !g.updatedAt) return "";
+    return g.updatedAt;
+  };
+  photoCandidates.sort((a, b) => {
+    const ka = photoSortKey(a.id);
+    const kb = photoSortKey(b.id);
+    if (ka < kb) return -1;
+    if (ka > kb) return 1;
+    return a.id < b.id ? -1 : 1;
+  });
+
+  let photosFetched = 0;
+  const toFetch = photoCandidates.slice(0, PHOTOS_DAILY); // 上限クランプ($0保証)
+  for (let i = 0; i < toFetch.length; i++) {
+    const { id, photoName, attributions } = toFetch[i];
+    const m = await fetchPhotoMedia(apiKey, photoName);
+    if (m && m.photoUri) {
+      // 保存するのは表示用の photoUri と投稿者attribution(displayName/uri)だけ。
+      // photo name(参照)・画像バイナリは保存しない(Google規約: 保存/キャッシュ禁止)。
+      googlePhotos[id] = {
+        photoUri: m.photoUri,
+        attributions: attributions,
+        updatedAt: new Date().toISOString(),
+      };
+      photosFetched++;
+    }
+    // 失敗時は既存の photoUri を残す(次回ローリングで再挑戦)。
+    if (i < toFetch.length - 1) await sleep(SLEEP_MS);
+  }
+
+  // 掃除: もう「ロゴなし公開店」でなくなった店(公式/ホットペッパーロゴが付いた・非公開になった等)の
+  // 写真エントリは削除する(build.js は表示優先順位で弾くので実害はないが、データを綺麗に保つ)。
+  for (const id of Object.keys(googlePhotos)) {
+    if (!publishedIds.has(id) || !isNameTileStore(id)) {
+      delete googlePhotos[id];
+    }
+  }
+
+  // google-photos.json を安定出力(venueId昇順)。
+  const sortedPhotos = {};
+  for (const k of Object.keys(googlePhotos).sort()) sortedPhotos[k] = googlePhotos[k];
+  fs.writeFileSync(PHOTOS_OUT_FILE, JSON.stringify(sortedPhotos, null, 2) + "\n", "utf-8");
+
+  const totalWithRating = Object.values(sortedRatings).filter((r) => typeof r.rating === "number").length;
   console.log(
-    `[fetch-ratings] 今回更新: ${updated}件(うち評価あり ${withRating}件 / place_id無効 ${invalidCount}件 / 通信エラーで次回持越 ${transientSkip}件)`
+    `[fetch-ratings] ★今回更新: ${updated}件(評価あり ${withRating} / place_id無効 ${invalidCount} / 通信エラー持越 ${transientSkip})`
   );
-  console.log(`[fetch-ratings] 累計で評価を保持している店: ${totalWithRating}件 / ${candidates.length}件`);
-  console.log(`[fetch-ratings] ${path.relative(ROOT, OUT_FILE)} を更新しました。`);
+  console.log(`[fetch-ratings] ★累計で評価を保持: ${totalWithRating}件 / ${candidates.length}件`);
+  console.log(
+    `[fetch-ratings] 📷写真: 候補${photoCandidates.length}件中 ${toFetch.length}件を取得試行→ ${photosFetched}件成功 / 保持総数 ${Object.keys(sortedPhotos).length}件`
+  );
+  console.log(`[fetch-ratings] ${path.relative(ROOT, OUT_FILE)} と ${path.relative(ROOT, PHOTOS_OUT_FILE)} を更新しました。`);
 }
 
 main().catch((e) => {
-  // 予期しない例外でもCI全体は止めない(ratings.json はそのまま=状態は壊さない)。
-  console.warn(`[fetch-ratings] 予期しないエラー: ${e.message}. ratings.json は変更せず続行します。`);
+  // 予期しない例外でもCI全体は止めない(出力ファイルはそのまま=状態は壊さない)。
+  console.warn(`[fetch-ratings] 予期しないエラー: ${e.message}. 出力ファイルは変更せず続行します。`);
 });

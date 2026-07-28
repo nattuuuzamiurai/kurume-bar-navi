@@ -1,16 +1,22 @@
 name: Update Google ratings (rolling)
 
-# Googleクチコミ★評価のローリング更新専用ジョブ。
+# Googleクチコミ★評価 + Googleマップ店舗写真のローリング更新専用ジョブ。
 #
 # ■ トリガーは schedule と手動(workflow_dispatch)のみ。**push では起動しない**。
-#   これにより「評価更新→コミット→push→また評価更新」の無限ループを構造的に防ぐ。
-#   評価APIを叩くのはこのワークフローだけ。deploy.yml はビルド時に ratings.json を読むだけで
-#   評価APIを一切叩かない(=二重課金・ループなし)。
+#   これにより「更新→コミット→push→また更新」の無限ループを構造的に防ぐ。
+#   Google API を叩くのはこのワークフローだけ。deploy.yml はビルド時に ratings.json /
+#   google-photos.json を読むだけで Google API を一切叩かない(=二重課金・ループなし)。
 #
 # ■ 無料枠($0)を守る設計:
 #   - fetch-place-ids.js は Text Search Pro SKU(無料枠 月5,000)で、未取得の店だけ一度きり取得。
 #   - fetch-ratings.js は Place Details Enterprise SKU(無料枠 月1,000)。1回あたり最大 N=22 店に制限し、
 #     日次1回 × 22 × 31日 ≒ 682回/月 < 1,000回 に必ず収める(スクリプト側で上限30もハードクランプ済み)。
+#     FieldMask に photos を足しても SKU は変わらない(=追加課金ゼロ)。
+#   - Googleマップ店舗写真の「実画像取得」(Place Photo media SKU、無料枠 月1,000・別枠)は、
+#     fetch-ratings.js 内で「ロゴなし店」だけに・日次上限20(スクリプト側で上限30ハードクランプ)で叩く。
+#     20 × 31日 = 620回/月 < 1,000回(上限30でも 930 < 1,000)=$0。
+#   - fetch-photos.js(ホットペッパー)は「どの店にホットペッパーlogoが有るか」を fetch-ratings.js に
+#     渡し、写真取得対象を「公式ロゴにもホットペッパーlogoにも無いロゴなし店」だけに正確に絞るために走らせる。
 #
 # ■ 反映の流れ:
 #   1. place-ids / ratings を更新し、差分があれば data/*.json をコミットして push(GITHUB_TOKEN)。
@@ -55,13 +61,26 @@ jobs:
         env:
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
 
-      # 評価が最も古い/未取得の店から最大 N 店だけ Place Details で更新(無料枠内)。
-      - name: Fetch ratings (rolling N venues)
+      # ホットペッパー logo_image の有無を data/photos.generated.json に生成する。
+      # fetch-ratings.js が「ロゴなし店」の判定(=Google写真の取得対象を絞る)に使う。
+      # このファイルは .gitignore 対象でコミットしない(判定用に一時生成するだけ)。
+      # HOTPEPPER_API_KEY 未設定でも空マップで正常終了する(その場合ホットペッパーlogoは空扱い)。
+      - name: Fetch Hot Pepper logos (for nametile detection)
+        run: node scripts/fetch-photos.js
+        env:
+          HOTPEPPER_API_KEY: ${{ secrets.HOTPEPPER_API_KEY }}
+
+      # ★評価が最も古い/未取得の店から最大 N 店を Place Details で更新(無料枠内)。
+      # 同じ応答の photos から、ロゴなし店にはGoogleマップ店舗写真(photoUri+投稿者attribution)も
+      # 日次上限内で取得し data/google-photos.json を更新する。
+      - name: Fetch ratings (rolling N venues) + Google photos
         run: node scripts/fetch-ratings.js
         env:
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
           # 必要なら Secrets/Variables で N を上書き可(未設定なら既定22。コード側で上限30にクランプ)。
           RATINGS_BATCH_SIZE: ${{ vars.RATINGS_BATCH_SIZE }}
+          # Googleマップ店舗写真の日次取得上限(未設定なら既定20。コード側で上限30にクランプ)。
+          PHOTOS_DAILY_MAX: ${{ vars.PHOTOS_DAILY_MAX }}
 
       # 差分があればコミット & push。無ければ何もしない(空コミットを作らない)。
       - name: Commit & push data changes
@@ -69,7 +88,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/place-ids.json data/ratings.json
+          git add data/place-ids.json data/ratings.json data/google-photos.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No rating changes. Skipping commit."

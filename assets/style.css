@@ -314,6 +314,40 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
 .venue-hero-icon.has-logo-dark { background: #23283f; border-color: var(--line); padding: 4px; }
 .venue-logo-img { width: 100%; height: 100%; object-fit: contain; }
 
+/* Googleマップの店舗写真(ロゴが無い店で、ネームタイルの代わりに1枚出す)。
+   枠いっぱいに cover で敷き、写真の上に「投稿者名 · Google」の帰属オーバーレイを常時重ねる
+   (Google の規約: 写真には投稿者attribution + 地図なし表示なので「Google」表記が必須)。 */
+.venue-card-icon.has-photo,
+.venue-hero-icon.has-photo {
+  position: relative;
+  padding: 0;
+  background: #0f141a;
+  border-color: rgba(0, 0, 0, .18);
+}
+.venue-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 帰属オーバーレイ: 写真下端に半透明の暗色バー。1行・省略記号で溢れを抑える。
+   カードは <a> 全体がリンクなので、オーバーレイはクリックを奪わない(pointer-events:none)。 */
+.venue-photo-attr {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1px 3px 2px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .78));
+  color: #fff;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .9);
+}
+.venue-card-icon.has-photo .venue-photo-attr { font-size: 6.5px; }
+.venue-hero-icon.has-photo .venue-photo-attr { font-size: 8px; }
+/* 画像読み込み失敗で onerror がネームタイル化したとき、枠を元に戻す(has-photo の写真用装飾を無効化)。 */
+.venue-card-icon.has-photo.nametile,
+.venue-hero-icon.has-photo.nametile { padding: 3px; background: linear-gradient(165deg, #171d24, #0f141a); }
+
 /* ロゴ画像が無い店の看板ネームプレート(ネームタイル)。
    夜の街テーマに馴染むアンバー配色。店名+業態ラベル+右上の光点で提灯/ネオン風。
    自前のHTML+CSS描画(外部データ・画像なし)。カード/ヒーローの枠に収める。 */

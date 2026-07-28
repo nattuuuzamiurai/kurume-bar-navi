@@ -544,6 +544,66 @@ function loadGeneratedPhotos() {
 const VENUE_PHOTOS = loadGeneratedPhotos();
 
 // ============================================================
+// Googleマップの店舗写真(Places API Place Photo)の表示(2026-07-28、社長承認「無料なら実践」)
+//
+// 【何のためか】公式ロゴもホットペッパー画像も無い「ロゴなし店」に、業態のネームタイルの代わりに
+// Googleマップに投稿された店舗写真を1枚出して見栄えを上げる。
+//
+// 【データの出所】scripts/fetch-ratings.js が(★評価取得と同じ Place Details 呼び出しに相乗りで)
+// photo name を取得し、Place Photo media を叩いて得た表示用URL(lh3.googleusercontent.com…)と
+// 投稿者attribution(displayName / uri)だけを data/google-photos.json に保存する。build.js は
+// このファイルを **読むだけ**(APIは一切叩かない)。
+//   { [venueId]: { photoUri, attributions:[{displayName, uri}], updatedAt } }
+//
+// 【Google の規約(重要・厳守)】
+//   - 画像バイナリは保存しない。lh3 の photoUri を <img src> で直接参照する(ホットリンク)だけ。
+//     photo name(参照)もキャッシュしない(google-photos.json には保存しない)。
+//   - lh3 URL は失効前提。失効時は <img onerror> でネームタイルにフォールバックする。
+//     失効した写真は fetch-ratings.js がローリングで取り直す。
+//   - **帰属表示が必須**: (1)各写真に投稿者attribution(displayName、可能ならuriリンク)を併記、
+//     (2)地図を伴わず写真を出すため「Google」表記を写真の近く/フッターに設置する。
+//     ★評価の帰属(Google のクチコミ評価)とは別に、写真には写真用の帰属を付ける。
+// ============================================================
+function loadGooglePhotos() {
+  const file = path.join(DATA_DIR, "google-photos.json");
+  if (!fs.existsSync(file)) return {};
+  try {
+    const data = JSON.parse(fs.readFileSync(file, "utf-8"));
+    return data && typeof data === "object" ? data : {};
+  } catch (e) {
+    console.warn(`[warn] google-photos.json の読み込みに失敗しました: ${e.message}`);
+    return {};
+  }
+}
+
+const VENUE_GOOGLE_PHOTOS = loadGooglePhotos();
+
+// サイト内にGoogleマップの店舗写真を1枚でも表示するか。表示するなら、地図を伴わない写真表示の
+// 規約要件として、全ページ共通フッターにも写真用の「Google」帰属を出す(写真上の投稿者オーバーレイに
+// 加えた site-wide の担保。★評価用の帰属とは別)。
+const HAS_ANY_GOOGLE_PHOTO = Object.values(VENUE_GOOGLE_PHOTOS).some(
+  (g) => g && typeof g.photoUri === "string" && /^https:\/\/lh3\.googleusercontent\.com\//.test(g.photoUri)
+);
+
+// 表示に使えるGoogle写真(photoUri が lh3 の文字列である店のみ)。無ければ null。
+// attributions は [{displayName, uri}] の配列(空のこともある)。
+function venueGooglePhoto(v) {
+  const g = VENUE_GOOGLE_PHOTOS[v.id];
+  if (!g || typeof g.photoUri !== "string" || !/^https:\/\/lh3\.googleusercontent\.com\//.test(g.photoUri)) {
+    return null;
+  }
+  const attributions = Array.isArray(g.attributions)
+    ? g.attributions.filter((a) => a && typeof a.displayName === "string" && a.displayName)
+    : [];
+  return { photoUri: g.photoUri, attributions };
+}
+
+// 写真の投稿者名(先頭のattribution)。無ければ空文字。
+function googlePhotoAuthorName(gp) {
+  return gp.attributions.length > 0 ? gp.attributions[0].displayName : "";
+}
+
+// ============================================================
 // Googleクチコミ★評価の表示(2026-07-27、社長承認の機能追加)
 //
 // 【データの出所】scripts/fetch-ratings.js が Places API (New) から取得した rating /
@@ -644,215 +704,15 @@ function venueHeroPhotoHtml(v) {
 // 【実測(curl、2026-07-22)】30件すべて、当サイトの GitHub Pages ドメインを Referer に付けた
 // クロスオリジン要求で HTTP 200 + Content-Type: image/* を返すことを確認済み
 // (=リファラによるホットリンクブロックなし)。ただし実ブラウザでの最終描画は未検証。
+//
+// 【データの所在】登録データ本体は scripts/lib/venue-logos.js に集約している(単一の真実の源)。
+// fetch-ratings.js も同モジュールを読み、「公式ロゴが無いロゴなし店」だけに Google店舗写真を
+// 取りに行く対象を絞る。両者で定義がずれないよう、build.js もそこから require する。
 // ============================================================
-const VENUE_LOGOS = {
-  // --- 公式サイトロゴ 自動拡充(2026-07-27) ---
-  "bar-141saketen": {
-    imageUrl: "https://www.141saketen-kurume.com/wp-content/uploads/2023/04/logo-1.png",
-    siteLabel: "141酒店 公式サイト",
-    siteUrl: "https://www.141saketen-kurume.com/",
-  },
-  "izakaya-kushi-tanaka": {
-    imageUrl: "https://restaurant.kushi-tanaka.com/images/logo.png",
-    siteLabel: "串カツ田中 公式サイト",
-    siteUrl: "https://restaurant.kushi-tanaka.com/detail/1220",
-  },
-  "izakaya-todoit": {
-    imageUrl: "https://fancicalcafeandbar-todoit.com/img/main_logo.png",
-    siteLabel: "to do it. -つどい- 公式サイト",
-    siteUrl: "https://fancicalcafeandbar-todoit.com/",
-  },
-  "izakaya-tashu": {
-    imageUrl: "https://static.wixstatic.com/media/8273ba_97ff1a8736c24ce2a2532c9e40868346~mv2.png",
-    siteLabel: "もつ鍋 田しゅう 公式サイト",
-    siteUrl: "https://www.motsunabe-tashu.com/",
-  },
-  "izakaya-kawakko": {
-    imageUrl: "https://static.wixstatic.com/media/acc18a_aa89a1f222f94998a094f34be4311435~mv2.png/v1/fill/w_299,h_86,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/top_logo.png",
-    siteLabel: "とりかわ博多かわっこ 公式サイト",
-    siteUrl: "https://www.kawakko.com/",
-  },
-  "izakaya-tsukasa": {
-    imageUrl: "https://kurume-yakitori-tsukasa.com/img/logo.png",
-    siteLabel: "久留米焼鳥 つかさ 公式サイト",
-    siteUrl: "https://kurume-yakitori-tsukasa.com/",
-  },
-  "izakaya-hamada": {
-    imageUrl: "https://kushino-utage-hamada.com/system_panel/uploads/images/hd_logo.png",
-    siteLabel: "串乃宴 はま田 公式サイト",
-    siteUrl: "https://kushino-utage-hamada.com/",
-  },
-  "izakaya-hanhan": {
-    imageUrl: "https://yakiniku-hanhan.com/struct/wp-content/uploads/logo.png",
-    siteLabel: "炭火焼肉 絆繁 公式サイト",
-    siteUrl: "https://yakiniku-hanhan.com/",
-  },
-  // --- 居酒屋・料理系 ---
-  "izakaya-kakomian": {
-    imageUrl: "https://momo.cmosite.com/wp-content/uploads/sites/35/2020/01/logo_w.png",
-    siteLabel: "かこみ庵 久留米店 公式サイト",
-    siteUrl: "https://bb-kakomian.com/kurume/",
-  },
-  "izakaya-kiseki-tebasaki": {
-    imageUrl: "https://kiseteba.com/img/apple-touch-icon.png",
-    siteLabel: "奇跡の手羽先 公式サイト",
-    siteUrl: "https://kiseteba.com/",
-  },
-  "izakaya-torimero": {
-    imageUrl: "https://torimero.com/prd/wp/wp-content/uploads/2025/05/torimero512.png",
-    siteLabel: "三代目 鳥メロ 公式サイト",
-    siteUrl: "https://torimero.com/nishitetsukurume/",
-  },
-  "izakaya-sumibi-sakagura-kita": {
-    imageUrl: "https://www.sumibishuzo-kita.com/shared/img/shared/logo.png",
-    siteLabel: "炭火酒蔵 喜多 公式サイト",
-    siteUrl: "https://www.sumibishuzo-kita.com/",
-  },
-  "izakaya-sengoku-ieyasu": {
-    imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/04/logo.png",
-    siteLabel: "戦国焼鳥 家康 公式サイト",
-    siteUrl: "https://yakitori-ieyasu.co.jp/",
-  },
-  "izakaya-kuimonoya-wan": {
-    // 白抜きの筆文字ロゴ(透過PNG)のため濃色背景。
-    imageUrl: "https://www.oizumifoods.co.jp/img/common/shops/izakaya_logo01.png",
-    siteLabel: "くいもの屋わん 公式サイト(大泉フーズ)",
-    siteUrl: "https://search.oizumifoods.co.jp/detail/2583/",
-    bg: "dark",
-  },
-  "izakaya-isomaru": {
-    imageUrl: "https://isomaru.jp/wp-content/uploads/2022/11/isomarusuisan_logo.jpg",
-    siteLabel: "磯丸水産 公式サイト",
-    siteUrl: "https://isomaru.jp/1541/",
-  },
-  "izakaya-sanzoku-dining": {
-    imageUrl: "https://www.dragoncafe.jp/shared/img/shared/logo.png",
-    siteLabel: "SANZOKU DINING さっさん 公式サイト",
-    siteUrl: "https://www.dragoncafe.jp/",
-  },
-  "izakaya-sumibi-kushiya": {
-    imageUrl: "https://new-hakata-style.com/assets/img/apple-touch-icon.png",
-    siteLabel: "ニューハカタスタイル 公式サイト",
-    siteUrl: "https://new-hakata-style.com/",
-  },
-  "izakaya-taketora": {
-    imageUrl: "https://hakata-gyoza-taketora.com/wp-content/uploads/2026/02/cropped-2026_02_12_0lb_Kleki_transparent-180x180.png",
-    siteLabel: "博多一口餃子たけとら 公式サイト",
-    siteUrl: "https://hakata-gyoza-taketora.com/",
-  },
-  "izakaya-toriichizu": {
-    // 白抜きの鶏マーク(透過PNG)のため濃色背景。
-    imageUrl: "https://toriichizu.net/wp-content/uploads/2020/12/cropped-logo-toriichizu-180x180.png",
-    siteLabel: "とりいちず 公式サイト",
-    siteUrl: "https://toriichizu.net/shoplist/fukuoka/kurumeshi/",
-    bg: "dark",
-  },
-  "izakaya-shanghai-shuka": {
-    // 白抜きの店名ロゴ(透過PNG)のため濃色背景。
-    imageUrl: "https://shanghai-shuka.com/img/logo_footer.png",
-    siteLabel: "上海酒家 公式サイト",
-    siteUrl: "https://shanghai-shuka.com/",
-    bg: "dark",
-  },
-  "izakaya-ryuoukan-honten": {
-    imageUrl: "https://static.wixstatic.com/media/b86d6d_0c42461f10d74c13b7775778ef59a210~mv2.png",
-    siteLabel: "焼肉龍王館 公式サイト",
-    siteUrl: "https://www.ryuoukan.com/",
-  },
-  "izakaya-okinawa-kizuna": {
-    imageUrl: "https://kizuna1110.com/system_panel/uploads/touchicon/touchicon.png",
-    siteLabel: "沖縄風居酒屋 絆 公式サイト",
-    siteUrl: "https://kizuna1110.com/",
-  },
-  "izakaya-mui": {
-    imageUrl: "https://www.yakiniku-mui.com/shared/img/shared/logo.png",
-    siteLabel: "韓国家庭料理 無為 公式サイト",
-    siteUrl: "https://www.yakiniku-mui.com/",
-  },
-  "izakaya-amenita-pizzeria": {
-    imageUrl: "https://pizzeria-amenita.com/wp-content/themes/bonse/assets/images/logo.png",
-    siteLabel: "Pizzeria Amenita 公式サイト",
-    siteUrl: "https://pizzeria-amenita.com/",
-  },
-  "izakaya-hirukara-shinkichi": {
-    imageUrl: "https://shinkichi-kurume.jp/system_panel/uploads/images/fft_logo02.png",
-    siteLabel: "昼カラ酒場しん吉 公式サイト",
-    siteUrl: "https://shinkichi-kurume.jp/shinkichi",
-  },
-  "izakaya-kalbi-yokocho": {
-    imageUrl: "https://karubiyokotyo.com/img/logo_footer.png",
-    siteLabel: "久留米焼肉 カルビ横丁 公式サイト",
-    siteUrl: "https://karubiyokotyo.com/",
-  },
-  "izakaya-tori-shiki": {
-    imageUrl: "https://torishiki-kurume.com/img/apple-touch-icon.png",
-    siteLabel: "焼き鳥とり四季 公式サイト",
-    siteUrl: "https://torishiki-kurume.com/",
-  },
-  "izakaya-shiroichi": {
-    // 原寸(1400x1461・約930KB)は表示サイズに対し過大なため、Wix標準のリサイズ済みURL
-    // (アスペクト比はほぼ同じ 240x250、約55KB)を参照する。実測 200 + image/png。
-    imageUrl: "https://static.wixstatic.com/media/c62334_eb94ec85033a42bc8b5d8ce68dbcbd8e~mv2_d_1400_1461_s_2.png/v1/fill/w_240,h_250,al_c,q_85/c62334_eb94ec85033a42bc8b5d8ce68dbcbd8e~mv2_d_1400_1461_s_2.png",
-    siteLabel: "ホルモン家 しろ壱 公式サイト",
-    siteUrl: "https://www.horumonya-shiroichi.com/",
-  },
-  "izakaya-karisamu": {
-    imageUrl: "https://izzy.best/images/karisamu/kasamu_a.png",
-    siteLabel: "カリサム 公式サイト",
-    siteUrl: "https://izzy.best/karisamu/index.html",
-  },
-  // --- コンカフェ ---
-  "concafe-axia": {
-    imageUrl: "https://anisongaxia.com/common/upload_data/anisongaxiacom/image/apple-touch-icon.png",
-    siteLabel: "コンセプトカフェ AXIA 公式サイト",
-    siteUrl: "https://anisongaxia.com/",
-  },
-  "concafe-platinum-seven": {
-    imageUrl: "https://kurume-seven.com/wp-content/uploads/2026/05/favicon-200x200.png",
-    siteLabel: "カフェラウンジ PLATINUM SEVEN 公式サイト",
-    siteUrl: "https://kurume-seven.com/",
-  },
-  // --- バー ---
-  "bar-remember": {
-    imageUrl: "https://static.wixstatic.com/media/d671d7_b6cf8175b8d54a8a886dbc8580952a06%7Emv2.png/v1/fill/w_180%2Ch_180%2Clg_1%2Cusm_0.66_1.00_0.01/d671d7_b6cf8175b8d54a8a886dbc8580952a06%7Emv2.png",
-    siteLabel: "リメンバー 公式サイト",
-    siteUrl: "https://www.kurume-remember.com/",
-  },
-  "bar-manuka": {
-    // 白抜き版(manuqa-logo-white.png)は白背景で不可視のため、正方形マークの favicon を採用。
-    imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/favicon.png",
-    siteLabel: "マヌーカ 公式サイト",
-    siteUrl: "https://manuqa.jp/",
-  },
-  "bar-oshu-kitchen-alma": {
-    imageUrl: "https://oshukitchen-alma.com/img/apple-touch-icon.png",
-    siteLabel: "欧州キッチンアルマ 公式サイト",
-    siteUrl: "https://oshukitchen-alma.com/",
-  },
-  "bar-live-actor": {
-    imageUrl: "https://livebaractor.com/wp-content/uploads/2021/11/cropped-icon-180x180.png",
-    siteLabel: "Live Bar Actor 公式サイト",
-    siteUrl: "https://livebaractor.com/",
-  },
-  "bar-highball-stand": {
-    imageUrl: "https://highball-stand.com/wp-content/uploads/2024/07/cropped-logo1-180x180.png",
-    siteLabel: "ザ・ハイボールスタンド 公式サイト",
-    siteUrl: "https://highball-stand.com/",
-  },
-  "bar-welmona": {
-    imageUrl: "https://welmona.com/img/apple-touch-icon.png",
-    siteLabel: "BAR WELMONA 公式サイト",
-    siteUrl: "https://welmona.com/",
-  },
-  "bar-aletta": {
-    imageUrl: "https://aletta-kurume.com/home/wp-content/uploads/2018/12/cropped-9836b00030f5b01c0b638441173e8a18-180x180.jpg",
-    siteLabel: "ALETTA 公式サイト",
-    siteUrl: "https://aletta-kurume.com/",
-  },
-};
+const { VENUE_LOGOS } = require("./lib/venue-logos");
 
 // ============================================================
-// ロゴの出所解決(2026-07-28、社長承認の機能追加: ホットペッパー logo_image でロゴ自動付与)
+// アイコン枠の画像の出所解決(2026-07-28、社長承認の機能追加)
 //
 // 【優先順位】
 //   (1) VENUE_LOGOS(店の公式サイトの正規ロゴ)… 最優先。出所が公式サイトなので
@@ -862,11 +722,16 @@ const VENUE_LOGOS = {
 //       「【画像提供：ホットペッパー グルメ】」相当のクレジットを必ず伴わせる
 //       (店舗ページ=venueLogoCreditHtml の可視クレジット行 / カード=画像の title・alt に明示 +
 //        全ページ共通フッターの「Powered by ホットペッパーグルメ Webサービス」で担保)。
-//   (3) どちらも無ければ null(呼び出し側で業態アイコンにフォールバック)。
+//   (3) (1)(2)が無く、Googleマップの店舗写真(photoUri)があればそれを写真として出す。
+//       出所は Google なので、Google の規約どおり **投稿者attribution + 「Google」表記** を
+//       必ず伴わせる(店舗ページ=venueLogoCreditHtml の可視クレジット行 / カード=写真上の
+//       小さな帰属オーバーレイ「投稿者名 · Google」+ 全ページ共通フッターの写真用Google帰属)。
+//       ★評価のクレジットとは別に、写真には写真用の帰属を付ける(出所の取り違えをしない)。
+//   (4) どれも無ければ null(呼び出し側でネームタイルにフォールバック)。
 //
-// 【ホットリンク/非保存】(2)の imageUrl は imgfp.hotp.jp のURLをそのまま参照する <img>。
-// 画像ファイルは保存・コミットしない(data/photos.generated.json は .gitignore 対象で、
-// fetch-photos.js が CIで毎回生成)。読み込み失敗時は onerror で業態アイコンにフォールバックする。
+// 【ホットリンク/非保存】(2)は imgfp.hotp.jp、(3)は lh3.googleusercontent.com のURLを
+// そのまま参照する <img>。画像ファイルは保存・コミットしない。読み込み失敗時は onerror で
+// ネームタイルにフォールバックする(特に(3)の lh3 URL は失効前提)。
 // ============================================================
 function resolveVenueLogo(v) {
   const official = VENUE_LOGOS[v.id];
@@ -876,6 +741,10 @@ function resolveVenueLogo(v) {
   const hp = VENUE_PHOTOS[v.id];
   if (hp && hp.logo) {
     return { source: "hotpepper", imageUrl: hp.logo, bg: "light", hpUrl: hp.hpUrl || "" };
+  }
+  const gp = venueGooglePhoto(v);
+  if (gp) {
+    return { source: "google", imageUrl: gp.photoUri, bg: "photo", attributions: gp.attributions };
   }
   return null;
 }
@@ -915,8 +784,32 @@ function nameTilePlateHtml(v, extraClass, hidden) {
 function venueIconSlotHtml(v, variant) {
   const cls = variant === "hero" ? "venue-hero-icon" : "venue-card-icon";
   const logo = resolveVenueLogo(v);
-  // (3) 公式ロゴもホットペッパー画像も無い店は、業態アイコンではなくネームタイルを表示する。
+  // (4) 公式ロゴもホットペッパー画像もGoogle写真も無い店は、業態アイコンではなくネームタイルを表示する。
   if (!logo) return `<span class="${cls} nametile">${nameTilePlateHtml(v, "", false)}</span>`;
+
+  // 共通の onerror: 枠の装飾を外し、コンテナをネームタイル化して、隠してあるプレートを表示する
+  // (画像が消えたまま空白になったり、業態アイコンに戻ったりするのを防ぐ)。写真の帰属オーバーレイも
+  // 一緒に消す。店舗ページでは、画像が出せなかったのに出典表記だけ残るのを防ぐため出典行も隠す。
+  const onerror =
+    "this.style.display='none';this.parentNode.classList.remove('has-logo','has-logo-dark','has-photo');this.parentNode.classList.add('nametile');" +
+    "var a=this.parentNode.querySelector('.venue-photo-attr');if(a){a.style.display='none';}" +
+    "var f=this.parentNode.querySelector('.nametile-plate');if(f){f.hidden=false;}" +
+    (variant === "hero"
+      ? "var c=document.getElementById('venue-logo-credit');if(c){c.hidden=true;}"
+      : "");
+
+  // (3) Googleマップの店舗写真: 正方形枠に cover で敷き、写真の上に「投稿者名 · Google」の
+  //     帰属オーバーレイを常時表示する(規約の帰属表示。店舗ページ側は可視クレジット行も別途出す)。
+  if (logo.source === "google") {
+    const author = googlePhotoAuthorName(logo);
+    const attrText = author ? `${author} · Google` : "Google";
+    const alt = author
+      ? `${v.name}の写真(Googleマップ / 投稿: ${author})`
+      : `${v.name}の写真(Googleマップ)`;
+    return `<span class="${cls} has-photo"><img class="venue-photo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}"><span class="venue-photo-attr" title="${escapeHtml(attrText)}">${escapeHtml(attrText)}</span>${nameTilePlateHtml(v, "venue-logo-fallback", true)}</span>`;
+  }
+
+  // (1)(2) 公式 / ホットペッパーのロゴ画像。
   const bgClass = logo.bg === "dark" ? " has-logo-dark" : "";
   const isHp = logo.source === "hotpepper";
   // ホットペッパー由来のロゴには規約準拠のクレジットを alt・title にも明示する。
@@ -924,24 +817,32 @@ function venueIconSlotHtml(v, variant) {
   //  クレジットも担保される。店舗ページ側では venueLogoCreditHtml が可視クレジット行を別途出す。)
   const alt = isHp ? `${v.name}のロゴ(画像提供：ホットペッパー グルメ)` : `${v.name}のロゴ`;
   const titleAttr = isHp ? ` title="【画像提供：ホットペッパー グルメ】"` : "";
-  // onerror: ロゴ枠の白背景等の装飾を外し、コンテナをネームタイル化して、隠してあるプレートを
-  // 表示する(画像が消えたまま空白になったり、業態アイコンに戻ったりするのを防ぐ)。
-  // 店舗ページでは、ロゴが出せなかったのに出典表記だけ残るのを防ぐため出典行も隠す。
-  const onerror =
-    "this.style.display='none';this.parentNode.classList.remove('has-logo','has-logo-dark');this.parentNode.classList.add('nametile');" +
-    "var f=this.nextElementSibling;if(f){f.hidden=false;}" +
-    (variant === "hero"
-      ? "var c=document.getElementById('venue-logo-credit');if(c){c.hidden=true;}"
-      : "");
   return `<span class="${cls} has-logo${bgClass}"><img class="venue-logo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(alt)}"${titleAttr} loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}">${nameTilePlateHtml(v, "venue-logo-fallback", true)}</span>`;
 }
 
-// 店舗ページに出す、ロゴの出典表記(一覧カードには出さない)。
+// 店舗ページに出す、アイコン枠画像の出典表記(一覧カードには出さない)。
 // - 公式サイトロゴ: 提供元(公式サイト)へのリンク + 削除依頼の案内。ホットペッパークレジットは付けない。
 // - ホットペッパー logo_image: 規約準拠の「【画像提供：ホットペッパー グルメ】」+ 店舗ページへのリンク。
+// - Googleマップの店舗写真: 規約準拠で「投稿者attribution(可能ならリンク)+ Google」を可視表示 + 非保存の明記。
 function venueLogoCreditHtml(v) {
   const logo = resolveVenueLogo(v);
   if (!logo) return "";
+  if (logo.source === "google") {
+    // Google の規約: 写真には投稿者attribution(displayName、可能ならuriへのリンク)を可視表示し、
+    // 地図を伴わない写真表示なので「Google」表記も併記する。画像は保存しない旨も明記する。
+    const attrs = Array.isArray(logo.attributions) ? logo.attributions : [];
+    let authorHtml = "";
+    if (attrs.length > 0) {
+      const parts = attrs.map((a) => {
+        const name = escapeHtml(a.displayName);
+        return a.uri
+          ? `<a href="${escapeHtml(a.uri)}" rel="nofollow noopener" target="_blank">${name}</a>`
+          : name;
+      });
+      authorHtml = `投稿 ${parts.join("、")} / `;
+    }
+    return `<p class="small logo-credit" id="venue-logo-credit">写真: ${authorHtml}Google マップ(投稿された店舗写真を直接参照して表示しています。当サイトには保存していません)</p>`;
+  }
   if (logo.source === "hotpepper") {
     const moreLink = logo.hpUrl
       ? ` <a class="venue-hero-photo-more" href="${escapeHtml(logo.hpUrl)}" rel="nofollow noopener" target="_blank">ホットペッパーで見る ↗</a>`
@@ -1556,6 +1457,7 @@ ${bodyHtml}
 <footer class="site-footer">
   <p>${escapeHtml(DISCLAIMER)}</p>
   <p class="powered-by"><a href="https://webservice.recruit.co.jp/" rel="nofollow noopener" target="_blank">Powered by ホットペッパーグルメ Webサービス</a></p>
+  ${HAS_ANY_GOOGLE_PHOTO ? `<p class="powered-by google-photo-credit">店舗写真の一部は Google マップの投稿写真です（各写真に投稿者を表示）。Powered by Google</p>` : ""}
   <p><a href="${url("/about/")}">このサイトについて・掲載店舗の関係者の方へ</a></p>
   <p>&copy; ${SITE_NAME}</p>
 </footer>
@@ -2215,7 +2117,7 @@ function renderAboutPage() {
 <ul>
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
   <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
-  <li>他サイトの文章・写真をそのまま転載(コピー・保存)することはしていません。店舗写真は、(1)店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信</strong>、または(2)<strong>ホットペッパー グルメ Webサービス</strong>(リクルートが提供する公式API)を出典とし、いずれも提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」のクレジットと同サイトへのリンクを付けています。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
+  <li>他サイトの文章・写真をそのまま転載(コピー・保存)することはしていません。店舗写真は、(1)店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信</strong>、(2)<strong>ホットペッパー グルメ Webサービス</strong>(リクルートが提供する公式API)、または(3)<strong>Google マップに投稿された店舗写真</strong>(Google Places API)を出典とし、いずれも提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」のクレジットと同サイトへのリンクを、Google マップ由来の写真には投稿者名と「Google」の帰属表示を付けています。写真もロゴもない店舗は、店名から作る看板風のネームプレートを表示しています。</li>
   <li>店舗のロゴについても、その店(またはチェーンの運営元)の公式サイトに掲載されているものだけを、公式サイト上の画像を直接参照する形で表示しています(当サイトのサーバーには保存していません)。掲載元へのリンクは各店舗ページに記載しています。ロゴの掲載を希望されない場合は、下記の連絡先までお知らせください。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
 </ul>
@@ -2300,9 +2202,14 @@ function build() {
   console.log(
     `ロゴ表示: 公式サイト ${officialLogoShown}件 + ホットペッパー ${hpLogoIds.length}件 = ${officialLogoShown + hpLogoIds.length}件`
   );
-  // ロゴ画像が無い店(=看板ネームプレート=ネームタイルを出す店)の件数。
-  const nameTileCount = venues.length - officialLogoShown - hpLogoIds.length;
-  console.log(`ネームタイル(ロゴ画像なし・看板ネームプレート)表示: ${nameTileCount}件`);
+  // Googleマップの店舗写真を出す公開店(=公式ロゴもホットペッパーlogoも無く、かつ有効な photoUri がある店)。
+  const googlePhotoIds = venues
+    .filter((v) => !VENUE_LOGOS[v.id] && !(VENUE_PHOTOS[v.id] && VENUE_PHOTOS[v.id].logo) && venueGooglePhoto(v))
+    .map((v) => v.id);
+  console.log(`Googleマップ店舗写真 表示: ${googlePhotoIds.length}件`);
+  // 公式ロゴ・ホットペッパーlogo・Google写真のいずれも無い店(=看板ネームプレート=ネームタイルを出す店)の件数。
+  const nameTileCount = venues.length - officialLogoShown - hpLogoIds.length - googlePhotoIds.length;
+  console.log(`ネームタイル(画像なし・看板ネームプレート)表示: ${nameTileCount}件`);
 
   // Instagram投稿埋め込みの整合性チェック(VENUE_LOGOS と同じ考え方)。
   // - broken: データ上に存在しないID(店舗削除・ID変更で参照先が消えた孤立ID)→ 削除漏れなので warn。
