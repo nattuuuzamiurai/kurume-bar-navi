@@ -314,6 +314,68 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
 .venue-hero-icon.has-logo-dark { background: #23283f; border-color: var(--line); padding: 4px; }
 .venue-logo-img { width: 100%; height: 100%; object-fit: contain; }
 
+/* ロゴ画像が無い店の看板ネームプレート(ネームタイル)。
+   夜の街テーマに馴染むアンバー配色。店名+業態ラベル+右上の光点で提灯/ネオン風。
+   自前のHTML+CSS描画(外部データ・画像なし)。カード/ヒーローの枠に収める。 */
+.venue-card-icon.nametile,
+.venue-hero-icon.nametile {
+  background: linear-gradient(165deg, #171d24, #0f141a);
+  border-color: var(--line);
+  color: var(--lantern);
+  padding: 3px;
+}
+.nametile-plate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2px;
+  padding: 3px 3px;
+  border: 1.2px solid #e2872f;
+  border-radius: 7px;
+  background: linear-gradient(180deg, rgba(240, 169, 78, .10), rgba(240, 169, 78, .02));
+  box-shadow: 0 0 12px rgba(240, 169, 78, .12) inset;
+  overflow: hidden;
+}
+.nametile-name {
+  font-weight: 800;
+  color: #f0a94e;
+  text-shadow: 0 0 9px rgba(240, 169, 78, .35);
+  letter-spacing: .01em;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.nametile-cat {
+  color: var(--muted);
+  letter-spacing: .12em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.nametile-dot {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f0a94e;
+  box-shadow: 0 0 6px #f0a94e;
+}
+/* カード(小)とヒーロー(大)で文字サイズを可読に振り分ける(見本の比率を保ちつつ縮小)。 */
+.venue-card-icon.nametile .nametile-name { font-size: 9.5px; }
+.venue-card-icon.nametile .nametile-cat { font-size: 5.5px; }
+.venue-hero-icon.nametile .nametile-name { font-size: 11px; }
+.venue-hero-icon.nametile .nametile-cat { font-size: 6.5px; }
+
 .venue-card-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .venue-card-cat {
   font-size: .68rem;
