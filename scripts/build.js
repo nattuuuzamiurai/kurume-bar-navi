@@ -880,14 +880,43 @@ function resolveVenueLogo(v) {
   return null;
 }
 
-// 業態アイコンの枠(カード/ヒーロー)を描画する。ロゴが解決できた店舗はロゴ画像に差し替え、
-// 読み込み失敗時は onerror で業態アイコンにフォールバックする。
+// ============================================================
+// 看板ネームプレート(ネームタイル)— ロゴ画像が無い店のフォールバック(2026-07-28)
+//
+// 公式ロゴもホットペッパー画像も無い店に、業態アイコンの代わりに「店名から作る看板風の
+// ネームプレート」を出す。外部データ・画像は一切使わず HTML+CSS だけで描画するため、
+// 著作権・規約リスクはゼロ(自前生成・クレジット不要)。本物の画像がある店は従来どおり
+// 画像を優先し、ネームタイルは出さない(=あくまで画像が無い店のフォールバック)。
+// ============================================================
+// 業態 → 看板の英字ラベル(izakaya→IZAKAYA 等)。
+const CATEGORY_PLATE_LABELS = {
+  bar: "BAR",
+  izakaya: "IZAKAYA",
+  concafe: "CONCAFE",
+  shisha: "SHISHA",
+  poker: "POKER",
+  // 非公開カテゴリ(フェーズ1では出さない)もフォールバック用に用意しておく。
+  snack: "SNACK",
+  kyabakura: "KYABAKURA",
+};
+
+// ネームタイルのプレート本体(店名+業態ラベル+光点)を描画する。
+// extraClass/hidden は onerror フォールバック用(画像読み込み失敗時に表示するため既定は hidden)。
+function nameTilePlateHtml(v, extraClass, hidden) {
+  const label = CATEGORY_PLATE_LABELS[v.category] || String(v.category || "").toUpperCase();
+  const cls = "nametile-plate" + (extraClass ? ` ${extraClass}` : "");
+  return `<span class="${cls}"${hidden ? " hidden" : ""}><span class="nametile-dot" aria-hidden="true"></span><span class="nametile-name">${escapeHtml(v.name)}</span><span class="nametile-cat">${escapeHtml(label)}</span></span>`;
+}
+
+// 店舗ロゴの枠(カード/ヒーロー)を描画する。ロゴが解決できた店舗はロゴ画像に差し替え、
+// 公式ロゴもホットペッパー画像も無い店は看板ネームプレート(ネームタイル)を出す。
+// 画像の読み込みに失敗した場合も onerror でネームタイルにフォールバックする。
 // variant: "card" | "hero"
 function venueIconSlotHtml(v, variant) {
   const cls = variant === "hero" ? "venue-hero-icon" : "venue-card-icon";
-  const icon = rawCategoryIcon(v.category);
   const logo = resolveVenueLogo(v);
-  if (!logo) return `<span class="${cls}">${icon}</span>`;
+  // (3) 公式ロゴもホットペッパー画像も無い店は、業態アイコンではなくネームタイルを表示する。
+  if (!logo) return `<span class="${cls} nametile">${nameTilePlateHtml(v, "", false)}</span>`;
   const bgClass = logo.bg === "dark" ? " has-logo-dark" : "";
   const isHp = logo.source === "hotpepper";
   // ホットペッパー由来のロゴには規約準拠のクレジットを alt・title にも明示する。
@@ -895,15 +924,16 @@ function venueIconSlotHtml(v, variant) {
   //  クレジットも担保される。店舗ページ側では venueLogoCreditHtml が可視クレジット行を別途出す。)
   const alt = isHp ? `${v.name}のロゴ(画像提供：ホットペッパー グルメ)` : `${v.name}のロゴ`;
   const titleAttr = isHp ? ` title="【画像提供：ホットペッパー グルメ】"` : "";
-  // onerror: ロゴ枠の装飾を外し、隠してある業態アイコンを表示する(画像が消えたまま空白になるのを防ぐ)。
+  // onerror: ロゴ枠の白背景等の装飾を外し、コンテナをネームタイル化して、隠してあるプレートを
+  // 表示する(画像が消えたまま空白になったり、業態アイコンに戻ったりするのを防ぐ)。
   // 店舗ページでは、ロゴが出せなかったのに出典表記だけ残るのを防ぐため出典行も隠す。
   const onerror =
-    "this.style.display='none';this.parentNode.classList.remove('has-logo','has-logo-dark');" +
+    "this.style.display='none';this.parentNode.classList.remove('has-logo','has-logo-dark');this.parentNode.classList.add('nametile');" +
     "var f=this.nextElementSibling;if(f){f.hidden=false;}" +
     (variant === "hero"
       ? "var c=document.getElementById('venue-logo-credit');if(c){c.hidden=true;}"
       : "");
-  return `<span class="${cls} has-logo${bgClass}"><img class="venue-logo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(alt)}"${titleAttr} loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}"><span class="venue-logo-fallback" hidden>${icon}</span></span>`;
+  return `<span class="${cls} has-logo${bgClass}"><img class="venue-logo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(alt)}"${titleAttr} loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}">${nameTilePlateHtml(v, "venue-logo-fallback", true)}</span>`;
 }
 
 // 店舗ページに出す、ロゴの出典表記(一覧カードには出さない)。
@@ -1535,11 +1565,6 @@ ${extraScript || ""}
 </body>
 </html>
 `;
-}
-
-// 業態アイコンのSVGだけを返す(カード見出し・ヒーロー用。ラッパーdivなし)。
-function rawCategoryIcon(categoryId) {
-  return CATEGORY_ICONS[categoryId] || "";
 }
 
 // 予算(夜)を短いラベルに整形(カード用)。例: 「〜3,000円」「2,000〜3,000円」「4,000円〜」。
@@ -2275,6 +2300,9 @@ function build() {
   console.log(
     `ロゴ表示: 公式サイト ${officialLogoShown}件 + ホットペッパー ${hpLogoIds.length}件 = ${officialLogoShown + hpLogoIds.length}件`
   );
+  // ロゴ画像が無い店(=看板ネームプレート=ネームタイルを出す店)の件数。
+  const nameTileCount = venues.length - officialLogoShown - hpLogoIds.length;
+  console.log(`ネームタイル(ロゴ画像なし・看板ネームプレート)表示: ${nameTileCount}件`);
 
   // Instagram投稿埋め込みの整合性チェック(VENUE_LOGOS と同じ考え方)。
   // - broken: データ上に存在しないID(店舗削除・ID変更で参照先が消えた孤立ID)→ 削除漏れなので warn。
