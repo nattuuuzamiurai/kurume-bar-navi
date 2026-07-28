@@ -4,11 +4,12 @@
  *
  * data/venues.json の各店の sources[].url からホットペッパーの店舗ID(strJxxxxxx)を
  * 正規表現で抽出し、ホットペッパー グルメAPIを **ID直接引き** で叩いて店の代表写真1枚
- * (shop.photo.pc.l)と店舗ページURL(shop.urls.pc)を収集する。
+ * (shop.photo.pc.l)、店のロゴ画像(shop.logo_image)、店舗ページURL(shop.urls.pc)を収集する。
  *
- * 出力: data/photos.generated.json  (venue id -> { photo, hpUrl })
+ * 出力: data/photos.generated.json  (venue id -> { photo?, logo?, hpUrl })
+ *   - photo / logo はどちらか一方だけ登録されている店もある(存在するフィールドのみ書き出す)。
  *   - このファイルは .gitignore 対象(コミットしない)。CIで毎回生成=常に最新。
- *   - 画像ファイルは保存しない。URLのみ(ホットリンク表示は build.js 側で行う)。
+ *   - 画像ファイルは保存しない。URL(imgfp.hotp.jp)のみ(ホットリンク表示は build.js 側で行う)。
  *
  * 【なぜ店名検索を使わないか】店名の曖昧一致は別店舗の写真を誤掲載するリスクがあるため、
  * sources に登録済みのホットペッパー店舗IDでの直接引きのみに限定する(README準拠)。
@@ -44,6 +45,16 @@ function readJSON(file) {
   return JSON.parse(fs.readFileSync(file, "utf-8"));
 }
 
+// ホットペッパーの「画像なし」共通ダミー画像(例:
+// https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif)を除外する。
+// logo_image は未登録店でもこのプレースホルダーが返るため、そのままロゴに使うと汎用の
+// 「NO IMAGE」画像が表示されてしまう。実ロゴ・実写真はコンテンツ配信パス /IMGH/ 配下にあり、
+// ダミーは /SYS/cmn/... の noimage 系なので、それらを弾く。
+function isPlaceholderImage(u) {
+  if (!u) return true;
+  return /\/SYS\/cmn\//i.test(u) || /noimage|no_image|noimg|dummy/i.test(u);
+}
+
 // venues.json から { venueId -> hpId } を抽出(ID直接引きのみ)。
 function collectHpIds(venues) {
   const map = new Map();
@@ -64,8 +75,8 @@ function collectHpIds(venues) {
 const RETRY = Symbol("retry");
 
 // ホットペッパーAPIをID直接引きで1回叩く。
-//   成功(写真あり) -> { photo, hpUrl }
-//   正常応答だが写真なし/店舗なし -> null(リトライしない)
+//   成功(写真 or ロゴあり) -> { photo, logo, hpUrl }(無い方は空文字)
+//   正常応答だが写真・ロゴなし/店舗なし -> null(リトライしない)
 //   通信失敗・タイムアウト・非200 -> RETRY(呼び出し側で1回だけ再試行)
 function fetchShopOnce(apiKey, hpId) {
   const params = new URLSearchParams({ key: apiKey, id: hpId, format: "json" });
@@ -91,10 +102,17 @@ function fetchShopOnce(apiKey, hpId) {
           const data = JSON.parse(raw);
           const shop = data && data.results && data.results.shop && data.results.shop[0];
           if (!shop) return done(null);
-          const photo = shop.photo && shop.photo.pc && shop.photo.pc.l;
-          if (!photo) return done(null);
+          let photo = (shop.photo && shop.photo.pc && shop.photo.pc.l) || "";
+          // ロゴ画像(shop.logo_image)。フル応答(type=lite以外)にのみ含まれる。
+          // ID直接引きはフル応答なので取得できる。文字列でなければ無視する。
+          let logo = (typeof shop.logo_image === "string" && shop.logo_image) || "";
+          // 「画像なし」ダミーは実素材として扱わない(汎用NO IMAGE画像の掲載を防ぐ)。
+          if (isPlaceholderImage(photo)) photo = "";
+          if (isPlaceholderImage(logo)) logo = "";
+          // 写真・ロゴのどちらも無ければ「素材なし」= リトライ不要の null。
+          if (!photo && !logo) return done(null);
           const hpUrl = (shop.urls && shop.urls.pc) || "";
-          done({ photo, hpUrl });
+          done({ photo, logo, hpUrl });
         } catch (e) {
           console.warn(`  [warn] ${hpId}: JSONパース失敗 (${e.message})`);
           done(RETRY);
@@ -140,13 +158,20 @@ async function main() {
 
   const out = {};
   let photoCount = 0;
+  let logoCount = 0;
   let i = 0;
   for (const [venueId, hpId] of hpIds) {
     i++;
     const result = await fetchShop(apiKey, hpId);
-    if (result && result.photo) {
-      out[venueId] = result;
-      photoCount++;
+    if (result && (result.photo || result.logo)) {
+      // 存在するフィールドだけを書き出す(photo だけ / logo だけの店もあるため差分を最小化)。
+      const entry = {};
+      if (result.photo) entry.photo = result.photo;
+      if (result.logo) entry.logo = result.logo;
+      if (result.hpUrl) entry.hpUrl = result.hpUrl;
+      out[venueId] = entry;
+      if (result.photo) photoCount++;
+      if (result.logo) logoCount++;
     }
     if (i < hpIds.size) await sleep(SLEEP_MS);
   }
@@ -156,7 +181,7 @@ async function main() {
   for (const k of Object.keys(out).sort()) sorted[k] = out[k];
   fs.writeFileSync(OUT_FILE, JSON.stringify(sorted, null, 2) + "\n", "utf-8");
 
-  console.log(`[fetch-photos] 写真取得できた店数: ${photoCount}件 / 対象 ${hpIds.size}件`);
+  console.log(`[fetch-photos] 写真取得できた店数: ${photoCount}件 / ロゴ取得できた店数: ${logoCount}件 / 対象 ${hpIds.size}件`);
   console.log(`[fetch-photos] ${path.relative(ROOT, OUT_FILE)} を出力しました。`);
 }
 

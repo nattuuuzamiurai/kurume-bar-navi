@@ -851,15 +851,50 @@ const VENUE_LOGOS = {
   },
 };
 
-// 業態アイコンの枠(カード/ヒーロー)を描画する。ロゴが登録されている店舗はロゴ画像に差し替え、
+// ============================================================
+// ロゴの出所解決(2026-07-28、社長承認の機能追加: ホットペッパー logo_image でロゴ自動付与)
+//
+// 【優先順位】
+//   (1) VENUE_LOGOS(店の公式サイトの正規ロゴ)… 最優先。出所が公式サイトなので
+//       ホットペッパーのクレジットは付けない(付けると出所の取り違えになる)。
+//   (2) (1)が無く、ホットペッパー グルメの logo_image があればそれをロゴに使う。
+//       出所はホットペッパー グルメ Webサービス(公式API)なので、規約どおり
+//       「【画像提供：ホットペッパー グルメ】」相当のクレジットを必ず伴わせる
+//       (店舗ページ=venueLogoCreditHtml の可視クレジット行 / カード=画像の title・alt に明示 +
+//        全ページ共通フッターの「Powered by ホットペッパーグルメ Webサービス」で担保)。
+//   (3) どちらも無ければ null(呼び出し側で業態アイコンにフォールバック)。
+//
+// 【ホットリンク/非保存】(2)の imageUrl は imgfp.hotp.jp のURLをそのまま参照する <img>。
+// 画像ファイルは保存・コミットしない(data/photos.generated.json は .gitignore 対象で、
+// fetch-photos.js が CIで毎回生成)。読み込み失敗時は onerror で業態アイコンにフォールバックする。
+// ============================================================
+function resolveVenueLogo(v) {
+  const official = VENUE_LOGOS[v.id];
+  if (official && official.imageUrl) {
+    return { source: "official", imageUrl: official.imageUrl, bg: official.bg || "light" };
+  }
+  const hp = VENUE_PHOTOS[v.id];
+  if (hp && hp.logo) {
+    return { source: "hotpepper", imageUrl: hp.logo, bg: "light", hpUrl: hp.hpUrl || "" };
+  }
+  return null;
+}
+
+// 業態アイコンの枠(カード/ヒーロー)を描画する。ロゴが解決できた店舗はロゴ画像に差し替え、
 // 読み込み失敗時は onerror で業態アイコンにフォールバックする。
 // variant: "card" | "hero"
 function venueIconSlotHtml(v, variant) {
   const cls = variant === "hero" ? "venue-hero-icon" : "venue-card-icon";
   const icon = rawCategoryIcon(v.category);
-  const logo = VENUE_LOGOS[v.id];
+  const logo = resolveVenueLogo(v);
   if (!logo) return `<span class="${cls}">${icon}</span>`;
   const bgClass = logo.bg === "dark" ? " has-logo-dark" : "";
+  const isHp = logo.source === "hotpepper";
+  // ホットペッパー由来のロゴには規約準拠のクレジットを alt・title にも明示する。
+  // (省スペースのカードでも画像に帰属が付き、全ページ共通フッターの「Powered by …」で site-wide の
+  //  クレジットも担保される。店舗ページ側では venueLogoCreditHtml が可視クレジット行を別途出す。)
+  const alt = isHp ? `${v.name}のロゴ(画像提供：ホットペッパー グルメ)` : `${v.name}のロゴ`;
+  const titleAttr = isHp ? ` title="【画像提供：ホットペッパー グルメ】"` : "";
   // onerror: ロゴ枠の装飾を外し、隠してある業態アイコンを表示する(画像が消えたまま空白になるのを防ぐ)。
   // 店舗ページでは、ロゴが出せなかったのに出典表記だけ残るのを防ぐため出典行も隠す。
   const onerror =
@@ -868,15 +903,24 @@ function venueIconSlotHtml(v, variant) {
     (variant === "hero"
       ? "var c=document.getElementById('venue-logo-credit');if(c){c.hidden=true;}"
       : "");
-  return `<span class="${cls} has-logo${bgClass}"><img class="venue-logo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(v.name)}のロゴ" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}"><span class="venue-logo-fallback" hidden>${icon}</span></span>`;
+  return `<span class="${cls} has-logo${bgClass}"><img class="venue-logo-img" src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(alt)}"${titleAttr} loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}"><span class="venue-logo-fallback" hidden>${icon}</span></span>`;
 }
 
-// 店舗ページに出す、ロゴの出典表記と削除依頼の案内(一覧カードには出さない)。
+// 店舗ページに出す、ロゴの出典表記(一覧カードには出さない)。
+// - 公式サイトロゴ: 提供元(公式サイト)へのリンク + 削除依頼の案内。ホットペッパークレジットは付けない。
+// - ホットペッパー logo_image: 規約準拠の「【画像提供：ホットペッパー グルメ】」+ 店舗ページへのリンク。
 function venueLogoCreditHtml(v) {
-  const logo = VENUE_LOGOS[v.id];
+  const logo = resolveVenueLogo(v);
   if (!logo) return "";
+  if (logo.source === "hotpepper") {
+    const moreLink = logo.hpUrl
+      ? ` <a class="venue-hero-photo-more" href="${escapeHtml(logo.hpUrl)}" rel="nofollow noopener" target="_blank">ホットペッパーで見る ↗</a>`
+      : "";
+    return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像【画像提供：ホットペッパー グルメ】(提供元のサーバー上の画像を直接参照して表示しています。当サイトには保存していません)${moreLink}</p>`;
+  }
+  const official = VENUE_LOGOS[v.id];
   const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
-  return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(logo.siteUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(logo.siteLabel)}</a>のものを直接参照して表示しています(当サイトには保存していません)。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
+  return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(official.siteUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(official.siteLabel)}</a>のものを直接参照して表示しています(当サイトには保存していません)。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
 }
 
 // ============================================================
@@ -2225,7 +2269,12 @@ function build() {
     console.log(`[info] VENUE_LOGOS のうち非公開店舗の${hiddenLogoIds.length}件はロゴを表示しません: ${hiddenLogoIds.join(", ")}`);
   }
   const orphanLogoIds = brokenLogoIds;
-  console.log(`ロゴ表示: ${Object.keys(VENUE_LOGOS).length - orphanLogoIds.length - hiddenLogoIds.length}件`);
+  const officialLogoShown = Object.keys(VENUE_LOGOS).length - orphanLogoIds.length - hiddenLogoIds.length;
+  // ホットペッパー logo_image をロゴに使えた公開店(=公式ロゴが無く、かつ logo が取得できている店)。
+  const hpLogoIds = venues.filter((v) => !VENUE_LOGOS[v.id] && VENUE_PHOTOS[v.id] && VENUE_PHOTOS[v.id].logo).map((v) => v.id);
+  console.log(
+    `ロゴ表示: 公式サイト ${officialLogoShown}件 + ホットペッパー ${hpLogoIds.length}件 = ${officialLogoShown + hpLogoIds.length}件`
+  );
 
   // Instagram投稿埋め込みの整合性チェック(VENUE_LOGOS と同じ考え方)。
   // - broken: データ上に存在しないID(店舗削除・ID変更で参照先が消えた孤立ID)→ 削除漏れなので warn。
