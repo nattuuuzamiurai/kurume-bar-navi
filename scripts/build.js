@@ -933,17 +933,55 @@ const VENUE_LOGOS = {
 };
 
 // ============================================================
+// 公式Instagramプロフィール画像をロゴに使用(2026-07-29、社長がリスク承知で承認した方針例外)
+//
+// 【通常方針との違い】上の VENUE_LOGOS / OFFICIAL_PHOTOS は「画像を自サイトに保存せず、提供元
+// サーバーのURLを直接参照(ホットリンク)」する方針。だが Instagram のプロフィール画像は CDN の
+// 署名付きURLが短命でホットリンクに向かない。そこで社長承認のもと、**例外的に画像を自サイトへ保存
+// (再ホスト)** して使う。対象は「公式ロゴもホットペッパー画像も無く、これまでネームタイル表示だった
+// 店」14件(著作権・Instagram規約上のリスクは社長がリスク承知で承認済み。削除依頼の対象に含める)。
+//
+// 【保存場所】assets/insta-logos/{id}.jpg(150×150)。ビルド時に dist/assets/insta-logos/ へコピーし、
+// <img src> はサイトのベースパス付きローカルパス(/kurume-bar-navi/assets/insta-logos/{id}.jpg)で参照する。
+//
+// 【クレジット】自サイトに保存しているため「当サイトには保存していません」とは書けない(虚偽になる)。
+// venueLogoCreditHtml の instagram-local 分岐で、各店の公式Instagramへのリンク付きで正確に出典表記し、
+// 削除依頼の連絡先も併記する。経緯・対象IDは data/venue-audit-log.md(2026-07-29 エントリ)にも記録。
+//
+// 値は各店の公式InstagramアカウントのプロフィールURL(= プロフィール画像の出典)。
+// ============================================================
+const INSTAGRAM_LOGOS = {
+  "bar-1988": "https://www.instagram.com/1988.kurume/",
+  "bar-tico": "https://www.instagram.com/bar_tico/",
+  "bar-bigisland": "https://www.instagram.com/chiyatorashiya/",
+  "bar-jackalope": "https://www.instagram.com/jackalope_kurume/",
+  "bar-jinga45": "https://www.instagram.com/jinga45/",
+  "izakaya-delica-amenita": "https://www.instagram.com/delica_bal_amenita/",
+  "izakaya-oubu": "https://www.instagram.com/sakuramai_kurume/",
+  "izakaya-geta": "https://www.instagram.com/izakaya_geta/",
+  "izakaya-tacchan": "https://www.instagram.com/gyouzanotacchankurume/",
+  "izakaya-sakana-to-kushi-tsubomi": "https://www.instagram.com/tsubomi_kurume/",
+  "shisha-0942": "https://www.instagram.com/shishabar0942/",
+  "shisha-aima": "https://www.instagram.com/kurume.shisha.ima/",
+  "poker-ken": "https://www.instagram.com/kurume_ken_poker/",
+  "poker-ace-and-king": "https://www.instagram.com/ace_and_king259/",
+};
+
+// ============================================================
 // ロゴの出所解決(2026-07-28、社長承認の機能追加: ホットペッパー logo_image でロゴ自動付与)
 //
 // 【優先順位】
 //   (1) VENUE_LOGOS(店の公式サイトの正規ロゴ)… 最優先。出所が公式サイトなので
 //       ホットペッパーのクレジットは付けない(付けると出所の取り違えになる)。
-//   (2) (1)が無く、ホットペッパー グルメの logo_image があればそれをロゴに使う。
+//   (2) (1)が無く、INSTAGRAM_LOGOS(自サイト保存の公式Instagramプロフィール画像・再ホスト)が
+//       あればそれを使う。出所は各店の公式Instagramなので、その旨を正確にクレジットする
+//       (venueLogoCreditHtml の instagram-local 分岐。自サイト保存のため「保存していません」とは書かない)。
+//   (3) (1)(2)が無く、ホットペッパー グルメの logo_image があればそれをロゴに使う。
 //       出所はホットペッパー グルメ Webサービス(公式API)なので、規約どおり
 //       「【画像提供：ホットペッパー グルメ】」相当のクレジットを必ず伴わせる
 //       (店舗ページ=venueLogoCreditHtml の可視クレジット行 / カード=画像の title・alt に明示 +
 //        全ページ共通フッターの「Powered by ホットペッパーグルメ Webサービス」で担保)。
-//   (3) どちらも無ければ null(呼び出し側で業態アイコンにフォールバック)。
+//   (4) いずれも無ければ null(呼び出し側でネームタイルにフォールバック)。
 //
 // 【ホットリンク/非保存】(2)の imageUrl は imgfp.hotp.jp のURLをそのまま参照する <img>。
 // 画像ファイルは保存・コミットしない(data/photos.generated.json は .gitignore 対象で、
@@ -953,6 +991,12 @@ function resolveVenueLogo(v) {
   const official = VENUE_LOGOS[v.id];
   if (official && official.imageUrl) {
     return { source: "official", imageUrl: official.imageUrl, bg: official.bg || "light" };
+  }
+  // (2) 公式ロゴが無ければ、自サイト保存の公式Instagramプロフィール画像(再ホスト)を使う。
+  // imageUrl はサイトのベースパス付きローカルパス。画像は assets/insta-logos/{id}.jpg を dist へコピー済み。
+  const igSource = INSTAGRAM_LOGOS[v.id];
+  if (igSource) {
+    return { source: "instagram-local", imageUrl: url(`/assets/insta-logos/${v.id}.jpg`), bg: "light", igUrl: igSource };
   }
   const hp = VENUE_PHOTOS[v.id];
   if (hp && hp.logo) {
@@ -1000,11 +1044,21 @@ function venueIconSlotHtml(v, variant) {
   if (!logo) return `<span class="${cls} nametile">${nameTilePlateHtml(v, "", false)}</span>`;
   const bgClass = logo.bg === "dark" ? " has-logo-dark" : "";
   const isHp = logo.source === "hotpepper";
+  const isIg = logo.source === "instagram-local";
   // ホットペッパー由来のロゴには規約準拠のクレジットを alt・title にも明示する。
+  // 公式Instagram由来(自サイト保存)のロゴは、カードでも店名が伝わるよう alt・title に店名を出す。
   // (省スペースのカードでも画像に帰属が付き、全ページ共通フッターの「Powered by …」で site-wide の
   //  クレジットも担保される。店舗ページ側では venueLogoCreditHtml が可視クレジット行を別途出す。)
-  const alt = isHp ? `${v.name}のロゴ(画像提供：ホットペッパー グルメ)` : `${v.name}のロゴ`;
-  const titleAttr = isHp ? ` title="【画像提供：ホットペッパー グルメ】"` : "";
+  const alt = isHp
+    ? `${v.name}のロゴ(画像提供：ホットペッパー グルメ)`
+    : isIg
+      ? `${v.name}のロゴ(公式Instagramより)`
+      : `${v.name}のロゴ`;
+  const titleAttr = isHp
+    ? ` title="【画像提供：ホットペッパー グルメ】"`
+    : isIg
+      ? ` title="${escapeHtml(v.name)}"`
+      : "";
   // onerror: ロゴ枠の白背景等の装飾を外し、コンテナをネームタイル化して、隠してあるプレートを
   // 表示する(画像が消えたまま空白になったり、業態アイコンに戻ったりするのを防ぐ)。
   // 店舗ページでは、ロゴが出せなかったのに出典表記だけ残るのを防ぐため出典行も隠す。
@@ -1028,6 +1082,12 @@ function venueLogoCreditHtml(v) {
       ? ` <a class="venue-hero-photo-more" href="${escapeHtml(logo.hpUrl)}" rel="nofollow noopener" target="_blank">ホットペッパーで見る ↗</a>`
       : "";
     return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像【画像提供：ホットペッパー グルメ】(提供元のサーバー上の画像を直接参照して表示しています。当サイトには保存していません)${moreLink}</p>`;
+  }
+  // 公式Instagramのプロフィール画像を自サイトに保存(再ホスト)して使っている店。
+  // 自サイト保存なので「保存していません」とは書かず、出典の公式Instagramへのリンクを付けて正確に表記する。
+  if (logo.source === "instagram-local") {
+    const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
+    return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(logo.igUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(v.name)} 公式Instagram</a>のプロフィール画像を出典としています。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
   }
   const official = VENUE_LOGOS[v.id];
   const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
@@ -1575,7 +1635,7 @@ const FILTER_SCRIPT = `<script>
 })();
 </script>`;
 
-const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)、またはホットペッパー グルメ Webサービス(リクルートが提供する公式API)を出典とするもののみを、提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」を表示しています。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
+const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)、またはホットペッパー グルメ Webサービス(リクルートが提供する公式API)を出典とするもののみを表示しています。写真および大半のロゴは提供元のサーバー上の画像を直接参照する形で表示しており(当サイトには保存していません)、一部の店舗ロゴのみ、各店の公式Instagramのプロフィール画像を出典として当サイトに保存(再ホスト)して表示しています(該当する店舗ページに出典の公式Instagramへのリンクを記載しています)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」を表示しています。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
 
 // 下部固定タブバー(モバイルのアプリ風ナビ。PCではCSSで非表示にしヘッダーナビを使う)。
 // マップ相当の独立ページは無い(キーレス地図埋め込みは1店ずつのため全店ピンの集約地図を作れない)
@@ -2297,7 +2357,7 @@ function renderAboutPage() {
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
   <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
   <li>他サイトの文章・写真をそのまま転載(コピー・保存)することはしていません。店舗写真は、(1)店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信</strong>、または(2)<strong>ホットペッパー グルメ Webサービス</strong>(リクルートが提供する公式API)を出典とし、いずれも提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」のクレジットと同サイトへのリンクを付けています。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
-  <li>店舗のロゴについても、その店(またはチェーンの運営元)の公式サイトに掲載されているものだけを、公式サイト上の画像を直接参照する形で表示しています(当サイトのサーバーには保存していません)。掲載元へのリンクは各店舗ページに記載しています。ロゴの掲載を希望されない場合は、下記の連絡先までお知らせください。</li>
+  <li>店舗のロゴは、その店(またはチェーンの運営元)の公式サイト・公式Facebook、ホットペッパー グルメ Webサービス、または各店の公式Instagramに掲載されている画像を出典としています。多くは提供元のサーバー上の画像を直接参照する形で表示しています(当サイトのサーバーには保存していません)が、一部の店舗ロゴのみ、各店の公式Instagramのプロフィール画像を出典として当サイトに保存(再ホスト)して表示しています。いずれも出典元へのリンクを各店舗ページに記載しています。ロゴの掲載を希望されない場合は、下記の連絡先までお知らせください。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
 </ul>
 
@@ -2374,15 +2434,17 @@ function build() {
   if (hiddenLogoIds.length > 0) {
     console.log(`[info] VENUE_LOGOS のうち非公開店舗の${hiddenLogoIds.length}件はロゴを表示しません: ${hiddenLogoIds.join(", ")}`);
   }
-  const orphanLogoIds = brokenLogoIds;
-  const officialLogoShown = Object.keys(VENUE_LOGOS).length - orphanLogoIds.length - hiddenLogoIds.length;
-  // ホットペッパー logo_image をロゴに使えた公開店(=公式ロゴが無く、かつ logo が取得できている店)。
-  const hpLogoIds = venues.filter((v) => !VENUE_LOGOS[v.id] && VENUE_PHOTOS[v.id] && VENUE_PHOTOS[v.id].logo).map((v) => v.id);
+  // 公開店ごとに resolveVenueLogo で実際に出るロゴ種別を数える(表示と一致する単一の真実の源)。
+  const logoCounts = { official: 0, "instagram-local": 0, hotpepper: 0 };
+  for (const v of venues) {
+    const logo = resolveVenueLogo(v);
+    if (logo && logoCounts[logo.source] !== undefined) logoCounts[logo.source]++;
+  }
   console.log(
-    `ロゴ表示: 公式サイト ${officialLogoShown}件 + ホットペッパー ${hpLogoIds.length}件 = ${officialLogoShown + hpLogoIds.length}件`
+    `ロゴ表示: 公式サイト ${logoCounts.official}件 + 公式Instagram(自サイト保存) ${logoCounts["instagram-local"]}件 + ホットペッパー ${logoCounts.hotpepper}件 = ${logoCounts.official + logoCounts["instagram-local"] + logoCounts.hotpepper}件`
   );
   // ロゴ画像が無い店(=看板ネームプレート=ネームタイルを出す店)の件数。
-  const nameTileCount = venues.length - officialLogoShown - hpLogoIds.length;
+  const nameTileCount = venues.length - logoCounts.official - logoCounts["instagram-local"] - logoCounts.hotpepper;
   console.log(`ネームタイル(ロゴ画像なし・看板ネームプレート)表示: ${nameTileCount}件`);
 
   // Instagram投稿埋め込みの整合性チェック(VENUE_LOGOS と同じ考え方)。
@@ -2504,6 +2566,21 @@ Sitemap: ${absoluteUrl("/sitemap.xml")}
   const styleSrc = path.join(ASSETS_DIR, "style.css");
   if (fs.existsSync(styleSrc)) {
     writeFile("assets/style.css", fs.readFileSync(styleSrc, "utf-8"));
+  }
+
+  // Instagramロゴ(自サイト保存分・再ホスト)をコピー: assets/insta-logos/*.jpg → dist/assets/insta-logos/
+  // writeFile は utf-8 前提でバイナリを壊すため、画像はバイナリのまま Buffer でコピーする。
+  const instaLogosSrc = path.join(ASSETS_DIR, "insta-logos");
+  if (fs.existsSync(instaLogosSrc)) {
+    let copied = 0;
+    for (const f of fs.readdirSync(instaLogosSrc)) {
+      if (!/\.(jpe?g|png|webp)$/i.test(f)) continue;
+      const dest = path.join(DIST_DIR, "assets", "insta-logos", f);
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.writeFileSync(dest, fs.readFileSync(path.join(instaLogosSrc, f)));
+      copied++;
+    }
+    console.log(`[info] Instagramロゴ画像を ${copied} 件 dist/assets/insta-logos/ にコピーしました`);
   }
 
   console.log(`Built ${urls.length} pages into ${DIST_DIR}`);
