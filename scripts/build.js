@@ -33,9 +33,17 @@ const BASE_PATH = "/kurume-bar-navi";
 const GOOGLE_MAPS_EMBED_KEY = process.env.GOOGLE_MAPS_EMBED_KEY || "";
 
 // 連絡先(掲載内容の追加・修正・削除依頼の受付先)。
-// TODO: 実運用開始前に、実際に受信・監視できる会社のメールアドレスへ差し替えること。
-// 現時点ではプレースホルダーのため、本番公開前に必ず確認する。
-const CONTACT_EMAIL = "kurume-bar-navi-info@example.com";
+// 2026-07-29 解決済み: 社長が用意した実運用のGoogleフォームに差し替え(旧ダミーメールを廃止)。
+// 未ログインでも開けることを検証済みの公開フォームURL。削除依頼導線はすべてこのフォームへの通常リンク
+// (mailto: は使わない)。経緯は data/venue-audit-log.md(2026-07-29 エントリ)にも記録。
+const CONTACT_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSd6HX-N40kxZesknWaLnHHPjwHTwxK3wnAUsQm4zC8fDXBu7A/viewform";
+
+// 削除依頼フォームへのリンク(<a>タグ)を生成するヘルパー。
+// label はリンクテキスト(例: "こちらのお問い合わせフォーム")。rel/target で外部リンクとして安全に開く。
+function contactFormLink(label) {
+  return `<a href="${CONTACT_FORM_URL}" rel="nofollow noopener" target="_blank">${escapeHtml(label)}</a>`;
+}
 
 // 公開対象の業態allowlist(PUBLISHED_CATEGORIES)と店舗単位フェーズ2(PHASE2_VENUE_IDS)は
 // scripts/lib/published.js に集約し、fetch 系スクリプトと共有している(単一の真実の源)。
@@ -1086,12 +1094,10 @@ function venueLogoCreditHtml(v) {
   // 公式Instagramのプロフィール画像を自サイトに保存(再ホスト)して使っている店。
   // 自サイト保存なので「保存していません」とは書かず、出典の公式Instagramへのリンクを付けて正確に表記する。
   if (logo.source === "instagram-local") {
-    const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
-    return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(logo.igUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(v.name)} 公式Instagram</a>のプロフィール画像を出典としています。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
+    return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(logo.igUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(v.name)} 公式Instagram</a>のプロフィール画像を出典としています。掲載を希望されない店舗様は${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。速やかに対応いたします。</p>`;
   }
   const official = VENUE_LOGOS[v.id];
-  const subject = encodeURIComponent(`【${v.name}】ロゴ掲載について`);
-  return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(official.siteUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(official.siteLabel)}</a>のものを直接参照して表示しています(当サイトには保存していません)。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${subject}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
+  return `<p class="small logo-credit" id="venue-logo-credit">ロゴ画像: <a href="${escapeHtml(official.siteUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(official.siteLabel)}</a>のものを直接参照して表示しています(当サイトには保存していません)。掲載を希望されない店舗様は${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。速やかに対応いたします。</p>`;
 }
 
 // ============================================================
@@ -2224,7 +2230,7 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
   const igEmbed = instagramEmbedHtml(v.id);
   const officialPhoto = officialPhotoHtml(v.id);
   // 写真(公式Instagram埋め込み or 公式サイト画像)を掲載している場合に表示する削除依頼案内。
-  const photoRemovalNotice = `<p class="small photo-removal-notice">写真は店舗の公式発信(公式Instagram/公式サイト)を出典として掲載しています。掲載を希望されない店舗様は<a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`【${v.name}】写真掲載について`)}">${escapeHtml(CONTACT_EMAIL)}</a>までご連絡ください。速やかに対応いたします。</p>`;
+  const photoRemovalNotice = `<p class="small photo-removal-notice">写真は店舗の公式発信(公式Instagram/公式サイト)を出典として掲載しています。掲載を希望されない店舗様は${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。速やかに対応いたします。</p>`;
   const photoSectionHtml = igEmbed
     ? `<div class="photo-section">
     <h2 class="section-heading"><span class="section-heading-icon">📷</span>写真</h2>
@@ -2322,8 +2328,7 @@ ${sourcesHtml}
 
   <section class="info-section">
     <h2 class="section-heading"><span class="section-heading-icon">✉️</span>関係者の方へ</h2>
-    <p>この店舗の情報に誤りがある、追加・修正をご希望の場合、または掲載を希望されない場合は、下記メールアドレスまでご連絡ください。</p>
-    <p><a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`【${v.name}】情報の追加・修正について`)}">${escapeHtml(CONTACT_EMAIL)}</a></p>
+    <p>この店舗の情報に誤りがある、追加・修正をご希望の場合、または掲載を希望されない店舗様は${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。速やかに対応いたします。</p>
   </section>
 </article>
 
@@ -2368,8 +2373,7 @@ function renderAboutPage() {
 <p>本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは、公開されている情報をもとに店舗を紹介する情報サイトであり、<strong>掲載店舗との間に提携・協賛・推奨・公認等の関係は一切ありません</strong>。ロゴは、その店舗(またはチェーンの運営元)を識別しやすくする目的で、各店の公式サイト上の画像を参照して表示しているものであり、当サイトが各店舗から掲載の許諾や対価を受けていることを示すものではありません。</p>
 
 <h2>掲載店舗の関係者の方へ</h2>
-<p>当サイトへの掲載内容に誤りがある場合の修正依頼、掲載を希望されない場合の削除依頼については、下記メールアドレスまでご連絡ください。</p>
-<p><a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("掲載内容について")}">${escapeHtml(CONTACT_EMAIL)}</a></p>
+<p>当サイトへの掲載内容に誤りがある場合の修正依頼、掲載を希望されない場合の削除依頼については、${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。速やかに対応いたします。</p>
 
 <h2>年齢確認について</h2>
 <p>接待を伴う飲食店は、20歳未満の方はご利用いただけません。</p>

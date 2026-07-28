@@ -76,3 +76,10 @@ ACESの見落としを受け、poker/concafe/shisha業態の閉店有無を狙�
 - **優先順位**: (1)公式サイト/公式FBロゴ(VENUE_LOGOS) → (2)このInstagram保存ロゴ(INSTAGRAM_LOGOS) → (3)ホットペッパー logo_image → (4)ネームタイル。対象14店は現状ネームタイルのため、実質「ネームタイル→Instagramロゴ」への差し替え。
 - **対象14店(id)**: bar-1988 / bar-tico / bar-bigisland / bar-jackalope / bar-jinga45 / izakaya-delica-amenita / izakaya-oubu / izakaya-geta / izakaya-tacchan / izakaya-sakana-to-kushi-tsubomi / shisha-0942 / shisha-aima / poker-ken / poker-ace-and-king。
 - **除外2店**: bar-oneshot / bar-elocho は取得画像が店内写真でロゴに不適のため不採用(画像は削除)。両店はネームタイルのまま。
+
+## 2026-07-29(弁護士ゲートのwaive判断 + 削除依頼連絡先の実運用化)
+
+インスタロゴ再ホスト(上記14店)と、それに伴う削除依頼導線の実運用化について、社長が2点の判断を下した。本ログに記録する。
+
+1. **再ホスト前の弁護士確認ゲートを社長が明示的にwaive**: README に定めた「写真・ロゴを自サイトに保存(rehost)する場合は実施前に必ず専門家(弁護士)確認を経る」というルール(著作権リスク階層の線引き)について、**社長がリスク(著作権・Instagram規約)を承知のうえで、弁護士確認を明示的にwaiveして実施を進める判断を下した**。ルール自体は今後のために残す(将来の別ケースには引き続き適用)。今回のインスタロゴ再ホスト14店に限り、このwaiveを適用する。
+2. **削除依頼連絡先をダミーメールから実運用のGoogleフォームに差し替え(サイト全体)**: これまで削除・修正依頼の導線に使っていたダミーメールアドレス(`kurume-bar-navi-info@example.com`、`CONTACT_EMAIL` プレースホルダー)を廃し、**社長が用意した実運用の Googleフォーム**(未ログインで開けることを検証済みの公開フォーム)への通常リンクに差し替えた。対象はサイト全体の削除依頼導線(ロゴクレジットのホットリンク分岐・instagram-local 分岐、写真クレジット、店舗ページ「関係者の方へ」、about ページ「掲載店舗の関係者の方へ」、免責等、旧 `CONTACT_EMAIL` を参照していた全箇所)。`mailto:` と `example.com` はビルド出力(`dist/`)から一掃した。実装は `scripts/build.js` の `CONTACT_FORM_URL` 定数と `contactFormLink()` ヘルパーに集約。
