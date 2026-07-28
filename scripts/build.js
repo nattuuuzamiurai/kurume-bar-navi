@@ -984,6 +984,8 @@ const INSTAGRAM_LOGOS = {
   "izakaya-lucky-raku": "https://www.instagram.com/kurume.lucky/",
   "izakaya-motsunabe-sato": "https://www.instagram.com/motsunabe.sato/",
   "izakaya-yakiniku-zen": "https://www.instagram.com/yakinikuzen09/",
+  "izakaya-kokaro": "https://www.instagram.com/koukarow/",
+  "izakaya-matabee": "https://www.instagram.com/matab_ee/",
 };
 
 // ============================================================
