@@ -646,6 +646,47 @@ function venueHeroPhotoHtml(v) {
 // (=リファラによるホットリンクブロックなし)。ただし実ブラウザでの最終描画は未検証。
 // ============================================================
 const VENUE_LOGOS = {
+  // --- 公式サイトロゴ 自動拡充(2026-07-27) ---
+  "bar-141saketen": {
+    imageUrl: "https://www.141saketen-kurume.com/wp-content/uploads/2023/04/logo-1.png",
+    siteLabel: "141酒店 公式サイト",
+    siteUrl: "https://www.141saketen-kurume.com/",
+  },
+  "izakaya-kushi-tanaka": {
+    imageUrl: "https://restaurant.kushi-tanaka.com/images/logo.png",
+    siteLabel: "串カツ田中 公式サイト",
+    siteUrl: "https://restaurant.kushi-tanaka.com/detail/1220",
+  },
+  "izakaya-todoit": {
+    imageUrl: "https://fancicalcafeandbar-todoit.com/img/main_logo.png",
+    siteLabel: "to do it. -つどい- 公式サイト",
+    siteUrl: "https://fancicalcafeandbar-todoit.com/",
+  },
+  "izakaya-tashu": {
+    imageUrl: "https://static.wixstatic.com/media/8273ba_97ff1a8736c24ce2a2532c9e40868346~mv2.png",
+    siteLabel: "もつ鍋 田しゅう 公式サイト",
+    siteUrl: "https://www.motsunabe-tashu.com/",
+  },
+  "izakaya-kawakko": {
+    imageUrl: "https://static.wixstatic.com/media/acc18a_aa89a1f222f94998a094f34be4311435~mv2.png/v1/fill/w_299,h_86,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/top_logo.png",
+    siteLabel: "とりかわ博多かわっこ 公式サイト",
+    siteUrl: "https://www.kawakko.com/",
+  },
+  "izakaya-tsukasa": {
+    imageUrl: "https://kurume-yakitori-tsukasa.com/img/logo.png",
+    siteLabel: "久留米焼鳥 つかさ 公式サイト",
+    siteUrl: "https://kurume-yakitori-tsukasa.com/",
+  },
+  "izakaya-hamada": {
+    imageUrl: "https://kushino-utage-hamada.com/system_panel/uploads/images/hd_logo.png",
+    siteLabel: "串乃宴 はま田 公式サイト",
+    siteUrl: "https://kushino-utage-hamada.com/",
+  },
+  "izakaya-hanhan": {
+    imageUrl: "https://yakiniku-hanhan.com/struct/wp-content/uploads/logo.png",
+    siteLabel: "炭火焼肉 絆繁 公式サイト",
+    siteUrl: "https://yakiniku-hanhan.com/",
+  },
   // --- 居酒屋・料理系 ---
   "izakaya-kakomian": {
     imageUrl: "https://momo.cmosite.com/wp-content/uploads/sites/35/2020/01/logo_w.png",
