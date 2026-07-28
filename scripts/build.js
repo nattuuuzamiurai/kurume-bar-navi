@@ -687,6 +687,87 @@ const VENUE_LOGOS = {
     siteLabel: "炭火焼肉 絆繁 公式サイト",
     siteUrl: "https://yakiniku-hanhan.com/",
   },
+  // --- Facebookページのロゴ 自動拡充(2026-07-28) ---
+  "bar-papermoon": {
+    imageUrl: "https://graph.facebook.com/294255527261386/picture?type=large",
+    siteLabel: "ペーパームーン 公式Facebook",
+    siteUrl: "https://www.facebook.com/294255527261386/",
+  },
+  "bar-rojiura-sakahari": {
+    imageUrl: "https://graph.facebook.com/rodiurasyuhari/picture?type=large",
+    siteLabel: "ロヂウラ酒八利 公式Facebook",
+    siteUrl: "https://www.facebook.com/rodiurasyuhari/",
+  },
+  "bar-bistro-theater": {
+    imageUrl: "https://graph.facebook.com/BistroTheater0516/picture?type=large",
+    siteLabel: "ビストロシアター 公式Facebook",
+    siteUrl: "https://www.facebook.com/BistroTheater0516/",
+  },
+  "bar-flavor": {
+    imageUrl: "https://graph.facebook.com/utagespaceflavor/picture?type=large",
+    siteLabel: "宴場FLAVOR 公式Facebook",
+    siteUrl: "https://www.facebook.com/utagespaceflavor/",
+  },
+  "izakaya-kunsei-mammauto": {
+    imageUrl: "https://graph.facebook.com/kunseisakaba.manmaaiuto/picture?type=large",
+    siteLabel: "燻製ビストロ マンマ・ユート 公式Facebook",
+    siteUrl: "https://www.facebook.com/kunseisakaba.manmaaiuto/",
+  },
+  "izakaya-yolo": {
+    imageUrl: "https://graph.facebook.com/yolo0942/picture?type=large",
+    siteLabel: "肉酒場YOLO 公式Facebook",
+    siteUrl: "https://www.facebook.com/yolo0942/",
+  },
+  "izakaya-seppun": {
+    imageUrl: "https://graph.facebook.com/kurume.seppun/picture?type=large",
+    siteLabel: "通町 接吻 公式Facebook",
+    siteUrl: "https://www.facebook.com/kurume.seppun/",
+  },
+  "izakaya-daisen": {
+    imageUrl: "https://graph.facebook.com/kurumedaisen/picture?type=large",
+    siteLabel: "久留米だいせん 公式Facebook",
+    siteUrl: "https://www.facebook.com/kurumedaisen/",
+  },
+  "izakaya-hidamari-honten": {
+    imageUrl: "https://graph.facebook.com/hidamari.syokudou/picture?type=large",
+    siteLabel: "陽溜食堂 公式Facebook",
+    siteUrl: "https://www.facebook.com/hidamari.syokudou/",
+  },
+  "izakaya-hidamari-hiyoshi": {
+    imageUrl: "https://graph.facebook.com/hidamari.hiyosimati/picture?type=large",
+    siteLabel: "陽溜食堂 日吉町店 公式Facebook",
+    siteUrl: "https://www.facebook.com/hidamari.hiyosimati/",
+  },
+  "izakaya-hiroya": {
+    imageUrl: "https://graph.facebook.com/yakinikuhorumonhiroya/picture?type=large",
+    siteLabel: "焼肉ホルモン ひろ屋 公式Facebook",
+    siteUrl: "https://www.facebook.com/yakinikuhorumonhiroya/",
+  },
+  "izakaya-rakuen": {
+    imageUrl: "https://graph.facebook.com/rakuen.kurume/picture?type=large",
+    siteLabel: "常夏酒場 楽園(RAKUEN) 公式Facebook",
+    siteUrl: "https://www.facebook.com/rakuen.kurume/",
+  },
+  "concafe-seventh-heaven": {
+    imageUrl: "https://graph.facebook.com/LC7thHeaven/picture?type=large",
+    siteLabel: "Live Cafe Seventh Heaven 公式Facebook",
+    siteUrl: "https://www.facebook.com/LC7thHeaven/",
+  },
+  "izakaya-tomosuke": {
+    imageUrl: "https://graph.facebook.com/TomosukeKurume/picture?type=large",
+    siteLabel: "串・麺 ともすけ 公式Facebook",
+    siteUrl: "https://www.facebook.com/TomosukeKurume/",
+  },
+  "izakaya-ginshari": {
+    imageUrl: "https://graph.facebook.com/1074032079420586/picture?type=large",
+    siteLabel: "焼肉銀しゃり直球 久留米店 公式Facebook",
+    siteUrl: "https://www.facebook.com/1074032079420586/",
+  },
+  "izakaya-gekkoyoku": {
+    imageUrl: "https://graph.facebook.com/kurumegekkouyoku/picture?type=large",
+    siteLabel: "月光浴 公式Facebook",
+    siteUrl: "https://www.facebook.com/kurumegekkouyoku/",
+  },
   // --- 居酒屋・料理系 ---
   "izakaya-kakomian": {
     imageUrl: "https://momo.cmosite.com/wp-content/uploads/sites/35/2020/01/logo_w.png",
