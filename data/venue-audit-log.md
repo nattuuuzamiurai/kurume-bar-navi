@@ -159,3 +159,27 @@ concafe/shisha の全11店(うち `concafe-axia`・`concafe-platinum-seven` は�
 ### ルール②に照らした過去の判断の再確認
 
 `bar-zetton` で確認した Instagram アカウントは、プロフィール画像が人物写真でありルール②(店名ロゴ・店名グラフィックのみ)を満たさないため不採用とした判断は、本ルールと整合する。
+
+## 2026-07-29(公式Instagramハンドルの実アクセス検証 — 引き継ぎメモの6店中5件が無効)
+
+引き継ぎメモに「確認済みハンドル」として記載されていた6店について、実際にInstagramへアクセスして検証したところ、**記載どおりに実在したハンドルは0件**だった(1店のみ別ハンドルで再特定できたためロゴ採用、残り5件は取得不可)。**同じ調査を将来繰り返さないため**に検証結果を残す。以後、この5件を再調査する場合は「メモのハンドルを試す」ところからではなく、下記の結果を前提に始めること。
+
+| id | メモ記載のハンドル | 実アクセス結果 | 判断 |
+|---|---|---|---|
+| `izakaya-grill-party` | `grillparty.kurume` | 「Profileは利用できません」= 無効 | 正しいハンドルは **`grillparty.yakiniku`**(アカウント名「炭火焼肉 Grill Party 【久留米】」)。検索で再特定し実在確認。プロフィール画像が店名ロゴのため**ロゴ採用** |
+| `izakaya-sakuraya` | `sakuraya.kurume` | 検索結果には出るが実アクセスで「Profileは利用できません」 | 削除/非公開/改名の可能性。**ロゴ取得不可** |
+| `bar-zetton` | `yukimaru_man` | 「Profileは利用できません」= 無効 | 別アカウントを確認したが**不採用**(下記参照) |
+| `concafe-neko-maid-seven` | `conceptbarseven` | 「Profileは利用できません」= 無効 | 公式Instagramは検索でも発見できず。**取得不可** |
+| `concafe-soul-one` | `soul_one_of` | Instagramには存在しない | `soul_one_of` は **X(旧Twitter)のハンドル**。公式Instagramは確認できず。**取得不可** |
+| `concafe-hakuchumu` | `hakuchumu_o` | 「Profileは利用できません」= 無効 | 公式は **X の @Hakuchumu_oO**。公式Instagramは確認できず。**取得不可** |
+
+### 採用(1店)
+
+- `izakaya-grill-party`(Grill Party(グリルパーティー) 久留米店): 公式Instagram https://www.instagram.com/grillparty.yakiniku/ のプロフィール画像(150×150、グリルのイラスト付きの「炭火焼肉 Grill Party」店名ロゴ)を `assets/insta-logos/izakaya-grill-party.jpg` に自サイト保存し `INSTAGRAM_LOGOS` に追加。上記「2026-07-29(方針例外)」の再ホスト運用・クレジット表記(instagram-local 分岐)に準拠する。
+
+### 引き継ぎメモの記述の訂正(`bar-zetton`)
+
+- メモには「前回 `fujimaru_tamaniwa` = 美容室の誤アカウント」とあったが、**これは誤り**。実アクセスしたところアカウント名は「**Sofa dining ZETTON 店長　藤丸**」で、当該店(ゼットン)の**店長の個人アカウント**だった。
+- 誤認の原因は、プロフィール画像が「HAIR DESIGN Cravent」という**美容室の看板の前で撮影された人物写真**だったため(背景の看板を店名と読み違えた)。
+- ただし**ロゴとしては不採用**。店名ロゴ・グラフィックではなく人物写真であり、当サイトの採用基準(ロゴ/店名グラフィックのみ採用、写真・自撮り・別店は不採用)に反する。
+- `data/venues.json` の `bar-zetton` は `sources` に当該アカウントを `"Instagram(@fujimaru_tamaniwa)"` というラベルで既に掲載しているが、**このラベルは変更しない**。店長の個人アカウントであり公式店舗アカウントではないため、店名を冠さない現在の中立的なラベルがむしろ適切。
