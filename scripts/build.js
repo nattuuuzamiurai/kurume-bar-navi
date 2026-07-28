@@ -62,6 +62,14 @@ const UNVERIFIED_VENUE_IDS = new Set([
   // ※poker-ace-and-king(A&K)は2026-07-24 社長確認により営業中と確定したため解除。
   //   ただし詳細な営業データ(営業時間等)は未取得のままなのでnull据え置き。
   "shisha-0942",
+  // 2026-07-29 の閉店確認(concafe/shisha 11店の全数確認)で、閉店の証拠は見つからなかったが
+  // 営業中の裏付けも取れなかった3店。いずれも「Googleに施設登録がない + 情報源がアグリゲーター
+  // サイト1〜2本のみ + 確認できる一次情報が1年以上前」という、過去に閉店を見落とした
+  // CASINO Bar ACES と同じプロファイル。削除はせず注記付きで掲載継続する。
+  // 詳細は data/venue-audit-log.md「2026-07-29(コンカフェ・シーシャ11店 閉店確認)」参照。
+  "concafe-soul-one",
+  "concafe-neko-maid-seven",
+  "shisha-aima",
 ]);
 function todayJST() {
   const now = new Date();
