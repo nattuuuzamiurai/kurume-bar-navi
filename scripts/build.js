@@ -973,6 +973,17 @@ const INSTAGRAM_LOGOS = {
   "shisha-aima": "https://www.instagram.com/kurume.shisha.ima/",
   "poker-ken": "https://www.instagram.com/kurume_ken_poker/",
   "poker-ace-and-king": "https://www.instagram.com/ace_and_king259/",
+  // --- 第2弾(2026-07-29): ネームタイル店の公式IGを検索で発見し追加 ---
+  "concafe-kurukuru-bakyun": "https://www.instagram.com/kurukuru_bqn/",
+  "concafe-paracora": "https://www.instagram.com/parakora_/",
+  "izakaya-toyfull-brewery": "https://www.instagram.com/toyfullbrewery/",
+  "bar-kurume-standard": "https://www.instagram.com/kurumestandard/",
+  "izakaya-bansun": "https://www.instagram.com/sousakubansun/",
+  "shisha-x": "https://www.instagram.com/shisha_bar.x/",
+  "izakaya-matsuo": "https://www.instagram.com/matsu_uo/",
+  "izakaya-lucky-raku": "https://www.instagram.com/kurume.lucky/",
+  "izakaya-motsunabe-sato": "https://www.instagram.com/motsunabe.sato/",
+  "izakaya-yakiniku-zen": "https://www.instagram.com/yakinikuzen09/",
 };
 
 // ============================================================
