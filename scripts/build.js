@@ -70,13 +70,6 @@ const UNVERIFIED_VENUE_IDS = new Set([
   "concafe-soul-one",
   "concafe-neko-maid-seven",
   "shisha-aima",
-  // 一次情報が軒並み消滅(2026-07-29 確認)。公式サイト obanzai-sakuraya.jp が DNS NXDOMAIN、
-  // 公式Instagram sakuraya.kurume が「Profileは利用できません」、食べログ・ホットペッパーの
-  // 久留米一覧にも掲載なし。残る出典は Retty 1本のみで、そこに載る電話番号 0942-31-8000 は
-  // izakaya-grill-party の番号(同店の公式サイト・食べログで確認)と重複していた。
-  // 閉店店舗の番号が別店に再割当されるのはよくあるため、電話番号は null 化して掲載を止めた。
-  // 閉店の確証はまだ無いため削除はせず、注記付きで掲載継続する。
-  "izakaya-sakuraya",
 ]);
 function todayJST() {
   const now = new Date();

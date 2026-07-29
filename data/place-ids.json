@@ -1185,20 +1185,6 @@
     "matchBy": "店名core+番地一致",
     "fetchedAt": "2026-07-27T08:01:16.038Z"
   },
-  "izakaya-sakuraya": {
-    "placeId": "",
-    "needsReview": true,
-    "reviewReasons": [
-      "店名が一致する候補なし(元「もんじゃ焼き＆鉄板料理 SAKURAYA」/ 先頭解決「Grill Party 久留米店」)"
-    ],
-    "candidate": {
-      "placeId": "ChIJId7n4XalQTURR7J49roKWPg",
-      "name": "Grill Party 久留米店",
-      "address": "〒830-0017 福岡県久留米市日吉町８−１７ 文化街サンビル １F"
-    },
-    "query": "もんじゃ焼き＆鉄板料理 SAKURAYA 福岡県久留米市日吉町8-17 文化街サンビル1F",
-    "fetchedAt": "2026-07-27T08:01:23.001Z"
-  },
   "izakaya-sanzoku-dining": {
     "placeId": "ChIJS66hHimlQTURSkd17HNZO3A",
     "resolvedName": "SANZOKU DINING さっさん",
