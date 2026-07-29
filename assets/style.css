@@ -24,6 +24,12 @@
   --c-concafe: #ff85bd;
   --c-shisha: #3fd7b6;
   --c-poker: #5ad07a;
+  /* 2026-07-30 公開開始の5業態。既存5色と色相を離して選定(scripts/build.js の CATEGORY_COLORS と同値) */
+  --c-snack: #c3e04a;
+  --c-kyabakura: #e36fe8;
+  --c-lounge: #4fc0f0;
+  --c-club: #cbd5e8;
+  --c-girlsbar: #ff5f6d;
   --max-width: 1120px;
   --r: 16px;
   --tabbar-h: 60px;
@@ -854,6 +860,15 @@ details.facet-accordion[open] > .tag-filter-list {
   margin: 0 0 14px;
   font-weight: 600;
 }
+/* 年齢制限の注意喚起(接待を伴う業態の店舗ページ・カテゴリページ) */
+.notice-age {
+  background: rgba(203, 213, 232, .10);
+  border-color: var(--line);
+  color: var(--muted);
+  margin: 14px 0 0;
+  font-size: .85rem;
+}
+.notice-age strong { color: var(--ink); }
 
 /* ============================================================
    一覧(エリア/業態/タグの索引ページ)
