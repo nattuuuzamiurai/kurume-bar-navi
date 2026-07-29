@@ -996,6 +996,24 @@ const INSTAGRAM_LOGOS = {
   "izakaya-matabee": "https://www.instagram.com/matab_ee/",
 };
 
+// INSTAGRAM_LOGOS の件数上限(2026-07-29 制定の運用ルール③)。
+// 公式Instagramプロフィール画像の自サイト保存(rehost)は、他にロゴを得られない店舗に限った例外運用であり、
+// 無制限に広げないための歯止めとして上限を設けている(公開店舗数の25%相当 = 40件)。
+// 上限に達したら「自動的に続けない」ことが運用ルールの趣旨なので、
+// 超過した場合はビルドを失敗させて必ず人が判断する導線に戻す。
+// 上限そのものを引き上げるには、README「著作権リスク階層の線引き」項の運用ルールの見直しが必要。
+const INSTAGRAM_LOGOS_MAX = 40;
+{
+  const igLogoCount = Object.keys(INSTAGRAM_LOGOS).length;
+  if (igLogoCount > INSTAGRAM_LOGOS_MAX) {
+    throw new Error(
+      `INSTAGRAM_LOGOS が上限を超えています(${igLogoCount}件 > 上限${INSTAGRAM_LOGOS_MAX}件)。` +
+        `公式Instagramプロフィール画像の自サイト保存は上限${INSTAGRAM_LOGOS_MAX}件までの例外運用です。` +
+        `件数を減らすか、運用ルール(README「著作権リスク階層の線引き」項)の見直しを経てから上限を変更してください。`
+    );
+  }
+}
+
 // ============================================================
 // ロゴの出所解決(2026-07-28、社長承認の機能追加: ホットペッパー logo_image でロゴ自動付与)
 //
