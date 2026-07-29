@@ -32,7 +32,7 @@
   {
     "id": "snack",
     "name": "スナック",
-    "schemaType": "NightClub",
+    "schemaType": "BarOrPub",
     "summary": "ママ・スタッフとの会話を楽しむスナック・クラブ・ラウンジ。"
   },
   {
@@ -44,7 +44,7 @@
   {
     "id": "lounge",
     "name": "ラウンジ",
-    "schemaType": "NightClub",
+    "schemaType": "BarOrPub",
     "summary": "キャストと会話を楽しむラウンジ・会員制クラブ。"
   },
   {

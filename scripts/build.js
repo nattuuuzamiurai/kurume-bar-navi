@@ -2479,10 +2479,18 @@ function build() {
   // フェーズ2(非公開)のデータは、そもそも求人媒体にしか掲載が無い店が多くページも生成しないため
   // sources に保持している(2026-07-29)。その店を将来フェーズ1へ上げるときに求人URLを外し忘れると
   // 公開ページに出てしまうので、公開対象になった時点で warn を出して気付けるようにする。
-  const JOB_MEDIA_URL_RE = /(job-chocolat|menschocolat|picsastock|tainew|emily-job|pokepara-tainew|baitoru|indeed|gb-walker|hotworks)\./i;
-  const jobMediaLeaks = venues.filter((v) => (v.sources || []).some((s) => JOB_MEDIA_URL_RE.test(s.url)));
-  if (jobMediaLeaks.length > 0) {
-    console.warn(`[warn] 公開店の sources に求人媒体URLがあります(公開前に外すこと): ${jobMediaLeaks.map((v) => v.id).join(", ")}`);
+  // 対象は求人媒体だけではない。出会い系マッチングアプリのオウンドメディア(happymail)や
+  // ナイトワーク系ポータル(yoasobi-net)も、実店舗ページに「出典」として並べるとブランドを損ない、
+  // 掲載店にとっても迷惑になるため公開してはいけない。
+  const NON_PUBLISHABLE_SOURCE_RE = /(job-chocolat|menschocolat|picsastock|tainew|emily-job|pokepara-tainew|baitoru|indeed|gb-walker|hotworks|happymail|yoasobi-net)\./i;
+  const nonPublishableLeaks = venues.filter((v) => (v.sources || []).some((s) => NON_PUBLISHABLE_SOURCE_RE.test(s.url)));
+  if (nonPublishableLeaks.length > 0) {
+    // warn ではなくビルドを止める。deploy.yml はビルド直後に無条件でデプロイするため、
+    // 警告のままでは「ログを読み飛ばして公開してしまう」事故を防げない。
+    // 現状ヒット0件なので致命エラー化のコストはゼロで、穴を恒久的に塞げる。
+    throw new Error(
+      `公開店の sources に、公開してはいけない媒体のURLがあります(公開前に外すこと): ${nonPublishableLeaks.map((v) => v.id).join(", ")}`
+    );
   }
 
   const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));
