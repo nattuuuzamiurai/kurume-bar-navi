@@ -128,6 +128,9 @@ const CATEGORY_COLORS = {
   // 非公開カテゴリ(フェーズ1では出さない)。フォールバック用に色は持たせておく。
   snack: "#e0b24a",
   kyabakura: "#ff7ab0",
+  lounge: "#c79bff",
+  club: "#f2c14e",
+  girlsbar: "#ff9ec4",
 };
 
 // 業態アイコン。見本のライン(24x24・stroke)スタイルに刷新。currentColor で業態カラーに追従。
@@ -145,6 +148,13 @@ const CATEGORY_ICONS = {
   // スナック・キャバクラ(非公開カテゴリだが将来のフェーズ2用に用意)
   snack: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>`,
   kyabakura: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l3 9h10l3-9-5 4-3-6-3 6z"/></svg>`,
+  // ラウンジ・クラブ・ガールズバー(いずれも非公開カテゴリ。将来の公開に備えて用意しておく)
+  // ソファ
+  lounge: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/><path d="M3 12a2 2 0 0 1 4 0v3h10v-3a2 2 0 0 1 4 0v6H3z"/></svg>`,
+  // ワイングラス2つ(乾杯)
+  club: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6l-2 7a2.5 2.5 0 0 1-2 0z"/><path d="M14 4h6l-2 7a2.5 2.5 0 0 1-2 0z"/><path d="M7 11v8M17 11v8"/><path d="M5 21h4M15 21h4"/></svg>`,
+  // ビアグラス
+  girlsbar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h9v13H7z"/><path d="M16 10h3v6h-3"/><path d="M7 7a2.5 2.5 0 0 1 2-4 2.5 2.5 0 0 1 4-.5 2.5 2.5 0 0 1 3 4.5"/></svg>`,
 };
 
 // UI用アイコン(タブバー・factsグリッド等)。見本のセットをそのまま採用。
@@ -1073,6 +1083,9 @@ const CATEGORY_PLATE_LABELS = {
   // 非公開カテゴリ(フェーズ1では出さない)もフォールバック用に用意しておく。
   snack: "SNACK",
   kyabakura: "KYABAKURA",
+  lounge: "LOUNGE",
+  club: "CLUB",
+  girlsbar: "GIRLS BAR",
 };
 
 // ネームタイルのプレート本体(店名+業態ラベル+光点)を描画する。
@@ -2458,6 +2471,18 @@ function build() {
   const missingUnverified = [...UNVERIFIED_VENUE_IDS].filter((id) => !allIds.has(id));
   if (missingUnverified.length > 0) {
     console.warn(`[warn] UNVERIFIED_VENUE_IDS にデータ上存在しないIDがあります: ${missingUnverified.join(", ")}`);
+  }
+
+  // 求人媒体URLが公開店の sources に紛れ込んでいないかのチェック。
+  // README「削除・非公開化の記録を残す」のルール: 求人サイト由来の情報は業態・接待性の分類の
+  // 手がかりとして参照してよいが、店舗ページには出さない(= sources に載せない)。
+  // フェーズ2(非公開)のデータは、そもそも求人媒体にしか掲載が無い店が多くページも生成しないため
+  // sources に保持している(2026-07-29)。その店を将来フェーズ1へ上げるときに求人URLを外し忘れると
+  // 公開ページに出てしまうので、公開対象になった時点で warn を出して気付けるようにする。
+  const JOB_MEDIA_URL_RE = /(job-chocolat|menschocolat|picsastock|tainew|emily-job|pokepara-tainew|baitoru|indeed|gb-walker)\./i;
+  const jobMediaLeaks = venues.filter((v) => (v.sources || []).some((s) => JOB_MEDIA_URL_RE.test(s.url)));
+  if (jobMediaLeaks.length > 0) {
+    console.warn(`[warn] 公開店の sources に求人媒体URLがあります(公開前に外すこと): ${jobMediaLeaks.map((v) => v.id).join(", ")}`);
   }
 
   const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));

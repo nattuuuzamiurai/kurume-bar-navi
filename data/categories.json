@@ -40,5 +40,23 @@
     "name": "キャバクラ",
     "schemaType": "NightClub",
     "summary": "キャストが接客するキャバクラ・クラブ。"
+  },
+  {
+    "id": "lounge",
+    "name": "ラウンジ",
+    "schemaType": "NightClub",
+    "summary": "キャストと会話を楽しむラウンジ・会員制クラブ。"
+  },
+  {
+    "id": "club",
+    "name": "クラブ",
+    "schemaType": "NightClub",
+    "summary": "高級クラブ・ニュークラブ。"
+  },
+  {
+    "id": "girlsbar",
+    "name": "ガールズバー",
+    "schemaType": "NightClub",
+    "summary": "カウンター越しに女性キャストが接客するバー。"
   }
 ]
