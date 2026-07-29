@@ -994,6 +994,9 @@ const INSTAGRAM_LOGOS = {
   "izakaya-yakiniku-zen": "https://www.instagram.com/yakinikuzen09/",
   "izakaya-kokaro": "https://www.instagram.com/koukarow/",
   "izakaya-matabee": "https://www.instagram.com/matab_ee/",
+  // --- 第3弾(2026-07-29): 引き継ぎメモの「確認済みハンドル」6店を実アクセスで再検証し、
+  //     唯一実在が確認できた1店を追加(残り5件は無効ハンドル/公式IG不在。詳細は data/venue-audit-log.md) ---
+  "izakaya-grill-party": "https://www.instagram.com/grillparty.yakiniku/",
 };
 
 // INSTAGRAM_LOGOS の件数上限(2026-07-29 制定の運用ルール③)。

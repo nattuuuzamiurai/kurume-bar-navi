@@ -159,3 +159,32 @@ concafe/shisha の全11店(うち `concafe-axia`・`concafe-platinum-seven` は�
 ### ルール②に照らした過去の判断の再確認
 
 `bar-zetton` で確認した Instagram アカウントは、プロフィール画像が人物写真でありルール②(店名ロゴ・店名グラフィックのみ)を満たさないため不採用とした判断は、本ルールと整合する。
+
+## 2026-07-29(公式Instagramハンドルの実アクセス検証 — 引き継ぎメモの6件すべてが無効、1店のみ別ハンドルで再特定)
+
+引き継ぎメモに「確認済みハンドル」として記載されていた6店について、実際にInstagramへアクセスして検証したところ、**メモ記載の6ハンドルは6件すべてが無効**(記載どおりに実在したハンドルは0件)だった。そのうち **1店(`izakaya-grill-party` = Grill Party)のみ別ハンドルで再特定でき、ロゴを採用**。**残り5店はロゴ取得不可**。**同じ調査を将来繰り返さないため**に検証結果を残す。以後、この5店を再調査する場合は「メモのハンドルを試す」ところからではなく、下記の結果を前提に始めること。
+
+| id | メモ記載のハンドル | 実アクセス結果 | 判断 |
+|---|---|---|---|
+| `izakaya-grill-party` | `grillparty.kurume` | 「Profileは利用できません」= 無効 | 正しいハンドルは **`grillparty.yakiniku`**(アカウント名「炭火焼肉 Grill Party 【久留米】」)。検索で再特定し実在確認。プロフィール画像が店名ロゴのため**ロゴ採用** |
+| `izakaya-sakuraya` | `sakuraya.kurume` | 検索結果には出るが実アクセスで「Profileは利用できません」 | 削除/非公開/改名の可能性。**ロゴ取得不可** |
+| `bar-zetton` | `yukimaru_man` | 「Profileは利用できません」= 無効 | 別アカウントを確認したが**不採用**(下記参照) |
+| `concafe-neko-maid-seven` | `conceptbarseven` | 「Profileは利用できません」= 無効 | 公式Instagramは検索でも発見できず。**取得不可** |
+| `concafe-soul-one` | `soul_one_of` | Instagram上では確認できず(同名アカウントはX(旧Twitter)に実在: https://x.com/soul_one_of ) | メモのハンドルは **Xのもの**とみられる。Instagram側は非公開・改名の可能性を排除できないが、当該ハンドルのプロフィールは確認できず。**取得不可** |
+| `concafe-hakuchumu` | `hakuchumu_o` | 「Profileは利用できません」= 無効 | 公式は **X の @Hakuchumu_oO**。公式Instagramは確認できず。**取得不可** |
+
+### 採用(1店)
+
+- `izakaya-grill-party`(Grill Party(グリルパーティー) 久留米店): 公式Instagram https://www.instagram.com/grillparty.yakiniku/ のプロフィール画像(150×150、グリルのイラスト付きの「炭火焼肉 Grill Party」店名ロゴ)を `assets/insta-logos/izakaya-grill-party.jpg` に自サイト保存し `INSTAGRAM_LOGOS` に追加。上記「2026-07-29(方針例外)」の再ホスト運用・クレジット表記(instagram-local 分岐)に準拠する。
+
+### 引き継ぎメモの記述の訂正(`bar-zetton`)
+
+- 引き継ぎメモ記載のハンドル `yukimaru_man` は**無効**だった。
+- 代わりに `venues.json` の `sources` にある別アカウント(`fujimaru_tamaniwa`)を確認したが、**プロフィール画像が人物写真であり、当サイトのロゴ採用基準(店名ロゴ・店名グラフィックのみ採用。写真・自撮り・別店の画像は不採用)を満たさないため不採用**とした。
+- あわせて、当該Instagramアカウントが**当店の公式アカウントであることは確認できなかった**(店・本人による明示や公式サイトからの相互リンクといった裏付けが取れない)。
+- なお引き継ぎメモの「`fujimaru_tamaniwa` = 美容室の誤アカウント」という記述は**正確ではなかった**。プロフィール画像の内容による誤認とみられる。
+- **【`sources` の扱いについて — 当初の「変更不要」という結論を撤回】** 当初このログには「ラベル `"Instagram(@fujimaru_tamaniwa)"` のままでよい」と記載していたが、**この結論は誤りだったため撤回する**。
+  - 実際のサイト出力を確認したところ、`scripts/build.js` は `sources` 内の instagram.com URL を自動的に **「🌐 公式SNS・ホームページ / この店舗が公式に発信しているアカウント・サイトです」** セクションへ昇格表示する仕様(`OFFICIAL_SNS_HOSTS`)。**ラベル文言に関係なく昇格する**ため、公式アカウントと確認できていないアカウントが「店舗の公式発信」として掲示されている状態になっている。
+  - これは build.js のコメントに明記された方針(「その店の公式発信だけを載せる」)に反する。
+  - ただしこれは **main 時点から存在する既存事象**であり、PR #31 で発生・悪化したものではない(PR #31 は `izakaya-grill-party` のロゴ追加と本ログの追記のみ)。
+  - **是正は別PRで行う。未対応の課題として残す。** 対応方針: `bar-zetton` の `sources` から当該Instagram URLを除外する(Retty 2件が残るため出典の裏付けは失われない)。
