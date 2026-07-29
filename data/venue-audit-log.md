@@ -167,7 +167,7 @@ concafe/shisha の全11店(うち `concafe-axia`・`concafe-platinum-seven` は�
 | id | メモ記載のハンドル | 実アクセス結果 | 判断 |
 |---|---|---|---|
 | `izakaya-grill-party` | `grillparty.kurume` | 「Profileは利用できません」= 無効 | 正しいハンドルは **`grillparty.yakiniku`**(アカウント名「炭火焼肉 Grill Party 【久留米】」)。検索で再特定し実在確認。プロフィール画像が店名ロゴのため**ロゴ採用** |
-| `izakaya-sakuraya` | `sakuraya.kurume` | 検索結果には出るが実アクセスで「Profileは利用できません」 | 削除/非公開/改名の可能性。**ロゴ取得不可** |
+| `izakaya-sakuraya` | `sakuraya.kurume` | 検索結果には出るが実アクセスで「Profileは利用できません」 | **改名**だった → 同日中に掲載を削除。本ログ末尾「2026-07-29(削除 — `izakaya-sakuraya` は改名により消滅していた)」参照 |
 | `bar-zetton` | `yukimaru_man` | 「Profileは利用できません」= 無効 | 別アカウントを確認したが**不採用**(下記参照) |
 | `concafe-neko-maid-seven` | `conceptbarseven` | 「Profileは利用できません」= 無効 | 公式Instagramは検索でも発見できず。**取得不可** |
 | `concafe-soul-one` | `soul_one_of` | Instagram上では確認できず(同名アカウントはX(旧Twitter)に実在: https://x.com/soul_one_of ) | メモのハンドルは **Xのもの**とみられる。Instagram側は非公開・改名の可能性を排除できないが、当該ハンドルのプロフィールは確認できず。**取得不可** |
@@ -237,7 +237,7 @@ concafe/shisha の全11店(うち `concafe-axia`・`concafe-platinum-seven` は�
      → もんじゃ焼き＆鉄板料理 SAKURAYA        ← 当サイトが掲載していたのはこの時点の情報
         └─ 改名(食べログの【旧店名】フィールドで確認)
            → Grill Party(日吉町8-17)          ← 現在「掲載保留」/ ホットペッパーに【休業中】バナー
-              └─ 2026-04-24 開店
+              └─ 2026-04-24 開店(https://twitfukuoka.com/?p=399500)
                  → 炭火焼肉 Grill Party 久留米店(東町39-27)  ← 現在営業中。当サイト掲載中の `izakaya-grill-party`
 ```
 
@@ -252,7 +252,7 @@ concafe/shisha の全11店(うち `concafe-axia`・`concafe-platinum-seven` は�
 | 「`0942-31-8000` は Retty のみが記載。SAKURAYA側の誤りの疑い」 | **誤り**。この番号は **SAKURAYA 自身の公式サイトに記載されていた番号**(Wayback の最終スナップショット http://web.archive.org/web/20251116000050/http://obanzai-sakuraya.jp/ のヘッダーに「日吉町8-17 文化街サンビル1F TEL. 0942-31-8000」)。同一事業者が改名・移転に伴って番号を持ち回っただけ |
 | 「閉店店舗の番号が別店に再割当された」 | **メカニズムが違う**。無関係な店への再割当ではなく、同一事業者による番号の継続使用 |
 | 「食べログの久留米エリア検索に掲載なし」 | **誤り**。掲載されている。**旧店名でしか検索しなかった**ため見えなかった(現名 Grill Party + 掲載保留でエリア一覧から落ちている) |
-| 「ホットペッパーの久留米お好み焼き・もんじゃ一覧に掲載なし」 | **誤り**。`strJ004457009` として同住所に掲載あり(【休業中】バナー付き)。ジャンルが「ダイニングバー・バル」のため、もんじゃ一覧には出なかっただけ |
+| 「ホットペッパーの久留米お好み焼き・もんじゃ一覧に掲載なし」 | **誤り**。`strJ004457009` として同住所に掲載あり(【休業中】バナー付き)。ジャンルが**「洋食」**表記のため、もんじゃ一覧には出なかっただけ |
 | 「IGアカウント消滅+公式サイトのDNS消失 = 有力な閉店シグナル」 | 方向は合っているが**本件の教訓ではない**。真の教訓は下記の「住所で横断検索する」こと |
 
 なお `obanzai-sakuraya.jp` が DNS NXDOMAIN であることは事実(`host`/`dig`/`dig @8.8.8.8` すべてNXDOMAIN)。Wayback は 2025-11-16 の200が最後で、サイト内容自体は News が2020-10-25で凍結していた。また引き継ぎメモにあったIGハンドル `grillparty.kurume` は、食べログの Grill Party(日吉町)ページに記載されている**旧店舗のアカウント**であり、同店の休止に伴って参照できなくなったとみられる。
@@ -265,14 +265,55 @@ concafe/shisha の全11店(うち `concafe-axia`・`concafe-platinum-seven` は�
 4. **`data/place-ids.json` の `needsReview` かつ `candidate` が別店名を返しているエントリは、改名・居抜きの強いシグナル**として閉店確認フローに回す。ただし大半は表記ゆれ(「ALETTA」→「アレッタ」等)や番地精度の差なので、**同一住所で明確に別業態の店名が返っているもの**に絞って追う。
 5. **エリア一覧サイトに「載っていない」ことを不掲載の根拠にする前に、ジャンル違いで一覧から外れていないかを確認する。**
 
+### 再発防止ルール4の補足(今回の二次的な誤り)
+
+上記ルール4を書いた直後に、**同じ文書内で住所の突き合わせを怠るという誤りを犯した**ため、手順を明文化しておく。
+
+`data/place-ids.json` の `reviewReasons` にある **「店名が一致する候補なし」は、住所が一致したことを一切意味しない**。`scripts/fetch-place-ids.js`(328〜336行目)は「どの候補も店名が一致しなかった」場合に、単に `candidates[0]`(関連度順の先頭)をそのまま `candidate` に入れているだけで、その住所は久留米市内のどこでもあり得る。
+
+→ **「同一住所で別店名」と判断する前に、必ず `venues.json` の `address` と `candidate.address` の番地を突き合わせること。** 突き合わせの際は、全角数字・各種ハイフンを正規化し、**番地の後ろのビル名・階数が番地と連結しないよう空白で区切って抽出**する(「14-3 1F」を詰めて「14-31F」と読むと「14-31」と誤解釈される)。
+
 ### 残課題: 同種の疑いがある他店の棚卸し
 
-`data/place-ids.json` で `needsReview` かつ `candidate` を持つエントリは41件あるが、大半は表記ゆれ・番地精度の差で問題ない。**同一住所で明確に別店名・別業態が返っている**次の店は、同じ改名・居抜きの可能性があるため要確認。
+`data/place-ids.json` で `needsReview` かつ `candidate` を持つ40件を、上記の手順で**掲載住所と候補住所の番地を機械的に突き合わせて**分類した。
 
-| id | 掲載店名 | Googleが返した候補 | 備考 |
+#### 表A: 番地が一致し、候補が明確に別の店舗・別業態(改名・居抜きの疑い)
+
+| id | 掲載 | Googleが返した候補 | 備考 |
 |---|---|---|---|
-| `bar-cherrys` | バーシェリーズ(東町34-14) | SHUFFLE(シャッフル 久留米) @ 東町34-14 | **同一番地で別店名** |
-| `bar-nightin-philippine` | NIGHTIN PHILIPPINE(日吉町14-73 浄ビル) | ナイトイン洋子 @ 日吉町14-73 浄ビル | **同一番地・同一ビルで別店名** |
-| `izakaya-oregon` | おれごん | 銀のすぷーん シティプラザ店 @ 六ツ門町8-1 | 別店名 |
-| `izakaya-kourin` | 光臨 | 久留米ワシントンホテルプラザ @ 東町34-2 | ビル名が返っている(テナントの可能性) |
-| `izakaya-kairakutei` | 偕楽亭 | (店舗ではなく住所のみ) @ 六ツ門町18-5 | 既に `UNVERIFIED_VENUE_IDS` 登録済み |
+| `izakaya-kichi` | 鉄板居酒屋 基地 @ 東町32-13 | **お好み焼き 基地** @ 東町32-13 | 屋号は一致するが**業態表記が変化**。業態変更・改名の可能性。**未確認・`UNVERIFIED_VENUE_IDS` にも未登録。最優先で確認すべき** |
+| `shisha-aima` | 久留米シーシャ あいま @ 日吉町5-22 リバーパークビル**2F南** | **炭火串焼 とり久** @ 日吉町5-22 リバーパークビル**1F** | 同一建物の別フロア。Google側に「あいま」の施設登録が無く、1Fの別業態が返っている。既に `UNVERIFIED_VENUE_IDS` 登録済み |
+| `izakaya-kourin` | 光臨 @ 東町34-2 ワシントンプラザ1階 | 久留米ワシントンホテルプラザ @ 東町34-2 | ホテル内テナントのためビル名が返っているだけの可能性が高い。**優先度低** |
+| `izakaya-kairakutei` | 偕楽亭 @ 六ツ門町18-5 | (店舗ではなく住所のみ) @ 六ツ門町18-5 | Google側に施設登録が無い。既に `UNVERIFIED_VENUE_IDS` 登録済み |
+
+番地一致13件のうち上記4件以外(`bar-aletta`「ALETTA/アレッタ」・`bar-highball-stand`・`bar-lucy`・`bar-remember`・`bar-roulette`・`bar-stown`・`bar-zetton`・`bar-ilfaro`・`izakaya-shuntei`)は、**表記ゆれ(英字/カナ、大文字小文字)で同一店**と判断でき、追跡不要。
+
+#### 表B: 番地が一致せず、Googleに当該店の施設登録が見つからない(未登録 or 閉店の疑い / ACES型)
+
+掲載住所に番地がある店のうち、候補が別番地を返しているもの。**閉店の証拠ではない**が、ACES で見落とした型と同じプロファイルなので、次回の棚卸し対象とする。
+
+| id | 掲載住所 | 候補が返した別番地 |
+|---|---|---|
+| `bar-cherrys` | 東町34-23 | 東町34-14(SHUFFLE) |
+| `bar-funkydog` | 東町25-25 | 東町30-1(MUSIC BAR BLEND) |
+| `bar-hangover` | 日吉町13-37 | 日吉町13-19(HANGOVER ※同名) |
+| `bar-nightin-philippine` | 六ツ門町2丁目6 第五イズミヤビル5F | 日吉町14-73(ナイトイン洋子) |
+| `izakaya-oregon` | 六ツ門町22-18 | 六ツ門町8-1(銀のすぷーん) |
+| `izakaya-akachochin-bunkagai` | 日吉町14-34 | 日吉町18-25(とり酒場炭人) |
+| `izakaya-gyoza-sakaba` | 日吉町13-7 | 西町1201-2(ぎょうざ家TAKA) |
+| `izakaya-koguetsu` | 六ツ門町21-4 | 小頭町6-1(ぎょうざ専門店湖月 工房) |
+| `izakaya-tetsunabe-nagata` | 日吉町15-57 | 六ツ門町21-11(虎徹) |
+| `poker-ace-and-king` | 東町38-19 富田屋ビル3F | 東町32-3(久留米 KEN POKER) |
+| `concafe-neko-maid-seven` | 東町32-29 | 通町109-2 ※既に `UNVERIFIED` 登録済み |
+| `concafe-soul-one` | 日吉町13-22 | 日吉町13-45 ※既に `UNVERIFIED` 登録済み |
+| `izakaya-omoni` | 日吉町4-11 | 日吉町7-5 ※既に `UNVERIFIED` 登録済み |
+
+軽微(隣接番地・枝番の差で同一店とみられる): `bar-oshu-kitchen-alma`(六ツ門町21-7-102 ⇄ 21-7)、`izakaya-gyoza-gokutora-toorimachi`(通町4-4 ⇄ 4-3)。
+
+#### 照合不能: 掲載住所に番地がない店
+
+`bar-1988` / `bar-jackalope` / `bar-jinga45` / `bar-nikka-kuma` / `bar-olive` / `bar-rojiura-sakahari` / `bar-sling` / `bar-tico` / `poker-ken` / `shisha-0942` は掲載住所が「福岡県久留米市(◯◯周辺)」等で番地を持たないため、そもそも突き合わせができない。**番地の確定が先**。なお候補として返っている店名は掲載店名とほぼ一致しており(Bar1988 / Jackalope / バー ジンガ45 / ニッカバー熊 / 角打ちBarオリーブ / ロヂウラ酒八利 / BAR sling / Bar.Tico / 久留米 KEN POKER / シーシャバーX)、**これらの候補住所をそのまま採用できる可能性が高い**。番地確定の有力な手がかりとして活用すること。
+
+#### 別途発見: `izakaya-shanghai-shuka` の住所が誤りの疑い
+
+掲載「六ツ門町**2-16** 泉屋ビル6F」に対し、Googleは同名・同フロアの「中国料理 上海酒家 @ 六ツ門町**2-6** 第五泉屋ビル6階」を返している。**当サイト側の番地が誤っている可能性が高い**。要確認。
