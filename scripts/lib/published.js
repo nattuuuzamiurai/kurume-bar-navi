@@ -53,7 +53,47 @@ const PUBLISHED_CATEGORIES = [
 // 【仕組みは残す】将来、個別の店舗を非公開にする必要が生じた場合(店舗様からの掲載辞退のご連絡、
 // 掲載基準への不適合が判明した場合など)は、ここにIDを追加すれば dist・sitemap・検索・タグ・
 // 一覧・JSON-LD のどこにも出なくなる。データ自体は data/venues.json に残せる。
-const PHASE2_VENUE_IDS = new Set([]);
+const PHASE2_VENUE_IDS = new Set([
+  // 2026-07-30: フェーズ2業態(スナック・キャバクラ等)は社長判断で公開に切り替えたが、
+  // 次の店は「読者に表示できる出典が1件も無い」ため、当サイトの原則
+  //(出典の無い店は掲載しない)に従って掲載を保留する。
+  //
+  // 経緯: 取り込み時の出典が求人媒体・出会い系メディア等、公開ページに出せない媒体のみだった。
+  // それらは internalSources へ退避したため、表示できる出典が0件になった。
+  // いずれも確度C(1系統のみ・営業実態も未確認)で、読者から見て検証手段が無い状態になる。
+  // 公式サイト・公式SNS・地図サービス等、表示できる出典が1件でも取得できた時点で公開する。
+  // 対象IDと未取得の理由は data/venue-audit-log.md に記録している。
+  "kyabakura-nestia",
+  "kyabakura-rudan",
+  "kyabakura-all",
+  "kyabakura-vega",
+  "club-ari",
+  "club-kou",
+  "lounge-jewel",
+  "lounge-ai-spaed",
+  "lounge-zen",
+  "snack-lavender",
+  "snack-rion",
+  "snack-70",
+  "snack-reims",
+  "snack-anew",
+  "snack-pearl",
+  "snack-amore",
+  "snack-berry",
+  "girlsbar-8eight",
+  "girlsbar-hrb",
+  "girlsbar-all-new-ace",
+  "girlsbar-pallas",
+  "girlsbar-baccara",
+  "girlsbar-bully",
+  "girlsbar-family",
+  // 確度Bだが、表示できる出典が取得できなかった3店(2026-07-30 時点)。
+  // 夜遊びショコラ・ナイツネット等の客向けポータルを横断したが掲載が見つからなかった。
+  // 同じ理由で保留する。出典が1件でも取得できた時点で公開する。
+  "snack-en",
+  "snack-kokoro",
+  "girlsbar-s-cafe",
+]);
 
 // 1店が公開対象か。
 function isPublished(v) {
