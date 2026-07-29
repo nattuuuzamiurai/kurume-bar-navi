@@ -62,6 +62,14 @@ const UNVERIFIED_VENUE_IDS = new Set([
   // ※poker-ace-and-king(A&K)は2026-07-24 社長確認により営業中と確定したため解除。
   //   ただし詳細な営業データ(営業時間等)は未取得のままなのでnull据え置き。
   "shisha-0942",
+  // 2026-07-29 の閉店確認(concafe/shisha 11店の全数確認)で、閉店の証拠は見つからなかったが
+  // 営業中の裏付けも取れなかった3店。いずれも「Googleに施設登録がない + 情報源がアグリゲーター
+  // サイト1〜2本のみ + 確認できる一次情報が1年以上前」という、過去に閉店を見落とした
+  // CASINO Bar ACES と同じプロファイル。削除はせず注記付きで掲載継続する。
+  // 詳細は data/venue-audit-log.md「2026-07-29(コンカフェ・シーシャ11店 閉店確認)」参照。
+  "concafe-soul-one",
+  "concafe-neko-maid-seven",
+  "shisha-aima",
 ]);
 function todayJST() {
   const now = new Date();
@@ -987,6 +995,24 @@ const INSTAGRAM_LOGOS = {
   "izakaya-kokaro": "https://www.instagram.com/koukarow/",
   "izakaya-matabee": "https://www.instagram.com/matab_ee/",
 };
+
+// INSTAGRAM_LOGOS の件数上限(2026-07-29 制定の運用ルール③)。
+// 公式Instagramプロフィール画像の自サイト保存(rehost)は、他にロゴを得られない店舗に限った例外運用であり、
+// 無制限に広げないための歯止めとして上限を設けている(公開店舗数の25%相当 = 40件)。
+// 上限に達したら「自動的に続けない」ことが運用ルールの趣旨なので、
+// 超過した場合はビルドを失敗させて必ず人が判断する導線に戻す。
+// 上限そのものを引き上げるには、README「著作権リスク階層の線引き」項の運用ルールの見直しが必要。
+const INSTAGRAM_LOGOS_MAX = 40;
+{
+  const igLogoCount = Object.keys(INSTAGRAM_LOGOS).length;
+  if (igLogoCount > INSTAGRAM_LOGOS_MAX) {
+    throw new Error(
+      `INSTAGRAM_LOGOS が上限を超えています(${igLogoCount}件 > 上限${INSTAGRAM_LOGOS_MAX}件)。` +
+        `公式Instagramプロフィール画像の自サイト保存は上限${INSTAGRAM_LOGOS_MAX}件までの例外運用です。` +
+        `件数を減らすか、運用ルール(README「著作権リスク階層の線引き」項)の見直しを経てから上限を変更してください。`
+    );
+  }
+}
 
 // ============================================================
 // ロゴの出所解決(2026-07-28、社長承認の機能追加: ホットペッパー logo_image でロゴ自動付与)
