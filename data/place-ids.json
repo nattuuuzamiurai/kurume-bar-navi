@@ -539,20 +539,6 @@
     "matchBy": "店名partial+番地一致",
     "fetchedAt": "2026-07-27T08:01:20.280Z"
   },
-  "concafe-soul-one": {
-    "placeId": "",
-    "needsReview": true,
-    "reviewReasons": [
-      "番地が一致する候補なし(元「13-22」/ 近隣別番地または住所曖昧の疑い)"
-    ],
-    "candidate": {
-      "placeId": "ChIJbzJXDiSlQTURskxBssXt4KQ",
-      "name": "こもれび久留米文化街",
-      "address": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 3F 3階"
-    },
-    "query": "ConceptBar SOUL_ONE 福岡県久留米市日吉町13-22 ミーユービル1階",
-    "fetchedAt": "2026-07-27T08:01:49.396Z"
-  },
   "izakaya-akachochin-bunkagai": {
     "placeId": "",
     "needsReview": true,
