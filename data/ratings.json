@@ -182,107 +182,107 @@
   "izakaya-choutei": {
     "rating": 4.4,
     "userRatingCount": 162,
-    "updatedAt": "2026-07-27T08:03:35.548Z"
+    "updatedAt": "2026-07-29T19:12:50.122Z"
   },
   "izakaya-ciaogola-van": {
     "rating": 4.1,
     "userRatingCount": 42,
-    "updatedAt": "2026-07-27T08:03:35.887Z"
+    "updatedAt": "2026-07-29T19:12:50.476Z"
   },
   "izakaya-daisen": {
     "rating": 3.9,
     "userRatingCount": 82,
-    "updatedAt": "2026-07-27T08:03:36.277Z"
+    "updatedAt": "2026-07-29T19:12:50.824Z"
   },
   "izakaya-delica-amenita": {
     "rating": 3.8,
     "userRatingCount": 29,
-    "updatedAt": "2026-07-27T08:03:36.628Z"
+    "updatedAt": "2026-07-29T19:12:51.161Z"
   },
   "izakaya-gekkoyoku": {
     "rating": 3.8,
     "userRatingCount": 147,
-    "updatedAt": "2026-07-27T08:03:37.073Z"
+    "updatedAt": "2026-07-29T19:12:51.513Z"
   },
   "izakaya-geta": {
     "rating": 4.2,
-    "userRatingCount": 92,
-    "updatedAt": "2026-07-27T08:03:37.468Z"
+    "userRatingCount": 93,
+    "updatedAt": "2026-07-29T19:12:51.848Z"
   },
   "izakaya-ginshari": {
     "rating": 4.7,
-    "userRatingCount": 554,
-    "updatedAt": "2026-07-27T08:03:37.823Z"
+    "userRatingCount": 565,
+    "updatedAt": "2026-07-29T19:12:52.188Z"
   },
   "izakaya-goju-ban": {
     "rating": 4.3,
-    "userRatingCount": 403,
-    "updatedAt": "2026-07-27T08:03:38.197Z"
+    "userRatingCount": 404,
+    "updatedAt": "2026-07-29T19:12:52.528Z"
   },
   "izakaya-gokuu": {
     "rating": 4.1,
     "userRatingCount": 44,
-    "updatedAt": "2026-07-27T08:03:38.584Z"
+    "updatedAt": "2026-07-29T19:12:52.859Z"
   },
   "izakaya-gonanbou": {
     "rating": 4.3,
     "userRatingCount": 79,
-    "updatedAt": "2026-07-27T08:03:38.938Z"
+    "updatedAt": "2026-07-29T19:12:53.199Z"
   },
   "izakaya-grill-party": {
     "rating": 4.6,
     "userRatingCount": 14,
-    "updatedAt": "2026-07-27T08:03:39.311Z"
+    "updatedAt": "2026-07-29T19:12:53.542Z"
   },
   "izakaya-gui-ya": {
     "rating": 5,
     "userRatingCount": 16,
-    "updatedAt": "2026-07-27T08:03:39.702Z"
+    "updatedAt": "2026-07-29T19:12:53.879Z"
   },
   "izakaya-hamada": {
     "rating": 4.2,
     "userRatingCount": 30,
-    "updatedAt": "2026-07-27T08:03:40.060Z"
+    "updatedAt": "2026-07-29T19:12:54.192Z"
   },
   "izakaya-hanhan": {
     "rating": 4.3,
     "userRatingCount": 110,
-    "updatedAt": "2026-07-27T08:03:40.432Z"
+    "updatedAt": "2026-07-29T19:12:54.536Z"
   },
   "izakaya-hidamari-hiyoshi": {
     "rating": 4.4,
-    "userRatingCount": 314,
-    "updatedAt": "2026-07-27T08:03:40.826Z"
+    "userRatingCount": 315,
+    "updatedAt": "2026-07-29T19:12:54.869Z"
   },
   "izakaya-hidamari-honten": {
     "rating": 4.5,
-    "userRatingCount": 568,
-    "updatedAt": "2026-07-27T08:03:41.234Z"
+    "userRatingCount": 571,
+    "updatedAt": "2026-07-29T19:12:55.207Z"
   },
   "izakaya-hiroya": {
     "rating": 4.2,
     "userRatingCount": 214,
-    "updatedAt": "2026-07-27T08:03:41.576Z"
+    "updatedAt": "2026-07-29T19:12:55.544Z"
   },
   "izakaya-hirukara-shinkichi": {
     "rating": 4,
-    "userRatingCount": 233,
-    "updatedAt": "2026-07-27T08:03:41.949Z"
+    "userRatingCount": 234,
+    "updatedAt": "2026-07-29T19:12:55.882Z"
   },
   "izakaya-hitokuchi": {
     "rating": 4.2,
     "userRatingCount": 139,
-    "updatedAt": "2026-07-27T08:03:42.349Z"
+    "updatedAt": "2026-07-29T19:12:56.196Z"
   },
   "izakaya-inatomi": {
     "rating": 5,
     "userRatingCount": 2,
-    "updatedAt": "2026-07-27T08:03:42.703Z"
+    "updatedAt": "2026-07-29T19:12:56.506Z"
   },
   "izakaya-isomaru": {
     "rating": 3.2,
     "userRatingCount": 345,
-    "updatedAt": "2026-07-27T08:03:43.070Z"
+    "updatedAt": "2026-07-29T19:12:56.820Z"
   },
   "izakaya-kadoya": {
     "rating": 4.3,
@@ -503,6 +503,11 @@
     "rating": 4.7,
     "userRatingCount": 358,
     "updatedAt": "2026-07-27T08:27:19.458Z"
+  },
+  "izakaya-tantanen": {
+    "rating": 3.2,
+    "userRatingCount": 40,
+    "updatedAt": "2026-07-29T19:12:49.772Z"
   },
   "izakaya-tashu": {
     "rating": 4.7,

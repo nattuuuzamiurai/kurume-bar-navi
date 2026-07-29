@@ -1279,6 +1279,14 @@
     "matchBy": "店名exact+番地一致",
     "fetchedAt": "2026-07-27T08:01:44.029Z"
   },
+  "izakaya-tantanen": {
+    "placeId": "ChIJO8uEq1akQTUR7Bu2FgrgHVI",
+    "resolvedName": "炭焼ダイニング 炭々苑",
+    "resolvedAddress": "〒830-0032 福岡県久留米市東町３１−16 2F",
+    "query": "炭焼ダイニング 炭々苑(たんたんえん) 福岡県久留米市東町31-16 2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-29T19:12:49.558Z"
+  },
   "izakaya-tashu": {
     "placeId": "ChIJB1Hxa1GkQTUR4sIkxPCkNPc",
     "resolvedName": "もつ鍋 田しゅう 久留米店",
