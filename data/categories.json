@@ -33,30 +33,30 @@
     "id": "snack",
     "name": "スナック",
     "schemaType": "BarOrPub",
-    "summary": "ママ・スタッフとの会話を楽しむスナック。"
+    "summary": "店名・公式情報などで「スナック」とされている店舗を掲載しています。"
   },
   {
     "id": "kyabakura",
     "name": "キャバクラ",
     "schemaType": "NightClub",
-    "summary": "キャストが席について接客するキャバクラ。"
+    "summary": "店名・公式情報などで「キャバクラ」とされている店舗を掲載しています。"
   },
   {
     "id": "lounge",
     "name": "ラウンジ",
     "schemaType": "BarOrPub",
-    "summary": "落ち着いた雰囲気でキャストと会話を楽しむラウンジ。"
+    "summary": "店名・公式情報などで「ラウンジ」とされている店舗を掲載しています。"
   },
   {
     "id": "club",
     "name": "クラブ",
     "schemaType": "NightClub",
-    "summary": "ホステスが接客するクラブ・ニュークラブ。"
+    "summary": "店名・公式情報などで「クラブ」「ニュークラブ」とされている店舗を掲載しています。"
   },
   {
     "id": "girlsbar",
     "name": "ガールズバー",
     "schemaType": "NightClub",
-    "summary": "カウンター越しに女性キャストが接客するバー。"
+    "summary": "店名・公式情報などで「ガールズバー」とされている店舗を掲載しています。"
   }
 ]

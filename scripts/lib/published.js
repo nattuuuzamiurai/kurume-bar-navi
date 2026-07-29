@@ -41,10 +41,10 @@ const PUBLISHED_CATEGORIES = [
 // カテゴリは公開対象だが、店舗単位で非公開にするIDの集合。
 //
 // 【現在は空】2026-07-30 の公開範囲変更まで、次の4店が「カテゴリは公開対象だが実態は接待型」と
-// いう理由で個別に非公開だった: izakaya-nyanko-sakaba / concafe-platinum-seven / concafe-axia /
+// いう理由で個別に非公開だった: izakaya-nyanko-sakaba / girlsbar-platinum-seven / girlsbar-axia /
 // concafe-soul-one。接待を伴う業態そのものを公開対象にしたことで、この4店だけを非公開に保つ
 // 根拠が無くなったため、いずれも公開した。
-//   - concafe-axia / concafe-platinum-seven … 店名・公式サイトという店自身の名乗り(一次情報)が
+//   - girlsbar-axia / girlsbar-platinum-seven … 店名・公式サイトという店自身の名乗り(一次情報)が
 //     「ガールズバー」を示しているため girlsbar へ再分類した。
 //   - izakaya-nyanko-sakaba / concafe-soul-one … 店自身の名乗りに基づく一次情報が無く、当サイトが
 //     業態を断定するのは避けるべきと判断し、現行カテゴリのまま公開した。
