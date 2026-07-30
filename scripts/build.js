@@ -749,6 +749,29 @@ const VENUE_LOGOS = {
     siteLabel: "Girl's Bar TREE 公式サイト",
     siteUrl: "https://girlsbartree.m-nanaumi.com/",
   },
+  // 白抜き(白一色)ロゴ3件(2026-07-30)。当初「白背景では不可視」として保留していたが、
+  // 実際に画像を取得して暗色背景に合成し、目視で判読できることを確認した。
+  "kyabakura-shiki": {
+    // 白一色の透過PNG。姉妹店(CARNET/FOUR SEASON)と同じ制作会社のテーマ。
+    imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/logo.png",
+    siteLabel: "NEW CLUB 四季 公式サイト",
+    siteUrl: "https://new-club-shiki.com/",
+    bg: "dark",
+  },
+  "club-sowaca": {
+    // 白一色の透過PNG(Wix配信)。
+    imageUrl: "https://static.wixstatic.com/media/d671d7_e0646ccb2329416b9517c4d55343c2fe~mv2.png",
+    siteLabel: "Sowaca(ソワカ) 公式サイト",
+    siteUrl: "https://www.kurume-sowaca.com/",
+    bg: "dark",
+  },
+  "club-the-member": {
+    // 白一色の透過WebP。
+    imageUrl: "https://themember.jp/assets/img/logo.webp",
+    siteLabel: "The Member(ザ・メンバー) 公式サイト",
+    siteUrl: "https://themember.jp/",
+    bg: "dark",
+  },
 
   // --- 公式サイトロゴ 自動拡充(2026-07-27) ---
   "bar-141saketen": {
