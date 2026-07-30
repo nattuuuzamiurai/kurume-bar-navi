@@ -65,34 +65,32 @@ const PHASE2_VENUE_IDS = new Set([
   // 対象IDと未取得の理由は data/venue-audit-log.md に記録している。
   "kyabakura-nestia",
   "kyabakura-rudan",
-  "kyabakura-all",
   "kyabakura-vega",
   "club-ari",
   "club-kou",
-  "lounge-jewel",
   "lounge-ai-spaed",
   "lounge-zen",
-  "snack-lavender",
   "snack-rion",
   "snack-70",
   "snack-reims",
   "snack-anew",
   "snack-pearl",
-  "snack-amore",
   "snack-berry",
   "girlsbar-8eight",
   "girlsbar-hrb",
-  "girlsbar-all-new-ace",
   "girlsbar-pallas",
   "girlsbar-baccara",
   "girlsbar-bully",
   "girlsbar-family",
-  // 確度Bだが、表示できる出典が取得できなかった3店(2026-07-30 時点)。
+  // 確度Bだが、表示できる出典が取得できなかった店(2026-07-30 時点)。
   // 夜遊びショコラ・ナイツネット等の客向けポータルを横断したが掲載が見つからなかった。
   // 同じ理由で保留する。出典が1件でも取得できた時点で公開する。
-  "snack-en",
-  "snack-kokoro",
   "girlsbar-s-cafe",
+  // 2026-07-31: 上記7店(kyabakura-all / lounge-jewel / snack-amore /
+  // girlsbar-all-new-ace / snack-en / snack-kokoro / snack-lavender)は、
+  // 客向けポータル・地図サービス(求人媒体・出会い系メディアではない)で
+  // 住所が一致する出典が見つかったため、sources に追加してここから外し公開した。
+  // 詳細は data/venue-audit-log.md を参照。
 ]);
 
 // 1店が公開対象か。
