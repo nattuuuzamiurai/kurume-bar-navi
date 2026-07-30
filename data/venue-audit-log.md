@@ -875,3 +875,41 @@ girlsbar-pallas / girlsbar-baccara / girlsbar-bully / girlsbar-family
 - 業態: 公式サイトの見出し「久留米市日吉町のクラブ【Club HAVEN】**バー【Huit】**」に従い `bar`
 
 営業時間・料金等の詳細情報は公式サイトに記載が無く、`null` のまま。次回の棚卸しで補完する。
+
+## 2026-07-31(保留7店の出典発見 — 公開に復帰)
+
+2026-07-30 に「表示できる出典が1件も無い」として掲載保留にした27店について、企画部が客向けポータル・地図サービスを追加調査した結果、**7店に出典が見つかった**ため公開に復帰させた。掲載278→**285店**。
+
+### 公開に復帰した7店
+
+| id | 店名 | 出典 |
+|---|---|---|
+| `kyabakura-all` | New Club ALL(オール) | Yahoo!マップ「NEWCLUB ALL ニュークラブオール - 久留米市日吉町/飲食店」 |
+| `lounge-jewel` | ラウンジ Jewel(ジュエル) | 全日本スナックナビ + マピオン電話帳(電話 0942-32-6033 を新規補完) |
+| `snack-amore` | Amore(アモーレ) | Yahoo!マップ「Amore - 久留米市日吉町/飲食店」 |
+| `girlsbar-all-new-ace` | All New Ace -ANA-(オールニューエース) | 全日本スナックナビ |
+| `snack-en` | 縁(エン) | 夜遊びショコラの個別店舗ページ |
+| `snack-kokoro` | スナック心(こころ) | マピオン電話帳(電話 0942-39-0478 を新規補完) |
+| `snack-lavender` | snack LAVENDER(ラベンダー) | Yahoo!マップ「snack LAVENDER」 |
+
+いずれも**求人媒体・出会い系メディアは使用していない**(客向けポータル・地図サービスのみ)。住所(番地・ビル名まで)を出典側の記載と照合し、一致を確認したうえで採用した。
+
+**`kyabakura-all` の裏取り経緯**: 企画部の初回調査では Yahoo!マップの直接取得がJS描画のため失敗し、検索エンジンのスニペット経由での確認にとどまっていた。経営管理オフィスが独立に `curl`(ブラウザUA)で再取得したところ、`<title>` タグに「**NEWCLUB ALL ニュークラブオール - 久留米市日吉町/飲食店 | Yahoo!マップ**」が直接含まれていることを確認できた。`snack-amore` も同様に `<title>` で「Amore - 久留米市日吉町/飲食店」を確認済み。
+
+### `snack-kokoro` の住所懸念が解消
+
+従来「住所が出典間で食い違う(六ツ門町1-2 / 別説 日吉町14-27)」という懸念が記録されていたが、今回発見したマピオン電話帳・Yahoo!マップは両方ともデータ側の住所(**六ツ門町1-2**)を支持する結果だった。
+
+**注意**: 全日本スナックナビには別住所(日吉町7-11)の「こころ」という**別店**が存在する。混同しないこと。
+
+### 見つからなかった20店は保留を継続
+
+`kyabakura-nestia` / `kyabakura-rudan` / `kyabakura-vega` / `club-ari` / `club-kou` / `lounge-ai-spaed` / `lounge-zen` / `snack-rion` / `snack-70` / `snack-reims` / `snack-anew` / `snack-pearl` / `snack-berry` / `girlsbar-8eight` / `girlsbar-hrb` / `girlsbar-pallas` / `girlsbar-baccara` / `girlsbar-bully` / `girlsbar-family` / `girlsbar-s-cafe`
+
+いずれも求人媒体以外の掲載を発見できなかった。調査の過程で**誤爆を2件確実に排除**している: `snack-pearl` は同名の**北九州市小倉南区の別店**、`girlsbar-bully` はよるみせナビのヒットが実は**空き物件情報のページ**だった。件数の水増しを避けるため、疑わしいものはすべて「見つからなかった」側に分類している。
+
+### 調査手法上の限界(申し送り)
+
+- **Yahoo!マップは直接フェッチ(WebFetch)がJS描画のため失敗しやすい。** `curl`(ブラウザUA指定)であれば `<title>` タグに店名・住所が含まれるため確認できる場合がある。次回はこの方法を優先すること
+- **ほとめきFUKUOKAナイトマップ(nightmap.hotomeki-fukuoka.com)は当環境からDNS解決できない**(既知の障害)。`lounge-zen` など同サイトに個別ページがある可能性のある店を確認できていない
+- **公式サイト・公式Instagram・公式TikTokは、保留店では1件も発見できなかった。** 2026-07-30のロゴ調査(139店対象)と同じ傾向で、接待業態は公式発信を持つ店が少数派
