@@ -1,16 +1,34 @@
 #!/usr/bin/env node
 /**
- * Googleクチコミ★評価 ローリング更新スクリプト(Place Details / Places API New)
+ * Googleクチコミ★評価 + 営業状況(businessStatus)ローリング更新スクリプト(Place Details / Places API New)
  *
- * data/place-ids.json の place_id を使い、Place Details (New) で rating / userRatingCount を
- * 取得し data/ratings.json を更新する。全店を一度に更新せず、更新日時(updatedAt)が最も古い
- * (または未取得の)店から N 店だけを毎回更新する「ローリング更新」にすることで、
+ * data/place-ids.json の place_id を使い、Place Details (New) で rating / userRatingCount /
+ * businessStatus を取得し data/ratings.json を更新する。全店を一度に更新せず、更新日時(updatedAt)が
+ * 最も古い(または未取得の)店から N 店だけを毎回更新する「ローリング更新」にすることで、
  * Enterprise SKU の無料枠(月1,000回)を絶対に超えないようにする。
  *
  * ■ 使うAPIとコスト(無料枠を絶対に超えない設計)
  *   GET https://places.googleapis.com/v1/places/{place_id}
- *   FieldMask: rating,userRatingCount
+ *   FieldMask: rating,userRatingCount,businessStatus
  *   → rating / userRatingCount を含む取得は Places API (New) の Enterprise SKU。無料枠は【月1,000回】。
+ *
+ *   【businessStatus を足しても課金は増えない(2026-07-30 確認)】
+ *   businessStatus 自体は Place Details "Pro" SKU のフィールドだが、Places API (New) の課金は
+ *   1リクエストにつき **要求したフィールドの最上位ティア1つ分だけ** 発生する。公式ドキュメント
+ *   (Places API / Usage and Billing「About field masks」)の原文:
+ *     "use the FieldMask header in API requests to specify the list of fields to return in the
+ *      response. You are then billed at the highest SKU applicable to your request. That means if
+ *      you select fields in both the Essentials and the Pro SKUs, you are billed based on the Pro SKU."
+ *     https://developers.google.com/maps/documentation/places/web-service/usage-and-billing
+ *   本スクリプトは既に rating / userRatingCount(= Enterprise SKU。Pro より上位)を要求しているため、
+ *   Pro ティアの businessStatus を追加してもリクエストは引き続き Enterprise SKU 1回として課金される
+ *   (= 追加コスト・追加消費なし。呼び出し回数も従来どおり 1店=1回)。
+ *   フィールドとティアの対応は Place Details (New) のドキュメントを参照
+ *   ("The following fields trigger the Place Details Pro SKU: ... businessStatus ...",
+ *    "The following fields trigger the Place Details Enterprise SKU: ... rating ... userRatingCount ...")
+ *     https://developers.google.com/maps/documentation/places/web-service/place-details
+ *   ※ 逆に言えば、Enterprise より上位(Enterprise + Atmosphere)のフィールドを足すと課金が上がる。
+ *     FieldMask に足してよいのは Enterprise 以下のティアのフィールドだけ。
  *
  *   1回の実行で最大 N 店だけ取得する(N = 環境変数 RATINGS_BATCH_SIZE、既定 22)。
  *   ワークフロー(ratings.yml)は日次で1回だけ走るので、月間呼び出し数は概ね:
@@ -33,8 +51,16 @@
  *   process.env.GOOGLE_PLACES_API_KEY(GitHub Secrets / 環境変数のみ。コード・出力・ログに出さない)。
  *   未設定なら何もせず正常終了(グレースフル)。
  *
+ * ■ businessStatus(閉店の機械的検知)
+ *   Google が返す営業状況。値は OPERATIONAL / CLOSED_TEMPORARILY / CLOSED_PERMANENTLY のいずれか
+ *   (返らない場合もある = null)。過去に閉店店舗を2度掲載した(poker-aa-aces / izakaya-sakuraya)反省から、
+ *   人力確認に頼らず機械的に閉店の兆候を拾うために取得する。
+ *   **このスクリプトは検知結果を記録するだけで、非掲載化は一切しない**。CLOSED_* を検知した店は
+ *   build.js が `[warn]` で店舗IDを列挙するので、**人が現地情報・公式情報を確認してから**
+ *   掲載継続/削除を判断する(place_id の誤マッチで別店舗の閉店を拾う可能性があるため)。
+ *
  * ■ 出力: data/ratings.json(コミットして各店の評価を次の更新まで保持する)
- *   { [venueId]: { rating:Number|null, userRatingCount:Number, updatedAt:ISO文字列 } }
+ *   { [venueId]: { rating:Number|null, userRatingCount:Number, businessStatus:String|null, updatedAt:ISO文字列 } }
  *
  * ■ 実行方法
  *   GOOGLE_PLACES_API_KEY=xxxx RATINGS_BATCH_SIZE=5 node scripts/fetch-ratings.js
@@ -82,8 +108,11 @@ function readJSONSafe(file, fallback) {
   }
 }
 
+// Google が返す営業状況の既知の値。想定外の値が来ても壊れないよう、既知の値以外は null にする。
+const KNOWN_BUSINESS_STATUS = new Set(["OPERATIONAL", "CLOSED_TEMPORARILY", "CLOSED_PERMANENTLY"]);
+
 // Place Details を1回叩く。
-//   成功 -> { rating:Number|null, userRatingCount:Number }
+//   成功 -> { rating:Number|null, userRatingCount:Number, businessStatus:String|null }
 //   place_id無効(404/NOT_FOUND等) -> { invalid: true, status }
 //   通信/その他エラー(リトライ対象) -> { error: true, status }
 function fetchDetailsOnce(apiKey, placeId) {
@@ -94,7 +123,9 @@ function fetchDetailsOnce(apiKey, placeId) {
     path: u.pathname,
     headers: {
       "X-Goog-Api-Key": apiKey,
-      "X-Goog-FieldMask": "rating,userRatingCount",
+      // businessStatus は Pro ティア。既に Enterprise ティア(rating等)を要求しているので
+      // 追加課金は発生しない(ファイル冒頭のコメント参照)。
+      "X-Goog-FieldMask": "rating,userRatingCount,businessStatus",
     },
   };
   return new Promise((resolve) => {
@@ -113,7 +144,8 @@ function fetchDetailsOnce(apiKey, placeId) {
             const data = JSON.parse(raw);
             const rating = typeof data.rating === "number" ? data.rating : null;
             const userRatingCount = typeof data.userRatingCount === "number" ? data.userRatingCount : 0;
-            return done({ rating, userRatingCount });
+            const businessStatus = KNOWN_BUSINESS_STATUS.has(data.businessStatus) ? data.businessStatus : null;
+            return done({ rating, userRatingCount, businessStatus });
           } catch (e) {
             console.warn(`  [warn] Place Details JSONパース失敗 (${e.message})`);
             return done({ error: true, status: 0 });
@@ -195,6 +227,7 @@ async function main() {
   let withRating = 0;
   let invalidCount = 0;
   let transientSkip = 0;
+  const closedIds = []; // 今回 CLOSED_* を検知した店(人が確認するためログに出す。自動で非掲載にはしない)
 
   for (let i = 0; i < selected.length; i++) {
     const id = selected[i];
@@ -203,12 +236,21 @@ async function main() {
     const now = new Date().toISOString();
 
     if (r && !r.error && !r.invalid) {
-      ratings[id] = { rating: r.rating, userRatingCount: r.userRatingCount, updatedAt: now };
+      ratings[id] = {
+        rating: r.rating,
+        userRatingCount: r.userRatingCount,
+        businessStatus: r.businessStatus,
+        updatedAt: now,
+      };
       updated++;
       if (typeof r.rating === "number") withRating++;
+      if (r.businessStatus === "CLOSED_PERMANENTLY" || r.businessStatus === "CLOSED_TEMPORARILY") {
+        closedIds.push(`${id}(${r.businessStatus})`);
+        console.warn(`  [warn] ${id}: Google の営業状況が ${r.businessStatus}(閉店の疑い・要人力確認)`);
+      }
     } else if (r && r.invalid) {
       // place_id 無効: 以後ローテーションで回り続けないよう updatedAt は進め、評価は null にする。
-      ratings[id] = { rating: null, userRatingCount: 0, updatedAt: now, note: "place_id_invalid" };
+      ratings[id] = { rating: null, userRatingCount: 0, businessStatus: null, updatedAt: now, note: "place_id_invalid" };
       updated++;
       invalidCount++;
       console.warn(`  [warn] ${id}: place_id が無効な可能性(要レビュー)`);

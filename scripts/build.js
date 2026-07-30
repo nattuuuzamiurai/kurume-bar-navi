@@ -1923,6 +1923,11 @@ function venueCardHtml(v, categories, areas) {
   const bShort = budgetShort(v);
   const cShort = chargeShort(v);
   const pills = [
+    // 営業状況の裏付けが取れていない店は、一覧の時点で分かるようにする。
+    // 店舗ページには注記が出るが、一覧では区別が付かず、業態によっては過半数が未確認になるため
+    // (2026-07-30 時点でクラブ8店中5店・ラウンジ18店中10店)。
+    // 掲載店を貶める表示にはしない。警告色は使わず、控えめなグレーの小さなチップに留める。
+    UNVERIFIED_VENUE_IDS.has(v.id) ? `<span class="pill pill-unverified" title="当サイトでこの店舗の営業状況を確認できていません">営業状況未確認</span>` : "",
     cardOpenPillHtml(v),
     bShort ? `<span class="pill">${escapeHtml(bShort)}</span>` : "",
     `<span class="pill pill-area">${escapeHtml(area ? area.name : v.area)}</span>`,
@@ -2605,6 +2610,21 @@ function build() {
   }
 
   const hiddenCategories = allCategories.filter((c) => !PUBLISHED_CATEGORIES.includes(c.id));
+  // Google の営業状況(businessStatus)が「営業中でない」店を必ず目に入るようにする。
+  // 自動で非掲載にはしない — place_id の誤マッチで別店の状態を拾っている可能性があるため、
+  // 人が公式情報を確認してから掲載継続/削除を判断する。
+  // 過去に閉店店舗を2度掲載した(poker-aa-aces=約4年前に閉店 / izakaya-sakuraya=改名により消滅)
+  // 反省から、人力の確認に頼らず機械的に兆候を拾うための仕組み。
+  const closedByGoogle = venues
+    .map((v) => [v, VENUE_RATINGS[v.id]])
+    .filter(([, r]) => r && r.businessStatus && r.businessStatus !== "OPERATIONAL");
+  if (closedByGoogle.length > 0) {
+    console.warn(
+      `[warn] Google が営業中でないと返している掲載店が ${closedByGoogle.length}件あります(要確認。自動では非掲載にしません): ` +
+        closedByGoogle.map(([v, r]) => `${v.id}(${r.businessStatus})`).join(", ")
+    );
+  }
+
   const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));
   console.log(
     `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件 = ` +
