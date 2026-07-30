@@ -54,6 +54,12 @@
     "userRatingCount": 31,
     "updatedAt": "2026-07-27T19:24:54.858Z"
   },
+  "bar-huit": {
+    "rating": 1,
+    "userRatingCount": 1,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:44.424Z"
+  },
   "bar-kurume-standard": {
     "rating": 4.9,
     "userRatingCount": 29,
@@ -124,6 +130,30 @@
     "userRatingCount": 22,
     "updatedAt": "2026-07-28T19:20:11.081Z"
   },
+  "club-313": {
+    "rating": 5,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:44.848Z"
+  },
+  "club-four-season": {
+    "rating": 3.3,
+    "userRatingCount": 3,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:45.214Z"
+  },
+  "club-sowaca": {
+    "rating": 4.3,
+    "userRatingCount": 8,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:45.562Z"
+  },
+  "club-the-member": {
+    "rating": 3.8,
+    "userRatingCount": 34,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:45.923Z"
+  },
   "concafe-hakuchumu": {
     "rating": 3.8,
     "userRatingCount": 18,
@@ -143,6 +173,30 @@
     "rating": 4.4,
     "userRatingCount": 37,
     "updatedAt": "2026-07-28T19:20:12.390Z"
+  },
+  "girlsbar-axia": {
+    "rating": 4.7,
+    "userRatingCount": 23,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:46.396Z"
+  },
+  "girlsbar-platinum-seven": {
+    "rating": 4.4,
+    "userRatingCount": 8,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:46.730Z"
+  },
+  "girlsbar-secret": {
+    "rating": 5,
+    "userRatingCount": 11,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:47.243Z"
+  },
+  "girlsbar-tree": {
+    "rating": 3.3,
+    "userRatingCount": 3,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:47.566Z"
   },
   "izakaya-amenita-pizzeria": {
     "rating": 4.2,
@@ -419,6 +473,12 @@
     "userRatingCount": 22,
     "updatedAt": "2026-07-27T08:03:53.143Z"
   },
+  "izakaya-nyanko-sakaba": {
+    "rating": 4.5,
+    "userRatingCount": 8,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:47.930Z"
+  },
   "izakaya-nyanyan-chinese": {
     "rating": 4.1,
     "userRatingCount": 403,
@@ -598,6 +658,78 @@
     "rating": 4.2,
     "userRatingCount": 89,
     "updatedAt": "2026-07-27T19:24:51.120Z"
+  },
+  "kyabakura-chanter": {
+    "rating": 4.6,
+    "userRatingCount": 5,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:48.270Z"
+  },
+  "kyabakura-crescent": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:48.585Z"
+  },
+  "kyabakura-dolce": {
+    "rating": 4,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:48.918Z"
+  },
+  "kyabakura-globe": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:49.268Z"
+  },
+  "kyabakura-hal": {
+    "rating": 5,
+    "userRatingCount": 4,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:49.574Z"
+  },
+  "kyabakura-honey": {
+    "rating": 3.5,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:49.880Z"
+  },
+  "kyabakura-laluna": {
+    "rating": 4.2,
+    "userRatingCount": 5,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:50.267Z"
+  },
+  "kyabakura-lounge-loop": {
+    "rating": 3,
+    "userRatingCount": 7,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:50.608Z"
+  },
+  "kyabakura-moncoeur": {
+    "rating": 3.5,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:50.918Z"
+  },
+  "kyabakura-precious": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:51.221Z"
+  },
+  "kyabakura-rady": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:51.523Z"
+  },
+  "kyabakura-richard": {
+    "rating": 5,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-30T19:23:51.869Z"
   },
   "shisha-x": {
     "rating": 4,

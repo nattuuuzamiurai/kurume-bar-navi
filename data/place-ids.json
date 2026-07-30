@@ -171,6 +171,14 @@
     "query": "ザ・ハイボールスタンド 久留米店 福岡県久留米市東町361-19 佐藤ビル1F",
     "fetchedAt": "2026-07-27T08:01:29.018Z"
   },
+  "bar-huit": {
+    "placeId": "ChIJj9rnb3alQTUR3m3QPiQh_74",
+    "resolvedName": "Huit(ウィット)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−５６ ラテンクオータービル ２F",
+    "query": "Huit(ユイット) 福岡県久留米市日吉町13-56 ラテンクォータービル2F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:22:47.126Z"
+  },
   "bar-ilfaro": {
     "placeId": "",
     "needsReview": true,
@@ -493,6 +501,108 @@
     "query": "ゼットン 福岡県久留米市東町32-27 2F",
     "fetchedAt": "2026-07-27T08:01:01.432Z"
   },
+  "club-313": {
+    "placeId": "ChIJ3dpJfVGlQTURln4O5VMKE7s",
+    "resolvedName": "CLUB313",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 6F-D",
+    "query": "CLUB 313(サンイチサン) 福岡県久留米市日吉町13-45 ウルトラキャニオンシティ6F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:10.478Z"
+  },
+  "club-ange": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-2」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJiXxENwClQTUR11x-9ddiYCg",
+      "name": "Club Ange",
+      "address": "〒830-0017 福岡県久留米市日吉町７−３"
+    },
+    "query": "Club Ange(アンジュ) 福岡県久留米市日吉町7-2 上祥ビル1F",
+    "fetchedAt": "2026-07-30T19:23:10.042Z"
+  },
+  "club-cube": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「8-17」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ-Zk7KFakQTUR7jEy8442LFE",
+      "name": "ニュークラブ 久留米離宮",
+      "address": "〒830-0031 福岡県久留米市日吉町１３−38 第7 イズミヤビル 5F"
+    },
+    "query": "New Club CUBE(キューブ) 福岡県久留米市日吉町8-17 文化街サンビル403号",
+    "fetchedAt": "2026-07-30T19:23:10.965Z"
+  },
+  "club-four-season": {
+    "placeId": "ChIJocdfjJOlQTURHIR0Bzkrjg8",
+    "resolvedName": "CLUB FOUR SEASON",
+    "resolvedAddress": "〒830-0031 福岡県久留米市六ツ門町１−１５ 第18上野ビル 1F",
+    "query": "CLUB FOUR SEASON(フォーシーズン) 福岡県久留米市六ツ門町1-15 第18上野ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:09.564Z"
+  },
+  "club-haven": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「クラブヘイヴン」/ 先頭解決「日吉町1f」)"
+    ],
+    "candidate": {
+      "placeId": "ElNKYXBhbiwg44CSODMwLTAwMTcgRnVrdW9rYSwgS3VydW1lLCBIaXlvc2hpbWFjaGksIOODqeODhuODs-OCr-OCqeODvOOCv-ODvOODk-ODqyAxZiIeGhwKFgoUChIJNaH4jfikQTUR1V09yy0oku8SAjFm",
+      "name": "日吉町1f",
+      "address": "〒830-0017 福岡県久留米市日吉町ラテンクォータービル 1f"
+    },
+    "query": "クラブヘイヴン 福岡県久留米市日吉町13-56 ラテンクォータービル1F",
+    "fetchedAt": "2026-07-30T19:22:46.642Z"
+  },
+  "club-r": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-1」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJl7Grh_ikQTURFI3TGdw2B0Q",
+      "name": "ラウンジＲ",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−６１ 第2サンビル 3階"
+    },
+    "query": "Club R(クラブアール) 福岡県久留米市日吉町7-1 第6イズミヤビル2F",
+    "fetchedAt": "2026-07-30T19:23:11.454Z"
+  },
+  "club-sowaca": {
+    "placeId": "ChIJJVaNJvalQTUR-jPXAY9QFAc",
+    "resolvedName": "Sowaca そわか",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−２４",
+    "query": "Sowaca(ソワカ) 福岡県久留米市日吉町8-24 ソワカビル1F・2F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:09.120Z"
+  },
+  "club-the-member": {
+    "placeId": "ChIJWeyA6PikQTURjgschRo9mWw",
+    "resolvedName": "ザ·メンバー",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ 第６泉屋ビル 4F",
+    "query": "The Member(ザ・メンバー) 福岡県久留米市日吉町7-1 イズミヤビル4F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:12.404Z"
+  },
+  "club-winx": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名一致の候補が久留米外"
+    ],
+    "candidate": {
+      "placeId": "ChIJf28HkvikQTURTRDy-W2hNHc",
+      "name": "Club HAVEN(クラブ ヘイヴン)",
+      "address": "〒830-0017 福岡県久留米市日吉町13番地56 ラテンクオータービル １F"
+    },
+    "query": "club WinX(ウィンクス) 福岡県久留米市日吉町13-52 第8秋吉ビル2F",
+    "fetchedAt": "2026-07-30T19:23:11.915Z"
+  },
   "concafe-hakuchumu": {
     "placeId": "ChIJM6e6WpGlQTUR36km8PdV_6g",
     "resolvedName": "メイド Cafe & Bar 白昼夢",
@@ -538,6 +648,94 @@
     "query": "ライブカフェ セブンスヘブン(Live Cafe Seventh Heaven) 福岡県久留米市通町109-2 貝田ビル2F",
     "matchBy": "店名partial+番地一致",
     "fetchedAt": "2026-07-27T08:01:20.280Z"
+  },
+  "concafe-soul-one": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ConceptBar SOUL_ONE」/ 先頭解決「こもれび久留米文化街」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJbzJXDiSlQTURskxBssXt4KQ",
+      "name": "こもれび久留米文化街",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 3F 3階"
+    },
+    "query": "ConceptBar SOUL_ONE 福岡県久留米市日吉町13-22 ミーユービル1階",
+    "fetchedAt": "2026-07-30T19:22:57.806Z"
+  },
+  "girlsbar-all-new-ace": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「6-16」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ3dTSZG6lQTURpUpRnaey2Io",
+      "name": "A(エース)",
+      "address": "〒830-0017 福岡県久留米市日吉町７−１ 7F"
+    },
+    "query": "All New Ace -ANA-(オールニューエース) 福岡県久留米市日吉町6-16 住田ビル2F",
+    "fetchedAt": "2026-07-30T19:23:42.026Z"
+  },
+  "girlsbar-axia": {
+    "placeId": "ChIJu25j0L6lQTURx9JQaqrPgf0",
+    "resolvedName": "アニソンバーAXIA",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１５−５７ 5階",
+    "query": "ガールズバー&コンセプトカフェ AXIA(アクシア) 福岡県久留米市日吉町15-57 HLビル5F-A",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:22:45.687Z"
+  },
+  "girlsbar-doll": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「GIRLS BAR DOLL(ドール)」/ 先頭解決「ガールズバードール」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ0xJpk7WlQTUR2xIGih3gjG8",
+      "name": "ガールズバードール",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−２２"
+    },
+    "query": "GIRLS BAR DOLL(ドール) 福岡県久留米市日吉町13-22 原口ビル2F",
+    "fetchedAt": "2026-07-30T19:23:42.566Z"
+  },
+  "girlsbar-lips": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「15-57」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJh9zYKgOlQTURYkB1oNsBbVY",
+      "name": "GIRLS BAR LIPS💋",
+      "address": "〒830-0017 福岡県久留米市日吉町１５ 57H・Lビルディング 5階"
+    },
+    "query": "GIRLS BAR LIPS(リップス) 福岡県久留米市日吉町15-57 H・Lビルディング5F",
+    "fetchedAt": "2026-07-30T19:23:43.103Z"
+  },
+  "girlsbar-platinum-seven": {
+    "placeId": "ChIJh-PBdiClQTURD-naGCGaGj8",
+    "resolvedName": "ガールズバー プラチナセブン",
+    "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−１１ ロワール東町 1F",
+    "query": "カフェラウンジ PLATINUM SEVEN(プラチナセブン) 福岡県久留米市東町32-11 ロワール東町1F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:22:57.340Z"
+  },
+  "girlsbar-secret": {
+    "placeId": "ChIJL30rIw6lQTURl05122LUhcE",
+    "resolvedName": "ガールズバー SECRET（シークレット）",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−６１ 4F 正面",
+    "query": "GIRLS BAR SECRET(シークレット) 福岡県久留米市日吉町13-61 第2サンビル4F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:43.634Z"
+  },
+  "girlsbar-tree": {
+    "placeId": "ChIJpcaRslqlQTURjjTEbYxlbI4",
+    "resolvedName": "Girlsbar TREE",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１１",
+    "query": "Girl's Bar TREE(ツリー) 福岡県久留米市日吉町7-11 大吉ビル2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:44.136Z"
   },
   "izakaya-akachochin-bunkagai": {
     "placeId": "",
@@ -1077,6 +1275,14 @@
     "matchBy": "店名exact+番地一致",
     "fetchedAt": "2026-07-27T08:01:17.401Z"
   },
+  "izakaya-nyanko-sakaba": {
+    "placeId": "ChIJb4H6UwClQTURNVVYVdnvdBo",
+    "resolvedName": "娘娘酒場 久留米一番街店",
+    "resolvedAddress": "〒830-0032 福岡県久留米市東町３２−３３",
+    "query": "娘娘酒場 久留米一番街店 福岡県久留米市東町32-33 H.Lスクエアビル1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:45.151Z"
+  },
   "izakaya-nyanyan-chinese": {
     "placeId": "ChIJNfyy3VWkQTURN2Oh8x-8b9Q",
     "resolvedName": "ぎょうざ 娘娘",
@@ -1459,6 +1665,556 @@
     "matchBy": "店名core+番地一致",
     "fetchedAt": "2026-07-27T08:02:03.891Z"
   },
+  "kyabakura-ace": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「A〈エース〉」/ 先頭解決「A(エース)」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ3dTSZG6lQTURpUpRnaey2Io",
+      "name": "A(エース)",
+      "address": "〒830-0017 福岡県久留米市日吉町７−１ 7F"
+    },
+    "query": "A〈エース〉 福岡県久留米市文化街",
+    "fetchedAt": "2026-07-30T19:22:56.379Z"
+  },
+  "kyabakura-all": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-45」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ-Zk7KFakQTUR7jEy8442LFE",
+      "name": "ニュークラブ 久留米離宮",
+      "address": "〒830-0031 福岡県久留米市日吉町１３−38 第7 イズミヤビル 5F"
+    },
+    "query": "New Club ALL(オール) 福岡県久留米市日吉町13-45 ウルトラキャニオンシティービルA棟 2-A",
+    "fetchedAt": "2026-07-30T19:23:07.734Z"
+  },
+  "kyabakura-ariel": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名一致の候補が久留米外"
+    ],
+    "candidate": {
+      "placeId": "ChIJ053s4uulQTURG0VDf_9x1LU",
+      "name": "RICHARD（リシャール）【久留米キャバクラ】",
+      "address": "〒830-0017 福岡県久留米市日吉町８−１８ 上祥ビル No.12 6階"
+    },
+    "query": "CLUB ARIEL(アリエル) 福岡県久留米市日吉町13-45 キャニオンシティービル3F",
+    "fetchedAt": "2026-07-30T19:23:06.787Z"
+  },
+  "kyabakura-carnet": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「NEW CLUB CARNET(カルネ)」/ 先頭解決「ニュークラブ カルネ」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJAa5ZGwClQTURZLMO_pbfaMQ",
+      "name": "ニュークラブ カルネ",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−５９ サードサンビル 4階"
+    },
+    "query": "NEW CLUB CARNET(カルネ) 福岡県久留米市日吉町13-59 サードサンビル4F",
+    "fetchedAt": "2026-07-30T19:23:04.440Z"
+  },
+  "kyabakura-chanter": {
+    "placeId": "ChIJiQie6PikQTURrwrnYqkT_yA",
+    "resolvedName": "クラブ シャンテ(chanter)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ 5F",
+    "query": "CLUB Chanter(シャンテ) 福岡県久留米市日吉町7-1 第6泉屋ビル5F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:22:59.178Z"
+  },
+  "kyabakura-chick": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-1」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJKRTUVFGkQTURRHqcIaV2UkE",
+      "name": "クラブ シック",
+      "address": "〒830-0032 福岡県久留米市東町３２−２９"
+    },
+    "query": "Club Chick(チック) 福岡県久留米市日吉町7-1 第6イズミヤビル3F",
+    "fetchedAt": "2026-07-30T19:22:58.730Z"
+  },
+  "kyabakura-club-g": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-61」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ9z9kpBGlQTURrDMp0HzAVdU",
+      "name": "Club Laluna(ラルーナ)",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−６１"
+    },
+    "query": "クラブG(ジー) 福岡県久留米市日吉町13-61 第2サンビル4F",
+    "fetchedAt": "2026-07-30T19:23:00.591Z"
+  },
+  "kyabakura-cordoba": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「New Club C'ordoba(コルドバ)」/ 先頭解決「ニュークラブ 久留米離宮」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ-Zk7KFakQTUR7jEy8442LFE",
+      "name": "ニュークラブ 久留米離宮",
+      "address": "〒830-0031 福岡県久留米市日吉町１３−38 第7 イズミヤビル 5F"
+    },
+    "query": "New Club C'ordoba(コルドバ) 福岡県久留米市日吉町8-17 文化街サンビル4F",
+    "fetchedAt": "2026-07-30T19:23:02.959Z"
+  },
+  "kyabakura-crescent": {
+    "placeId": "ChIJhwwuMZKlQTUR9ZHvPaGywr4",
+    "resolvedName": "Crescent",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−18第12 5階",
+    "query": "Crescent(クレセント) 福岡県久留米市日吉町8-18 上祥ビルNo.12 5F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:02.494Z"
+  },
+  "kyabakura-dolce": {
+    "placeId": "ChIJ1XxM7vikQTURCaloOxFzKHc",
+    "resolvedName": "CLUB Dolce",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−２１ 第5 秋吉ＮＯ５ビル 1F",
+    "query": "Member's Dolce(ドルチェ) 福岡県久留米市日吉町8-21 第5秋吉ビル1F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:01.061Z"
+  },
+  "kyabakura-feerique": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-52」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJu0LrTrKlQTUROjgKhngXujQ",
+      "name": "club Feerique(フェリーク)",
+      "address": "〒830-0017 福岡県久留米市日吉町６−１２ 上祥ビルNo1 1階101号室"
+    },
+    "query": "Club Feerique(フェリーク) 福岡県久留米市日吉町13-52 第8秋吉ビル4階",
+    "fetchedAt": "2026-07-30T19:22:56.859Z"
+  },
+  "kyabakura-globe": {
+    "placeId": "ChIJFcWf6PikQTURJ9sA7vpBEk4",
+    "resolvedName": "club globe",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１２−５３ 第三イズミヤビル １Ｆ",
+    "query": "CLUB globe(グローブ) 福岡県久留米市日吉町12-53 第3イズミヤビル1F 103号",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:03.431Z"
+  },
+  "kyabakura-green": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「CLUB GREEN(グリーン)」/ 先頭解決「(フィリピンラウンジ) EL LA ROSA Lounge」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ61g2YoelQTURu0F-yAiwd44",
+      "name": "(フィリピンラウンジ) EL LA ROSA Lounge",
+      "address": "第8, 秋吉ビルＮｏ．８ 2F, １３-52 日吉町 久留米市 福岡県 830-0017"
+    },
+    "query": "CLUB GREEN(グリーン) 福岡県久留米市日吉町13-52 第8秋吉ビル1F",
+    "fetchedAt": "2026-07-30T19:23:00.122Z"
+  },
+  "kyabakura-hal": {
+    "placeId": "ChIJKWyaxdulQTUR12IF_7DGJgs",
+    "resolvedName": "メンバーズ HAL(ハル)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町8番地21 第5 秋吉ＮＯ５ビル 3階",
+    "query": "メンバーズHAL(ハル) 福岡県久留米市日吉町8-21 第5秋吉ビル3F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:02.013Z"
+  },
+  "kyabakura-honey": {
+    "placeId": "ChIJm4JYZf-lQTURAa31Fs9ZR3A",
+    "resolvedName": "NEW CLUB HONEY（ハニー",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１２−５３",
+    "query": "CLUB HONEY(ハニー) 福岡県久留米市日吉町12-53 第3泉屋ビル2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:03.931Z"
+  },
+  "kyabakura-kamon": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-1」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJfS2mPIKlQTUR4BDQcCd1cLQ",
+      "name": "ウェルモナ",
+      "address": "〒830-0017 福岡県久留米市日吉町８−１５ 三共第2ビル 5F"
+    },
+    "query": "華門(かもん) 福岡県久留米市日吉町13-1 第2シャトービル1F",
+    "fetchedAt": "2026-07-30T19:22:55.414Z"
+  },
+  "kyabakura-kurume-rikyu": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「New Club 久留米離宮(リキュウ)」/ 先頭解決「ニュークラブ 久留米離宮」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ-Zk7KFakQTUR7jEy8442LFE",
+      "name": "ニュークラブ 久留米離宮",
+      "address": "〒830-0031 福岡県久留米市日吉町１３−38 第7 イズミヤビル 5F"
+    },
+    "query": "New Club 久留米離宮(リキュウ) 福岡県久留米市日吉町13-38 第7イズミヤビル5F",
+    "fetchedAt": "2026-07-30T19:22:58.259Z"
+  },
+  "kyabakura-laluna": {
+    "placeId": "ChIJ9z9kpBGlQTURrDMp0HzAVdU",
+    "resolvedName": "Club Laluna(ラルーナ)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−６１",
+    "query": "Club Laluna(ラルーナ) 福岡県久留米市日吉町13-61 第2サンビル1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:59.666Z"
+  },
+  "kyabakura-loop-vip": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「Loop Vip(ループ ブイアイピー)」/ 先頭解決「ラウンジループ」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJffgY6vikQTUR5bUFeFUzYDk",
+      "name": "ラウンジループ",
+      "address": "〒830-0017 福岡県久留米市日吉町７−７−１０ 古賀ビル"
+    },
+    "query": "Loop Vip(ループ ブイアイピー) 福岡県久留米市日吉町7-10 古賀ビル2F",
+    "fetchedAt": "2026-07-30T19:23:08.215Z"
+  },
+  "kyabakura-lounge-loop": {
+    "placeId": "ChIJffgY6vikQTUR5bUFeFUzYDk",
+    "resolvedName": "ラウンジループ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−７−１０ 古賀ビル",
+    "query": "Lounge Loop(ラウンジループ) 福岡県久留米市日吉町7-10 古賀ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:08.681Z"
+  },
+  "kyabakura-mary": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-59」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJlXwPpj2lQTURENL3jbQf6Jk",
+      "name": "CLUB Mercury",
+      "address": "〒830-0017 福岡県久留米市日吉町８−１７ 文化街サンビル 3F"
+    },
+    "query": "Club Mary(メリー) 福岡県久留米市日吉町13-59 サードサンビル501号",
+    "fetchedAt": "2026-07-30T19:23:06.305Z"
+  },
+  "kyabakura-million": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-59」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ3dpJfVGlQTURln4O5VMKE7s",
+      "name": "CLUB313",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 6F-D"
+    },
+    "query": "CLUB MILLION(ミリオン) 福岡県久留米市日吉町13-59 サードサンビル4F",
+    "fetchedAt": "2026-07-30T19:23:05.832Z"
+  },
+  "kyabakura-moncoeur": {
+    "placeId": "ChIJZ9kxOtilQTUR5BwLytdp1bk",
+    "resolvedName": "Mon Coeur (モンクール)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ ５０３号",
+    "query": "mon coeur(モンクール) 福岡県久留米市日吉町7-1 第6イズミヤビル5F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:54.464Z"
+  },
+  "kyabakura-orfe": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「9-16」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJDWso5vikQTUR1wfuR_HD314",
+      "name": "オルフェ",
+      "address": "〒830-0017 福岡県久留米市日吉町７−１ 第６泉屋ビル"
+    },
+    "query": "NEW CLUB ORFE(オルフェ) 福岡県久留米市日吉町9-16 第3あずまビル3F",
+    "fetchedAt": "2026-07-30T19:23:04.924Z"
+  },
+  "kyabakura-precious": {
+    "placeId": "ChIJmxp7txqlQTURmc4_TimaIQ4",
+    "resolvedName": "New Club PRECIOUS ニュークラブ プレシャス",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ 2F",
+    "query": "New Club PRECIOUS(プレシャス) 福岡県久留米市日吉町7-1 2F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:05.379Z"
+  },
+  "kyabakura-premier": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「Premier(プレミア)」/ 先頭解決「上祥建設株式会社」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ5xLOk_ikQTUR90UZ-LdRhQ0",
+      "name": "上祥建設株式会社",
+      "address": "〒830-0017 福岡県久留米市日吉町１４−１０"
+    },
+    "query": "Premier(プレミア) 福岡県久留米市日吉町7-3 上祥ビルNo.11 2F",
+    "fetchedAt": "2026-07-30T19:23:07.282Z"
+  },
+  "kyabakura-rady": {
+    "placeId": "ChIJUVhnxjKlQTURHbDYztao5AA",
+    "resolvedName": "NewClubRady",
+    "resolvedAddress": "〒839-0017 福岡県久留米市日吉町１３番地１６ ２０２",
+    "query": "New club Rady(レディ) 福岡県久留米市日吉町13-16 寺崎ビル202",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:01.550Z"
+  },
+  "kyabakura-richard": {
+    "placeId": "ChIJ053s4uulQTURG0VDf_9x1LU",
+    "resolvedName": "RICHARD（リシャール）【久留米キャバクラ】",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１８ 上祥ビル No.12 6階",
+    "query": "RICHARD(リシャール) 福岡県久留米市日吉町8-18 上祥ビルNo.12 6F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:22:54.932Z"
+  },
+  "kyabakura-shiki": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「NEW CLUB 四季」/ 先頭解決「ニュークラブ四季」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ2azMtMSlQTUR7EzPX4kz_60",
+      "name": "ニュークラブ四季",
+      "address": "〒830-0031 福岡県久留米市六ツ門町１−15 第18 上野ビル 3階"
+    },
+    "query": "NEW CLUB 四季 福岡県久留米市六ツ門町1-15 第18上野ビル3F",
+    "fetchedAt": "2026-07-30T19:22:55.898Z"
+  },
+  "kyabakura-swarovski": {
+    "placeId": "ChIJ3VkzKFakQTURDjl-jVNQVKc",
+    "resolvedName": "スワロフスキー",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−３７",
+    "query": "SWAROVSKI(スワロフスキー) 福岡県久留米市日吉町13-37 第7イズミヤビル3F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:22:53.986Z"
+  },
+  "lounge-amon": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名一致の候補が久留米外"
+    ],
+    "candidate": {
+      "placeId": "ChIJWasT55SRQTUR5SrZxb9PGqQ",
+      "name": "地鶏屋 亜門",
+      "address": "〒810-0801 福岡県福岡市博多区中洲２丁目８−１０"
+    },
+    "query": "CLUB 亜門(あもん) 福岡県久留米市日吉町13-1",
+    "fetchedAt": "2026-07-30T19:23:19.658Z"
+  },
+  "lounge-aoi": {
+    "placeId": "ChIJS3zPZ92lQTURsr0pcM2Voys",
+    "resolvedName": "Members Aoi",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−２６",
+    "query": "Members Aoi(あおい) 福岡県久留米市日吉町7-26",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:13.265Z"
+  },
+  "lounge-athena": {
+    "placeId": "ChIJHfwsdQClQTURQnIOJg_gLx8",
+    "resolvedName": "Athena アテナ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１７ 2階",
+    "query": "Lounge Athena(アテナ) 福岡県久留米市日吉町8-17 文化街サンビル2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:15.999Z"
+  },
+  "lounge-carat": {
+    "placeId": "ChIJ_YPMf0SlQTURf1SpGpLOjh0",
+    "resolvedName": "Lounge Carat (ラウンジカラット)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町9番地13 第2 第１ワインビル",
+    "query": "Lounge Carat(カラット) 福岡県久留米市日吉町9-13 第2ワインビル3F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:17.824Z"
+  },
+  "lounge-chester": {
+    "placeId": "ChIJC86_QuilQTURlGUoy8DDR0g",
+    "resolvedName": "CLUB CHESTER(クラブチェスター)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町7番地8 1階",
+    "query": "club CHESTER(チェスター) 福岡県久留米市日吉町7-8 日吉ビル1F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:12.834Z"
+  },
+  "lounge-endless": {
+    "placeId": "ChIJY-xshPikQTURhrNvS7Ad_-Q",
+    "resolvedName": "エンドレス",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−９",
+    "query": "Endless(エンドレス) 福岡県久留米市日吉町7-9 イナヤビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:14.170Z"
+  },
+  "lounge-indigo": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「12-63」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJr6iGZPikQTURMnRYJU_Fl20",
+      "name": "LOUNGE indigo",
+      "address": "〒830-0017 福岡県久留米市日吉町１２ 5F 公建ビル"
+    },
+    "query": "LOUNGE indigo(インディゴ) 福岡県久留米市日吉町12-63",
+    "fetchedAt": "2026-07-30T19:23:16.891Z"
+  },
+  "lounge-jewel": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「ラウンジ Jewel(ジュエル)」/ 先頭解決「ラウンジ·ジュエル(JEWEL)」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJTayr3PikQTUR7llN-DHB27g",
+      "name": "ラウンジ·ジュエル(JEWEL)",
+      "address": "〒830-0017 福岡県久留米市日吉町6番地3 社交ビル 2階"
+    },
+    "query": "ラウンジ Jewel(ジュエル) 福岡県久留米市日吉町6-3 社交ビル2F",
+    "fetchedAt": "2026-07-30T19:23:21.105Z"
+  },
+  "lounge-kanade": {
+    "placeId": "ChIJSXHe82ulQTURl8orXCdCIOw",
+    "resolvedName": "Member's 奏 かなで",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−５９ サードサンビル 3F",
+    "query": "member's 奏(カナデ) 福岡県久留米市日吉町13-59 サードサンビル3F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:14.608Z"
+  },
+  "lounge-lepin": {
+    "placeId": "ChIJaaVwffikQTURZvv8pl7wGaQ",
+    "resolvedName": "ルパン",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１２−５１",
+    "query": "The Member's LE PIN(ルパン) 福岡県久留米市日吉町12-51",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:18.771Z"
+  },
+  "lounge-megami": {
+    "placeId": "ChIJ9SIpAjelQTURDHejHRHKeM0",
+    "resolvedName": "SuperLounge女神",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−１ M2コンファートビルIII",
+    "query": "Super Lounge 女神 福岡県久留米市日吉町13-1 M2コンファートビルIII 4F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:48.097Z"
+  },
+  "lounge-new-impact": {
+    "placeId": "ChIJnX786_ikQTURNKy7q5z1kH0",
+    "resolvedName": "NEW IMPACT",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−５",
+    "query": "Lounge New Impact(ニューインパクト) 福岡県久留米市日吉町7-5 小本ビル2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:13.719Z"
+  },
+  "lounge-papico": {
+    "placeId": "ChIJpTe7g_ikQTUR2CZlmhAdOyc",
+    "resolvedName": "ラウンジ パピコ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５",
+    "query": "PAPICO(パピコ) 福岡県久留米市日吉町13-45 キャニオンシティビル3F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:18.299Z"
+  },
+  "lounge-rebo": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-10」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJffgY6vikQTUR5bUFeFUzYDk",
+      "name": "ラウンジループ",
+      "address": "〒830-0017 福岡県久留米市日吉町７−７−１０ 古賀ビル"
+    },
+    "query": "CLUB REBO(クラブレボ) 福岡県久留米市日吉町7-10 古賀ビルB1F",
+    "fetchedAt": "2026-07-30T19:23:15.521Z"
+  },
+  "lounge-ryusei": {
+    "placeId": "ChIJOWOM6_ikQTURa5fZQn_sJHE",
+    "resolvedName": "流星",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−６ 第７秋吉ビル",
+    "query": "Lounge Ryusei(流星) 福岡県久留米市日吉町7-6",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:19.199Z"
+  },
+  "lounge-shion": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「12-56」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJfaSH3PikQTURMHvhqC27C2A",
+      "name": "シオン",
+      "address": "〒830-0017 福岡県久留米市日吉町６−１"
+    },
+    "query": "シオン 福岡県久留米市日吉町12-56",
+    "fetchedAt": "2026-07-30T19:23:20.160Z"
+  },
+  "lounge-sky": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-7」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJP3K6yd6lQTUROexpzcv-_w0",
+      "name": "スカイ",
+      "address": "〒830-0017 福岡県久留米市日吉町"
+    },
+    "query": "club Sky(スカイ) 福岡県久留米市日吉町7-7 鐘ヶ江ビル2F",
+    "fetchedAt": "2026-07-30T19:23:17.363Z"
+  },
+  "lounge-st-christopher": {
+    "placeId": "ChIJdQiTw_ikQTURpzbbzbtWc0c",
+    "resolvedName": "セントクリストファー",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−６−１２",
+    "query": "St.Christopher(セントクリストファー) 福岡県久留米市日吉町6-12",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:15.068Z"
+  },
+  "lounge-sugar": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-20」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJad6ijfikQTURsVE20C1eel8",
+      "name": "ラウンジシュガー",
+      "address": "〒830-0017 福岡県久留米市日吉町７−２６"
+    },
+    "query": "会員制CLUB Sugar(シュガー) 福岡県久留米市日吉町7-20 第8泉屋ビル1F",
+    "fetchedAt": "2026-07-30T19:23:20.644Z"
+  },
+  "lounge-true": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「8-17」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJuX3zBgilQTURUP9MzTUJgjw",
+      "name": "トゥルー",
+      "address": "〒830-0017 福岡県久留米市日吉町１５−７３"
+    },
+    "query": "New Club True(トゥルー) 福岡県久留米市日吉町8-17 文化街サンビル2F 201号室",
+    "fetchedAt": "2026-07-30T19:23:16.465Z"
+  },
   "poker-ace-and-king": {
     "placeId": "",
     "needsReview": true,
@@ -1522,5 +2278,567 @@
     "query": "シーシャバーX 福岡県久留米市日吉町13-32 立花ビル2F",
     "matchBy": "店名core+番地一致",
     "fetchedAt": "2026-07-27T08:01:18.531Z"
+  },
+  "snack-a-king": {
+    "placeId": "ChIJjUs4KFakQTURlVvUPS-Uf_s",
+    "resolvedName": "エイキング",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−37 第7",
+    "query": "エイキング(A-King) 福岡県久留米市日吉町13-37 第7泉屋ビル4F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:40.508Z"
+  },
+  "snack-amore": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「15-73」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJcVYKlR6lQTURqXaUYI00zos",
+      "name": "amor cafe（アモルカフェ）",
+      "address": "〒834-0031 福岡県久留米市東町４００−２１ 新和ビル 1階"
+    },
+    "query": "Amore(アモーレ) 福岡県久留米市日吉町15-73 ミヤコウビル1F-B",
+    "fetchedAt": "2026-07-30T19:23:31.329Z"
+  },
+  "snack-aramis": {
+    "placeId": "ChIJKcyqh_ikQTURE-NZ38IgQjY",
+    "resolvedName": "アラミス",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−１５",
+    "query": "Aramis(メンバーズアラミス) 福岡県久留米市日吉町13-15 下ツ(シモガワ)ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:35.307Z"
+  },
+  "snack-belta-salone": {
+    "placeId": "ChIJFcWf6PikQTURSnZtfGstg4A",
+    "resolvedName": "ベルタサローネ（ＢｅｌｔａＳａｌｏｎｅ）",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ 第６泉屋ビル",
+    "query": "ベルタサローネ 福岡県久留米市日吉町7-1 第六泉屋ビル3F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:22:52.038Z"
+  },
+  "snack-bluemoon": {
+    "placeId": "ChIJrTL6U06lQTURj_gpLs_FrJI",
+    "resolvedName": "メンバーズ ブルームーン",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−１９",
+    "query": "メンバーズブルームーン 福岡県久留米市日吉町13-19 キャニオンシティービル1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:27.525Z"
+  },
+  "snack-brilliant": {
+    "placeId": "ChIJZ2HBYvikQTURJsoy6enLyK8",
+    "resolvedName": "ブリリアント",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ 5階",
+    "query": "ブリリアント(Brilliant) 福岡県久留米市日吉町7-1 第6泉屋ビル5F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:38.455Z"
+  },
+  "snack-calm": {
+    "placeId": "ChIJxb9xskSlQTURUqhMqAurxPw",
+    "resolvedName": "snack Calm",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−２４ 第６フレンズビル 1F",
+    "query": "スナック Calm(カーム) 福岡県久留米市日吉町6-24 1F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:39.487Z"
+  },
+  "snack-charmant": {
+    "placeId": "ChIJZ-9qkvikQTURWZVmO57HcnI",
+    "resolvedName": "シャルマン",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１４−２６",
+    "query": "シャルマン 福岡県久留米市日吉町14-26 2F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:47.594Z"
+  },
+  "snack-clover": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-25」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJT3Am9vikQTURH4Z26lqFiFU",
+      "name": "Bar ルクール",
+      "address": "〒830-0017 福岡県久留米市日吉町９−３６"
+    },
+    "query": "BAR CLOVER 福岡県久留米市日吉町7-25",
+    "fetchedAt": "2026-07-30T19:22:50.596Z"
+  },
+  "snack-cookie": {
+    "placeId": "ChIJeUUyKPmkQTURmvPznx2usMo",
+    "resolvedName": "カラオケくっきぃ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町５−１５",
+    "query": "カラオケくっきぃ 福岡県久留米市日吉町5-15 第5スクエアビル1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:32.777Z"
+  },
+  "snack-cookie-vip": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「5-22」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJeUUyKPmkQTURmvPznx2usMo",
+      "name": "カラオケくっきぃ",
+      "address": "〒830-0017 福岡県久留米市日吉町５−１５"
+    },
+    "query": "くっきぃVIP 福岡県久留米市日吉町5-22 2F",
+    "fetchedAt": "2026-07-30T19:23:33.254Z"
+  },
+  "snack-courage": {
+    "placeId": "ChIJVZlNmPikQTURqI4snkjPe4c",
+    "resolvedName": "クラージュ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１４−４８",
+    "query": "Courage(クラージュ) 福岡県久留米市日吉町14-48 上祥ビルII 2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:28.948Z"
+  },
+  "snack-destino": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "全候補が別エリア(久留米を含まない)"
+    ],
+    "candidate": {
+      "placeId": "ChIJP2IQbWaaQTURnYC5NV98rXU",
+      "name": "ＤＥＳＴＩＮＯ福岡店",
+      "address": "〒816-0912 福岡県大野城市御笠川６丁目１−１４"
+    },
+    "query": "Destino(デスティーノ) 福岡県久留米市日吉町(番地不明)",
+    "fetchedAt": "2026-07-30T19:23:41.548Z"
+  },
+  "snack-en": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「7-1」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJWeyA6PikQTURjgschRo9mWw",
+      "name": "ザ·メンバー",
+      "address": "〒830-0017 福岡県久留米市日吉町７−１ 第６泉屋ビル 4F"
+    },
+    "query": "縁(エン) 福岡県久留米市日吉町7-1 第6泉屋ビル1階A",
+    "fetchedAt": "2026-07-30T19:23:22.529Z"
+  },
+  "snack-escargot": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「エスカルゴ」/ 先頭解決「(フィリピンラウンジ) EL LA ROSA Lounge」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ61g2YoelQTURu0F-yAiwd44",
+      "name": "(フィリピンラウンジ) EL LA ROSA Lounge",
+      "address": "第8, 秋吉ビルＮｏ．８ 2F, １３-52 日吉町 久留米市 福岡県 830-0017"
+    },
+    "query": "エスカルゴ 福岡県久留米市日吉町13-52 第8秋吉ビル3F",
+    "fetchedAt": "2026-07-30T19:23:23.853Z"
+  },
+  "snack-ganesha": {
+    "placeId": "ChIJlw8U7w-lQTURxdnt1pgm8Gw",
+    "resolvedName": "BAR Ganesha",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティービル 6階",
+    "query": "Ganesha(ガネーシャ) 福岡県久留米市日吉町13-45 キャニオンシティビル6F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:37.931Z"
+  },
+  "snack-hanaakari": {
+    "placeId": "ChIJeQIgWQClQTURe3zv7TjLnN0",
+    "resolvedName": "Member's 花あかり",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１１",
+    "query": "Member's 花あかり 福岡県久留米市日吉町7-11 大吉ビル1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:22.988Z"
+  },
+  "snack-heart-station": {
+    "placeId": "ChIJ1xm4FfikQTURRxvgp5Unbmw",
+    "resolvedName": "ハートステーション",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町11−７",
+    "query": "ハートステーション 福岡県久留米市日吉町11-7 ノーブルヒルズ1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:51.082Z"
+  },
+  "snack-himari": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「13-61」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJBUdl8_ikQTUR_FaDHAarIZM",
+      "name": "ｽﾅｯｸ 麻里",
+      "address": "〒830-0017 福岡県久留米市日吉町８−１０"
+    },
+    "query": "Snack Himari(ヒマリ) 福岡県久留米市日吉町13-61 第2サンビル3F",
+    "fetchedAt": "2026-07-30T19:23:29.455Z"
+  },
+  "snack-ichiro": {
+    "placeId": "ChIJDWso5vikQTURP5Ki6dsIh60",
+    "resolvedName": "イチロー",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１",
+    "query": "イチロー 福岡県久留米市日吉町7-1 第六泉屋ビル2F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:46.168Z"
+  },
+  "snack-ichiyou": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「2-82」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJc6IrM_-kQTURWnMK8fL4LXc",
+      "name": "一葉",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−４５ キャニオンシティビル 1階"
+    },
+    "query": "一葉(イチヨウ) 福岡県久留米市六ツ門町2-82 永瀬ビル2F",
+    "fetchedAt": "2026-07-30T19:23:34.296Z"
+  },
+  "snack-jun": {
+    "placeId": "ChIJs_fZ6vikQTUR7Gurtct9OWc",
+    "resolvedName": "スナック順",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１４−７３ 浄ビル",
+    "query": "スナック順(ジュン) 福岡県久留米市日吉町14-73 浄ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:27.997Z"
+  },
+  "snack-jun-members": {
+    "placeId": "ChIJgaNO7vikQTURvCxeA0ZMOYg",
+    "resolvedName": "メンバーズJUN",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１",
+    "query": "Member's jun(メンバーズ ジュン) 福岡県久留米市日吉町7-1 第6泉屋ビル7F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:25.195Z"
+  },
+  "snack-kokoro": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「スナック心(こころ)」/ 先頭解決「焼鳥 心」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJd531P8SlQTURZRUwzi-OwCE",
+      "name": "焼鳥 心",
+      "address": "〒830-0031 福岡県久留米市六ツ門町２２−５"
+    },
+    "query": "スナック心(こころ) 福岡県久留米市六ツ門町1-2 六ツ門センタービル201",
+    "fetchedAt": "2026-07-30T19:23:30.408Z"
+  },
+  "snack-komorebi": {
+    "placeId": "ChIJbzJXDiSlQTURskxBssXt4KQ",
+    "resolvedName": "こもれび久留米文化街",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 3F 3階",
+    "query": "スナックこもれび 福岡県久留米市日吉町13-45 ウルトラキャニオンシティ3階",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:22:52.960Z"
+  },
+  "snack-koto": {
+    "placeId": "ChIJazdqAwClQTURDdLYPQ-rHgk",
+    "resolvedName": "Members Koto",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５",
+    "query": "Member's Koto(コト) 福岡県久留米市日吉町13-45 キャニオンシティビルA棟5階5-B",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:22.047Z"
+  },
+  "snack-l-blue": {
+    "placeId": "ChIJe1XtkvikQTURFhwWSMSg0mE",
+    "resolvedName": "メンバーズ L Blue（エルブルー）",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−５９",
+    "query": "メンバーズ L Blue(エルブルー) 福岡県久留米市日吉町13-59 サードサンビル2F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:25.644Z"
+  },
+  "snack-lapin": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「SNACK らぱん」/ 先頭解決「ルパン」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJaaVwffikQTURZvv8pl7wGaQ",
+      "name": "ルパン",
+      "address": "〒830-0017 福岡県久留米市日吉町１２−５１"
+    },
+    "query": "SNACK らぱん 福岡県久留米市日吉町4-18 姫野パークインビル3F",
+    "fetchedAt": "2026-07-30T19:23:31.787Z"
+  },
+  "snack-lavender": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "候補ゼロ(店名+住所で解決できず)"
+    ],
+    "candidate": null,
+    "query": "snack LAVENDER(ラベンダー) 福岡県久留米市六ツ門町2-6 第5イズミヤビル1F",
+    "fetchedAt": "2026-07-30T19:23:23.399Z"
+  },
+  "snack-lemon": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名一致の候補が久留米外"
+    ],
+    "candidate": {
+      "placeId": "ChIJ3QqdQcylQTUR5bAC3dYdxBI",
+      "name": "マリコン家",
+      "address": "〒830-0017 福岡県久留米市日吉町４−１３"
+    },
+    "query": "スナックバー檸檬(レモン) 福岡県久留米市日吉町12-56 ハイブローデンビル2F",
+    "fetchedAt": "2026-07-30T19:23:26.141Z"
+  },
+  "snack-luxe": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名一致の候補が久留米外"
+    ],
+    "candidate": {
+      "placeId": "ChIJIxgLLi6bQTURgk-ssuaTdKQ",
+      "name": "private salon Luxe",
+      "address": "〒816-0935 福岡県大野城市錦町２丁目２−１１ 901号"
+    },
+    "query": "Luxe(リュクス) 福岡県久留米市日吉町12-63 第5公建ビル2F",
+    "fetchedAt": "2026-07-30T19:23:34.810Z"
+  },
+  "snack-members-e": {
+    "placeId": "ChIJuVeZfOulQTURlFwJPCX3I20",
+    "resolvedName": "Member's E (メンバーズ エー)",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−２１第5 秋吉ＮＯ５ビル 4階",
+    "query": "Member's E(メンバーズ エー) 福岡県久留米市日吉町8-21 第5秋吉ビル4F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:30.856Z"
+  },
+  "snack-mitsubachi": {
+    "placeId": "ChIJfaSH3PikQTURBZxzFkvDA3c",
+    "resolvedName": "蜜蜂",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−１ 大黒ビル",
+    "query": "蜜蜂(ミツバチ) 福岡県久留米市日吉町6-1 大黒ビル2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:33.769Z"
+  },
+  "snack-nakagawa-r": {
+    "placeId": "ChIJY-xshPikQTURPkO_j8BbgFY",
+    "resolvedName": "那加川",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−６−２６",
+    "query": "那加川R 福岡県久留米市日吉町6-26 ブラックラインビル5F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:22:49.602Z"
+  },
+  "snack-nakagawa-second": {
+    "placeId": "ChIJY-xshPikQTURPkO_j8BbgFY",
+    "resolvedName": "那加川",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町６−６−２６",
+    "query": "那加川~second~ 福岡県久留米市日吉町6-26 ブラックラインビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:22:50.108Z"
+  },
+  "snack-ok": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「2-82」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJWXT7hWKlQTUR5OL4Wg2V_lE",
+      "name": "members6(メンバーズシックス)",
+      "address": "〒830-0017 福岡県久留米市日吉町１２−３５ 第35上野ビル 2階"
+    },
+    "query": "メンバーズo.k(スナックO・K) 福岡県久留米市六ツ門町2-82 永瀬ビル1F",
+    "fetchedAt": "2026-07-30T19:23:24.739Z"
+  },
+  "snack-orfe": {
+    "placeId": "ChIJDWso5vikQTUR1wfuR_HD314",
+    "resolvedName": "オルフェ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１ 第６泉屋ビル",
+    "query": "スナック オルフェ 福岡県久留米市日吉町7-1 第6泉屋ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:32.254Z"
+  },
+  "snack-papillon": {
+    "placeId": "ChIJ84R07fikQTURJTJfcFr7u5Y",
+    "resolvedName": "パピヨン",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１７ 文化街サンビル",
+    "query": "パピヨン 福岡県久留米市日吉町8-17 第一サンビル",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:51.568Z"
+  },
+  "snack-partir": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「9-13」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJDe_8BqOlQTUREba8P5BAyiI",
+      "name": "ペルティア[Peltier]",
+      "address": "〒830-0051 福岡県久留米市南４丁目３−２"
+    },
+    "query": "Partir(パルティール) 福岡県久留米市日吉町9-13 第2ワインビル2F",
+    "fetchedAt": "2026-07-30T19:23:27.056Z"
+  },
+  "snack-rin": {
+    "placeId": "ChIJhyjWUNilQTURnIX9FnPnfRA",
+    "resolvedName": "rin.",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１２−６３ 第5公建ビル 2階",
+    "query": "rin.(リン) 福岡県久留米市日吉町12-63 第5公建ビル2F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:37.401Z"
+  },
+  "snack-rinrin": {
+    "placeId": "ChIJVV-rhvikQTUR9mqPj2ZVG_8",
+    "resolvedName": "リンリン",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−４５",
+    "query": "凛琳(リンリン) 福岡県久留米市日吉町13-45 キャニオンシティ7F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:36.352Z"
+  },
+  "snack-rosso": {
+    "placeId": "ChIJm7RN2vikQTUROGrL9SAHsNs",
+    "resolvedName": "ロッソ",
+    "resolvedAddress": "６-6−26 日吉町 久留米市 福岡県 830-0017",
+    "query": "ロッソ 福岡県久留米市日吉町6-26",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:52.468Z"
+  },
+  "snack-saito": {
+    "placeId": "ChIJWwLGhvikQTURpOh1n_DzYHw",
+    "resolvedName": "スナック朋子",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−１７ えくぼビル",
+    "query": "スナック斎藤(サイトウ) 福岡県久留米市日吉町13-17 えくぼビル2F",
+    "matchBy": "店名core+番地一致",
+    "fetchedAt": "2026-07-30T19:23:38.976Z"
+  },
+  "snack-sakura": {
+    "placeId": "ChIJs_fZ6vikQTUR5_ltoEme8LA",
+    "resolvedName": "さくら",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１４−７３ 浄ビル",
+    "query": "スナック さくら 福岡県久留米市日吉町14-73 浄ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:35.837Z"
+  },
+  "snack-saten": {
+    "placeId": "ChIJR8SEWwClQTURXSSjNmaSVDk",
+    "resolvedName": "Member's Saten",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町８−１８ 12 5F",
+    "query": "Member's Saten(サテン) 福岡県久留米市日吉町8-18 上祥ビル12 5F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:29.921Z"
+  },
+  "snack-shin-members": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「6-17」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJWXT7hWKlQTUR5OL4Wg2V_lE",
+      "name": "members6(メンバーズシックス)",
+      "address": "〒830-0017 福岡県久留米市日吉町１２−３５ 第35上野ビル 2階"
+    },
+    "query": "メンバーズShin(シン) 福岡県久留米市日吉町6-17 西田産業第7ビル5F",
+    "fetchedAt": "2026-07-30T19:23:26.598Z"
+  },
+  "snack-status": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「スナック ステータス」/ 先頭解決「こもれび久留米文化街」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJbzJXDiSlQTURskxBssXt4KQ",
+      "name": "こもれび久留米文化街",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−４５ ウルトラキャニオンシティビル 3F 3階"
+    },
+    "query": "スナック ステータス 福岡県久留米市日吉町13-45 キャニオンシティ1F",
+    "fetchedAt": "2026-07-30T19:23:24.269Z"
+  },
+  "snack-stella": {
+    "placeId": "ChIJKWoCZfikQTURMeaugMkqMkM",
+    "resolvedName": "メンバーズステラ",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１２−１ 公建ビル６",
+    "query": "メンバーズステラ 福岡県久留米市日吉町12-1 第六公建ビル1F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:23:41.037Z"
+  },
+  "snack-suijin": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "番地が一致する候補なし(元「12-5」/ 近隣別番地または住所曖昧の疑い)"
+    ],
+    "candidate": {
+      "placeId": "ChIJWXT7hWKlQTUR5OL4Wg2V_lE",
+      "name": "members6(メンバーズシックス)",
+      "address": "〒830-0017 福岡県久留米市日吉町１２−３５ 第35上野ビル 2階"
+    },
+    "query": "メンバーズ 粋人(スイジン) 福岡県久留米市日吉町12-5 ガーネットビル1F",
+    "fetchedAt": "2026-07-30T19:23:36.882Z"
+  },
+  "snack-takefuji": {
+    "placeId": "ChIJ-ToFBgClQTUR7eNbdIVP2GE",
+    "resolvedName": "竹藤",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−１１",
+    "query": "スナック竹藤(タケフジ) 福岡県久留米市日吉町7-11 大吉ビル1F",
+    "matchBy": "店名partial+番地一致",
+    "fetchedAt": "2026-07-30T19:23:21.585Z"
+  },
+  "snack-tankoumura": {
+    "placeId": "ChIJX4pwwvikQTURbZ14lr2pNHo",
+    "resolvedName": "たんこう村",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町７−７−１１",
+    "query": "たんこう村 福岡県久留米市日吉町7-11 大吉ビル2F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:49.108Z"
+  },
+  "snack-the-ritz": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "全候補が別エリア(久留米を含まない)"
+    ],
+    "candidate": {
+      "placeId": "ChIJwYSHTfCRQTURRUbgMtC2xjc",
+      "name": "ザ・リッツ・カールトン福岡",
+      "address": "〒810-0041 福岡県福岡市中央区大名２丁目６−５０"
+    },
+    "query": "THE RITZ(ザ・リッツ) 福岡県久留米市日吉町7-3 上祥ビル1F",
+    "fetchedAt": "2026-07-30T19:23:40.002Z"
+  },
+  "snack-yu": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「yu(ユウ)」/ 先頭解決「スナック夕悠」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJ-Zk7KFakQTUR7DuQpOK5EVs",
+      "name": "スナック夕悠",
+      "address": "〒830-0017 福岡県久留米市日吉町１３−３７"
+    },
+    "query": "yu(ユウ) 福岡県久留米市日吉町4-18 姫野パークインビル3F",
+    "fetchedAt": "2026-07-30T19:23:28.482Z"
+  },
+  "snack-yuki": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「スナック雪」/ 先頭解決「雪乃」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJEUxMTAClQTURIQn298MfmYg",
+      "name": "雪乃",
+      "address": "〒830-0017 福岡県久留米市日吉町９−１９"
+    },
+    "query": "スナック雪 福岡県久留米市日吉町8-17",
+    "fetchedAt": "2026-07-30T19:22:48.595Z"
+  },
+  "snack-yuyu": {
+    "placeId": "ChIJ-Zk7KFakQTUR7DuQpOK5EVs",
+    "resolvedName": "スナック夕悠",
+    "resolvedAddress": "〒830-0017 福岡県久留米市日吉町１３−３７",
+    "query": "スナック夕悠 福岡県久留米市日吉町13-37 第7泉屋ビル2F",
+    "matchBy": "店名exact+番地一致",
+    "fetchedAt": "2026-07-30T19:22:53.484Z"
   }
 }
