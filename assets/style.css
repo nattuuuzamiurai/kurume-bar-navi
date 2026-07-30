@@ -415,6 +415,10 @@ a.pill:hover { text-decoration: none; filter: brightness(1.1); }
   border-color: color-mix(in srgb, var(--cat-color, var(--lantern)) 34%, var(--line));
 }
 .pill-charge { background: rgba(255, 184, 77, .14); color: #f0c079; border-color: rgba(255, 184, 77, .36); }
+/* 営業状況を確認できていない店に一覧で付けるチップ。
+   掲載店を貶める表示にはしないため、警告色(赤・黄)は使わず控えめな無彩色にする。
+   業態カラーとも衝突しない。詳しい注記は店舗ページ側に出る。 */
+.pill-unverified { background: rgba(183, 179, 200, .12); color: var(--muted); border-color: rgba(183, 179, 200, .3); }
 
 /* ============================================================
    絞り込みウィジェット

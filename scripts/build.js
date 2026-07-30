@@ -715,6 +715,41 @@ function venueHeroPhotoHtml(v) {
 // (=リファラによるホットリンクブロックなし)。ただし実ブラウザでの最終描画は未検証。
 // ============================================================
 const VENUE_LOGOS = {
+  // --- 接待を伴う業態の公式サイトロゴ(2026-07-30) ---
+  // 2026-07-30 の掲載範囲拡大にあわせてロゴを調査した。この業態は
+  // **ホットペッパーもFacebookも使えない**(ホットペッパーグルメは風営法上の
+  // 接待飲食店を扱っておらず、3班の調査でいずれも0件)ため、
+  // 有効なのは (1)店の公式サイト (2)公式Instagram (3)公式TikTok の3ルートのみ。
+  // 下記4件は最もリスクの低い(1)=公式サイトのホットリンクで、
+  // 画像を実際に取得して**店名ロゴであることを目視確認**済み。
+  "kyabakura-ace": {
+    imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/header_logo.png",
+    siteLabel: "A〈エース〉 公式サイト",
+    siteUrl: "https://kurume-ace.com/",
+  },
+  "kyabakura-kurume-rikyu": {
+    imageUrl: "https://kurume.sogo-leisure.co.jp/wp-content/uploads/sites/10/2020/04/rik_kr.png",
+    siteLabel: "New Club 久留米離宮 公式サイト",
+    siteUrl: "https://kurume.sogo-leisure.co.jp/shop_list/rikyu/",
+  },
+  "kyabakura-carnet": {
+    imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/logo.png",
+    siteLabel: "NEW CLUB CARNET 公式サイト",
+    siteUrl: "https://new-club-carnet.com/",
+  },
+  "club-four-season": {
+    imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/header_logo.png",
+    siteLabel: "CLUB FOUR SEASON 公式サイト",
+    siteUrl: "https://club-fourseason.com/",
+  },
+  // 公式Instagramもあるが、公式サイトのロゴが取れる店は
+  // ホットリンク(自サイトに保存しない)= より低リスクな方を採る。
+  "girlsbar-tree": {
+    imageUrl: "https://girlsbartree.m-nanaumi.com/wp-content/uploads/2021/10/treelogo1.png",
+    siteLabel: "Girl's Bar TREE 公式サイト",
+    siteUrl: "https://girlsbartree.m-nanaumi.com/",
+  },
+
   // --- 公式サイトロゴ 自動拡充(2026-07-27) ---
   "bar-141saketen": {
     imageUrl: "https://www.141saketen-kurume.com/wp-content/uploads/2023/04/logo-1.png",
@@ -1050,6 +1085,21 @@ const INSTAGRAM_LOGOS = {
   // --- 第3弾(2026-07-29): 引き継ぎメモの「確認済みハンドル」6店を実アクセスで再検証し、
   //     唯一実在が確認できた1店を追加(残り5件は無効ハンドル/公式IG不在。詳細は data/venue-audit-log.md) ---
   "izakaya-grill-party": "https://www.instagram.com/grillparty.yakiniku/",
+  // --- 第4弾(2026-07-30): 接待を伴う業態の掲載開始にあわせて追加 ---
+  // この業態はホットペッパー・Facebookのルートが使えないため(いずれも3班の調査で0件)、
+  // 公式サイトが無い店は公式Instagramのプロフィール画像が唯一の手段になる。
+  // 全件、画像を実際に取得して**店名ロゴであることを目視確認**済み
+  // (人物写真・キャスト写真・店内写真は不採用)。
+  "snack-himari": "https://www.instagram.com/snack_himari/",
+  "snack-destino": "https://www.instagram.com/destino0942/",
+  "snack-takefuji": "https://www.instagram.com/fuji_ou.uo/",
+  "snack-komorebi": "https://www.instagram.com/komorebikurume/",
+  "snack-stella": "https://www.instagram.com/members_stellae/",
+  "girlsbar-lips": "https://www.instagram.com/girls.bar_lips/",
+  "girlsbar-secret": "https://www.instagram.com/girls.bar.secret/",
+  "lounge-carat": "https://www.instagram.com/lounge.carat/",
+  "lounge-ryusei": "https://www.instagram.com/loungeryusei/",
+  "lounge-kanade": "https://www.instagram.com/members_kanade/",
 };
 
 // INSTAGRAM_LOGOS の件数上限(2026-07-29 制定の運用ルール③)。
@@ -1923,6 +1973,11 @@ function venueCardHtml(v, categories, areas) {
   const bShort = budgetShort(v);
   const cShort = chargeShort(v);
   const pills = [
+    // 営業状況の裏付けが取れていない店は、一覧の時点で分かるようにする。
+    // 店舗ページには注記が出るが、一覧では区別が付かず、業態によっては過半数が未確認になるため
+    // (2026-07-30 時点でクラブ8店中5店・ラウンジ18店中10店)。
+    // 掲載店を貶める表示にはしない。警告色は使わず、控えめなグレーの小さなチップに留める。
+    UNVERIFIED_VENUE_IDS.has(v.id) ? `<span class="pill pill-unverified" title="当サイトでこの店舗の営業状況を確認できていません">営業状況未確認</span>` : "",
     cardOpenPillHtml(v),
     bShort ? `<span class="pill">${escapeHtml(bShort)}</span>` : "",
     `<span class="pill pill-area">${escapeHtml(area ? area.name : v.area)}</span>`,
@@ -2605,6 +2660,21 @@ function build() {
   }
 
   const hiddenCategories = allCategories.filter((c) => !PUBLISHED_CATEGORIES.includes(c.id));
+  // Google の営業状況(businessStatus)が「営業中でない」店を必ず目に入るようにする。
+  // 自動で非掲載にはしない — place_id の誤マッチで別店の状態を拾っている可能性があるため、
+  // 人が公式情報を確認してから掲載継続/削除を判断する。
+  // 過去に閉店店舗を2度掲載した(poker-aa-aces=約4年前に閉店 / izakaya-sakuraya=改名により消滅)
+  // 反省から、人力の確認に頼らず機械的に兆候を拾うための仕組み。
+  const closedByGoogle = venues
+    .map((v) => [v, VENUE_RATINGS[v.id]])
+    .filter(([, r]) => r && r.businessStatus && r.businessStatus !== "OPERATIONAL");
+  if (closedByGoogle.length > 0) {
+    console.warn(
+      `[warn] Google が営業中でないと返している掲載店が ${closedByGoogle.length}件あります(要確認。自動では非掲載にしません): ` +
+        closedByGoogle.map(([v, r]) => `${v.id}(${r.businessStatus})`).join(", ")
+    );
+  }
+
   const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));
   console.log(
     `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件 = ` +
