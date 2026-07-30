@@ -715,6 +715,34 @@ function venueHeroPhotoHtml(v) {
 // (=リファラによるホットリンクブロックなし)。ただし実ブラウザでの最終描画は未検証。
 // ============================================================
 const VENUE_LOGOS = {
+  // --- 接待を伴う業態の公式サイトロゴ(2026-07-30) ---
+  // 2026-07-30 の掲載範囲拡大にあわせてロゴを調査した。この業態は
+  // **ホットペッパーもFacebookも使えない**(ホットペッパーグルメは風営法上の
+  // 接待飲食店を扱っておらず、3班の調査でいずれも0件)ため、
+  // 有効なのは (1)店の公式サイト (2)公式Instagram (3)公式TikTok の3ルートのみ。
+  // 下記4件は最もリスクの低い(1)=公式サイトのホットリンクで、
+  // 画像を実際に取得して**店名ロゴであることを目視確認**済み。
+  "kyabakura-ace": {
+    imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/header_logo.png",
+    siteLabel: "A〈エース〉 公式サイト",
+    siteUrl: "https://kurume-ace.com/",
+  },
+  "kyabakura-kurume-rikyu": {
+    imageUrl: "https://kurume.sogo-leisure.co.jp/wp-content/uploads/sites/10/2020/04/rik_kr.png",
+    siteLabel: "New Club 久留米離宮 公式サイト",
+    siteUrl: "https://kurume.sogo-leisure.co.jp/shop_list/rikyu/",
+  },
+  "kyabakura-carnet": {
+    imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/logo.png",
+    siteLabel: "NEW CLUB CARNET 公式サイト",
+    siteUrl: "https://new-club-carnet.com/",
+  },
+  "club-four-season": {
+    imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/header_logo.png",
+    siteLabel: "CLUB FOUR SEASON 公式サイト",
+    siteUrl: "https://club-fourseason.com/",
+  },
+
   // --- 公式サイトロゴ 自動拡充(2026-07-27) ---
   "bar-141saketen": {
     imageUrl: "https://www.141saketen-kurume.com/wp-content/uploads/2023/04/logo-1.png",
