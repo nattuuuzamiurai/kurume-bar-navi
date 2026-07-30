@@ -93,6 +93,35 @@ const PHASE2_VENUE_IDS = new Set([
   "snack-en",
   "snack-kokoro",
   "girlsbar-s-cafe",
+  // 2026-07-31: スナックの Tier B(28店・出典独立2系統以上=B14 / 1系統のみ=C12)・
+  // Tier C(59店・すべて確度C)を data/venues.json に取り込んだ(合計85店)。
+  // これらは社長指示により「1店も公開しない」ことが取り込みの絶対条件だったため、
+  // snack カテゴリが2026-07-30に公開対象へ切り替わっている現状にかかわらず、
+  // 出典の表示可否(NON_PUBLISHABLE_SOURCE_RE)を問わず全店をここに登録して非公開を維持する。
+  // 上記の既存パターン(出典0件の店のみ非公開)とは適用範囲が異なる点に注意。
+  // 詳細は data/venue-audit-log.md「2026-07-31」の節を参照。
+  "snack-minto", "snack-sachiko", "snack-ching", "snack-kirara",
+  "snack-renge", "snack-mizuki", "snack-nostalgia", "snack-pman-house",
+  "snack-canon", "snack-night-in-ashura", "snack-baru", "snack-new-entei",
+  "snack-space-shuttle", "snack-yuko", "snack-tomoko", "snack-harbor",
+  "snack-rumi", "snack-liberty", "snack-le-jardin", "snack-luminor",
+  "snack-lotus", "snack-one-way", "snack-kosen", "snack-support",
+  "snack-a-one", "snack-sayu", "snack-espace", "snack-grand-opera",
+  "snack-croce", "snack-six", "snack-jusanya", "snack-tiara",
+  "snack-parfum", "snack-dada", "snack-umeko", "snack-bouquet",
+  "snack-members-michi", "snack-blue-tree", "snack-ikkoten", "snack-ei",
+  "snack-sweetpea", "snack-members-k", "snack-mayumi", "snack-yui",
+  "snack-diamond", "snack-misa", "snack-berie", "snack-espresso-ginnoyubiwa",
+  "snack-noguera", "snack-nao", "snack-milky-way", "snack-night-in-yoko",
+  "snack-my-way", "snack-new-lodge", "snack-denshobato", "snack-heartful-karen",
+  "snack-ezaki", "snack-petit-devil", "snack-takako", "snack-hisashi",
+  "snack-sudo-bar", "snack-mariko", "snack-alba", "snack-karin",
+  "snack-partner", "snack-tenderly", "snack-human-love", "snack-art-nouveau",
+  "snack-twist", "snack-di-on", "snack-gloss", "snack-emi",
+  "snack-stand-jun", "snack-theory", "snack-toki", "snack-luxury",
+  "snack-message", "snack-pair-flower", "snack-doruche", "snack-venus",
+  "snack-kaze-no-oto", "snack-shell-room", "snack-rapport", "snack-maki",
+  "snack-rotta",
 ]);
 
 // 1店が公開対象か。
