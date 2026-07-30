@@ -70,6 +70,43 @@ const UNVERIFIED_VENUE_IDS = new Set([
   "concafe-soul-one",
   "concafe-neko-maid-seven",
   "shisha-aima",
+  // ------------------------------------------------------------------
+  // 2026-07-30 社長判断により公開。確度C=1系統のみで営業実態未確認のため注記付き。
+  //
+  // 接待を伴う業態(スナック・キャバクラ・ラウンジ・クラブ・ガールズバー)144店の公開に伴い、
+  // data/venues.json の verification が "C"(= 独立した情報源が1系統のみで、営業実態の裏取りが
+  // 取れていない)の62店をここに登録する。営業時間・定休日は data/venues.json 側で null 化済みで、
+  // 「今営業中」の絞り込み・営業中バッジ・営業時間表示から自動的に外れる。
+  // 内訳: snack 21 / kyabakura 13 / lounge 13 / club 7 / girlsbar 8。
+  // ------------------------------------------------------------------
+  // snack (21件)
+  "snack-koto", "snack-hanaakari", "snack-lavender",
+  "snack-escargot", "snack-rion", "snack-70",
+  "snack-status", "snack-reims", "snack-anew",
+  "snack-lemon", "snack-shin-members", "snack-courage",
+  "snack-pearl", "snack-amore", "snack-lapin",
+  "snack-berry", "snack-rin", "snack-saito",
+  "snack-calm", "snack-the-ritz", "snack-a-king",
+  // kyabakura (13件)
+  "kyabakura-kurume-rikyu", "kyabakura-club-g", "kyabakura-cordoba",
+  "kyabakura-precious", "kyabakura-mary", "kyabakura-ariel",
+  "kyabakura-nestia", "kyabakura-premier", "kyabakura-rudan",
+  "kyabakura-all", "kyabakura-vega", "kyabakura-loop-vip",
+  "kyabakura-lounge-loop",
+  // lounge (13件)
+  "lounge-aoi", "lounge-st-christopher", "lounge-rebo",
+  "lounge-athena", "lounge-indigo", "lounge-sky",
+  "lounge-lepin", "lounge-amon", "lounge-shion",
+  "lounge-sugar", "lounge-jewel", "lounge-ai-spaed",
+  "lounge-zen",
+  // club (7件)
+  "club-313", "club-cube", "club-r",
+  "club-winx", "club-the-member", "club-ari",
+  "club-kou",
+  // girlsbar (8件)
+  "girlsbar-8eight", "girlsbar-hrb", "girlsbar-all-new-ace",
+  "girlsbar-pallas", "girlsbar-baccara", "girlsbar-bully",
+  "girlsbar-secret", "girlsbar-family",
 ]);
 function todayJST() {
   const now = new Date();
@@ -125,12 +162,17 @@ const CATEGORY_COLORS = {
   concafe: "#ff85bd",
   shisha: "#3fd7b6",
   poker: "#5ad07a",
-  // 非公開カテゴリ(フェーズ1では出さない)。フォールバック用に色は持たせておく。
-  snack: "#e0b24a",
-  kyabakura: "#ff7ab0",
-  lounge: "#c79bff",
-  club: "#f2c14e",
-  girlsbar: "#ff9ec4",
+  // --- 2026-07-30 公開開始の5業態 ---
+  // 【色の選び方】既存5業態(バー=紫250°/居酒屋=橙18°/コンカフェ=桃330°/シーシャ=青緑166°/
+  // ポーカー=緑135°)と、リンク色のアンバー(--lantern 38°)から色相を離して選んだ。
+  // 旧値はスナック=#e0b24a・クラブ=#f2c14e が同系の金色、キャバクラ=#ff7ab0・ガールズバー=#ff9ec4 が
+  // コンカフェの桃色とほぼ同じで、一覧で並べたときに見分けがつかなかったため入れ替えている。
+  // クラブのみ有彩色の空きが無かったため、彩度を落としたプラチナ系(ほぼ無彩色)で差別化した。
+  snack: "#c3e04a", // イエローグリーン(72°)
+  kyabakura: "#e36fe8", // マゼンタ(298°)
+  lounge: "#4fc0f0", // スカイブルー(198°)
+  club: "#cbd5e8", // プラチナシルバー(ほぼ無彩色)
+  girlsbar: "#ff5f6d", // コーラルレッド(355°)
 };
 
 // 業態アイコン。見本のライン(24x24・stroke)スタイルに刷新。currentColor で業態カラーに追従。
@@ -145,10 +187,11 @@ const CATEGORY_ICONS = {
   shisha: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21h-2a4 4 0 0 1-4-4v-3h8v3"/><path d="M10 14V7a2 2 0 0 1 4 0c0 3 3 2 3 5"/><path d="M8 21h8"/><path d="M8 4c.7.6.7 1.4 0 2"/></svg>`,
   // スペード(カード/ポーカー)
   poker: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 7 6.5 7 10a3.4 3.4 0 0 1-6 2.4c.4 2.2 1 3 2.2 4.1H8.8c1.2-1.1 1.8-1.9 2.2-4.1A3.4 3.4 0 0 1 5 13c0-3.5 4-6 7-10z"/></svg>`,
-  // スナック・キャバクラ(非公開カテゴリだが将来のフェーズ2用に用意)
+  // --- 2026-07-30 公開開始の5業態(いずれも既存アイコンと形が重ならないものを割り当てている) ---
+  // 音符(カラオケ)
   snack: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>`,
+  // ティアラ
   kyabakura: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l3 9h10l3-9-5 4-3-6-3 6z"/></svg>`,
-  // ラウンジ・クラブ・ガールズバー(いずれも非公開カテゴリ。将来の公開に備えて用意しておく)
   // ソファ
   lounge: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/><path d="M3 12a2 2 0 0 1 4 0v3h10v-3a2 2 0 0 1 4 0v6H3z"/></svg>`,
   // ワイングラス2つ(乾杯)
@@ -909,12 +952,12 @@ const VENUE_LOGOS = {
     siteUrl: "https://izzy.best/karisamu/index.html",
   },
   // --- コンカフェ ---
-  "concafe-axia": {
+  "girlsbar-axia": {
     imageUrl: "https://anisongaxia.com/common/upload_data/anisongaxiacom/image/apple-touch-icon.png",
     siteLabel: "コンセプトカフェ AXIA 公式サイト",
     siteUrl: "https://anisongaxia.com/",
   },
-  "concafe-platinum-seven": {
+  "girlsbar-platinum-seven": {
     imageUrl: "https://kurume-seven.com/wp-content/uploads/2026/05/favicon-200x200.png",
     siteLabel: "カフェラウンジ PLATINUM SEVEN 公式サイト",
     siteUrl: "https://kurume-seven.com/",
@@ -1011,11 +1054,16 @@ const INSTAGRAM_LOGOS = {
 
 // INSTAGRAM_LOGOS の件数上限(2026-07-29 制定の運用ルール③)。
 // 公式Instagramプロフィール画像の自サイト保存(rehost)は、他にロゴを得られない店舗に限った例外運用であり、
-// 無制限に広げないための歯止めとして上限を設けている(公開店舗数の25%相当 = 40件)。
+// 無制限に広げないための歯止めとして上限を設けている。
 // 上限に達したら「自動的に続けない」ことが運用ルールの趣旨なので、
 // 超過した場合はビルドを失敗させて必ず人が判断する導線に戻す。
 // 上限そのものを引き上げるには、README「著作権リスク階層の線引き」項の運用ルールの見直しが必要。
-const INSTAGRAM_LOGOS_MAX = 40;
+//
+// 【算出根拠】ルール制定時から一貫して「公開店舗数の25%相当」を上限としている。
+//   - 2026-07-29 制定時: 公開161店 × 25% ≒ 40件
+//   - 2026-07-30 改定 : 接待を伴う業態の掲載開始により掲載277店 × 25% ≒ 69件
+// 割合(25%)は変えていない。母数(公開店舗数)が増えた分だけ上限を引き上げたもの。
+const INSTAGRAM_LOGOS_MAX = 69;
 {
   const igLogoCount = Object.keys(INSTAGRAM_LOGOS).length;
   if (igLogoCount > INSTAGRAM_LOGOS_MAX) {
@@ -1080,7 +1128,7 @@ const CATEGORY_PLATE_LABELS = {
   concafe: "CONCAFE",
   shisha: "SHISHA",
   poker: "POKER",
-  // 非公開カテゴリ(フェーズ1では出さない)もフォールバック用に用意しておく。
+  // --- 2026-07-30 公開開始の5業態 ---
   snack: "SNACK",
   kyabakura: "KYABAKURA",
   lounge: "LOUNGE",
@@ -1696,7 +1744,49 @@ const FILTER_SCRIPT = `<script>
 })();
 </script>`;
 
-const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。20歳未満の方は、酒類提供業態・接待を伴う飲食店をご利用いただけません。店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)、またはホットペッパー グルメ Webサービス(リクルートが提供する公式API)を出典とするもののみを表示しています。写真および大半のロゴは提供元のサーバー上の画像を直接参照する形で表示しており(当サイトには保存していません)、一部の店舗ロゴのみ、各店の公式Instagramのプロフィール画像を出典として当サイトに保存(再ホスト)して表示しています(該当する店舗ページに出典の公式Instagramへのリンクを記載しています)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」を表示しています。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
+// 【文言の根拠】
+//   - 風営法22条1項5号: 接待飲食等営業者が18歳未満の者を「客として」営業所に立ち入らせることを**禁止**。
+//     時間帯による例外があるのは2条1項5号営業(ゲームセンター等)で、接待飲食等営業には例外がない。
+//     したがって「制限されます」は禁止の過小表現になるため「入店できません」とする。
+//   - 20歳未満の飲酒禁止は店舗の業態を問わない(二十歳未満ノ者ノ飲酒ノ禁止ニ関スル法律1条)ため、
+//     「酒類を提供する店舗では」という限定はかえって誤読を招く。
+//   - 加えて風営法22条1項6号は、接待飲食等営業者が20歳未満の者に酒類・たばこを提供することを禁止している
+//     (罰則あり)。読者にとっても店舗にとっても重要なので明記する。
+//   - ただし「当該店舗が接待飲食等営業である」とは断定しない(当サイトは各店の許可状況を確認していない)。
+//     「該当する店舗では」という条件形を維持する。
+const AGE_RESTRICTION_NOTICE =
+  "風営法上の接待飲食等営業に該当する店舗では、18歳未満の方は客として入店できません。" +
+  "また、20歳未満の方の飲酒は法律で禁止されており、これらの店舗では20歳未満の方への酒類・たばこの提供も禁止されています。" +
+  "入店可否・年齢確認の取り扱いは各店舗の定めによりますので、詳細は各店舗にご確認ください。";
+
+const DISCLAIMER = `本サイトは福岡県久留米市・西鉄久留米駅周辺エリア(一番街・二番街・文化街周辺)の飲食店・ナイトライフ店舗を紹介する情報サイトです。掲載情報は店舗公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など公開されている情報をもとに${BUILD_DATE}時点で作成した要約であり、内容の正確性・最新性を保証するものではありません。ご来店の際は、営業時間・定休日・料金等を各店舗の最新の公式情報でご確認ください。性風俗関連特殊営業に該当する業態は掲載対象外です。${AGE_RESTRICTION_NOTICE}店舗の写真・ロゴは、店舗ご自身の公式発信(公式サイト・公式Instagram)、またはホットペッパー グルメ Webサービス(リクルートが提供する公式API)を出典とするもののみを表示しています。写真および大半のロゴは提供元のサーバー上の画像を直接参照する形で表示しており(当サイトには保存していません)、一部の店舗ロゴのみ、各店の公式Instagramのプロフィール画像を出典として当サイトに保存(再ホスト)して表示しています(該当する店舗ページに出典の公式Instagramへのリンクを記載しています)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」を表示しています。それ以外の店舗の写真は各出典サイトでご覧いただけます(Instagram埋め込みや外部画像の参照の際は、お使いのブラウザが各社のサーバーと通信します)。本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは店舗を紹介する情報サイトであり、掲載店舗との間に提携・協賛・推奨・公認等の関係はありません。`;
+
+// ============================================================
+// 年齢制限の注意喚起(2026-07-30)
+//
+// スナック・キャバクラ・ラウンジ・クラブ・ガールズバーの公開開始にともない導入した。
+// これらは風営法上の接待飲食等営業(1号営業)に該当しうる業態であり、該当する店舗では
+// 18歳未満は客として入店できない。利用者が来店前に知っておくべき情報なので、対象カテゴリの
+// 店舗ページ・カテゴリページに注記を出す(全ページ共通のフッター DISCLAIMER にも同旨を記載)。
+//
+// 【文言の方針】当サイトは各店舗が風営法上のどの営業区分の許可・届出で営業しているかを
+// 確認しておらず、断定できる立場にない。そのため「この店は接待飲食等営業である」という
+// 店舗個別の断定は書かず、「該当する店舗では制限される」という一般的な注意喚起にとどめ、
+// 実際の入店可否は各店舗に確認するよう案内する。
+// (レビュー部の運用: 各店舗の営業実態・適法性について当サイトが事実を主張しない)
+// ============================================================
+const NIGHTLIFE_CATEGORIES = new Set(["snack", "kyabakura", "lounge", "club", "girlsbar"]);
+
+
+// 業態は NIGHTLIFE_CATEGORIES 外だが、当サイトが表示している料金体系(キャストドリンク等)から
+// 年齢制限の注意喚起を出すべき店。業態そのものは店ご自身の表記が無いため変更しない。
+const AGE_NOTICE_EXTRA_VENUE_IDS = new Set(["izakaya-nyanko-sakaba"]);
+
+// 対象カテゴリ、または上記の個別指定のときだけ年齢制限の注記を返す(それ以外は空文字)。
+function ageRestrictionNoticeHtml(categoryId, venueId) {
+  if (!NIGHTLIFE_CATEGORIES.has(categoryId) && !AGE_NOTICE_EXTRA_VENUE_IDS.has(venueId)) return "";
+  return `<p class="notice notice-age"><strong>年齢制限について</strong><br>${escapeHtml(AGE_RESTRICTION_NOTICE)}</p>`;
+}
 
 // 下部固定タブバー(モバイルのアプリ風ナビ。PCではCSSで非表示にしヘッダーナビを使う)。
 // マップ相当の独立ページは無い(キーレス地図埋め込みは1店ずつのため全店ピンの集約地図を作れない)
@@ -1997,7 +2087,7 @@ ${venues.slice(0, 8).map((v) => venueCardHtml(v, categories, areas)).join("\n")}
   return layout({
     title: null,
     description:
-      "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)の飲み屋を、いま営業中か・予算・カード可否・禁煙・お通しの有無まで組み合わせて探せる情報サイト。バー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーを掲載。",
+      "福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街)の飲み屋を、いま営業中か・予算・カード可否・禁煙・お通しの有無まで組み合わせて探せる情報サイト。バー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラ・ラウンジ・クラブ・ガールズバーを掲載。",
     pathname: "/",
     bodyHtml: body,
     activeTab: "home",
@@ -2042,7 +2132,7 @@ ${items}
 `;
   return layout({
     title: "業態一覧",
-    description: "久留米飲み屋ナビが掲載するバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーの一覧。",
+    description: "久留米飲み屋ナビが掲載するバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラ・ラウンジ・クラブ・ガールズバーの一覧。",
     pathname: "/categories/",
     bodyHtml: body,
     activeTab: "category",
@@ -2080,6 +2170,7 @@ function renderCategoryPage(category, venues, areas, categories) {
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/categories/")}">業態</a> &gt; ${escapeHtml(category.name)}</nav>
 <h1>久留米・西鉄久留米駅周辺の${escapeHtml(category.name)}一覧</h1>
 <p>${escapeHtml(category.summary)}</p>
+${ageRestrictionNoticeHtml(category.id)}
 ${filterWidgetHtml(catVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
@@ -2264,9 +2355,21 @@ const OPEN_NOW_BADGE_SCRIPT = `<script>
 </script>`;
 
 function renderVenuePage(v, area, category, allVenues, areas, categories) {
-  const sourcesHtml = v.sources
+  // 表示できる出典。求人媒体等(NON_PUBLISHABLE_SOURCE_RE)は data/venues.json の
+  // internalSources に退避してあり、そもそも v.sources には入っていない。
+  const shownSources = v.sources || [];
+  const sourcesHtml = shownSources
     .map((s) => `<li><a href="${escapeHtml(s.url)}" rel="nofollow noopener" target="_blank">${escapeHtml(s.label)}</a></li>`)
     .join("\n");
+  // 出典を1件も表示できない店(参照した情報源がすべて「店舗ページには出さない媒体」だった場合)は、
+  // 空の <ul> を出さず、なぜリンクが無いのかを明示する。
+  const sourcesBodyHtml =
+    shownSources.length > 0
+      ? `    <p class="small">上記の情報は下記の公開情報をもとにした要約です(${BUILD_DATE}時点)。最新の営業状況は各出典元、または店舗の公式サイト・SNSでご確認ください。</p>
+    <ul class="sources">
+${sourcesHtml}
+    </ul>`
+      : `    <p class="small">この店舗の情報は、当サイトが参照した公開情報をもとにした要約です(${BUILD_DATE}時点)。参照した情報源が、いずれも当サイトの掲載方針により店舗ページに掲載しない媒体だったため、この店舗については出典リンクを表示していません。最新の営業状況は店舗に直接ご確認ください。</p>`;
 
   const relatedInArea = allVenues
     .filter((x) => x.area === v.area && x.id !== v.id)
@@ -2274,7 +2377,6 @@ function renderVenuePage(v, area, category, allVenues, areas, categories) {
     .map((x) => venueCardHtml(x, categories, areas))
     .join("\n");
 
-  const isNightBusiness = v.category === "snack" || v.category === "kyabakura";
   const sched = parseSchedule(v.hours, v.closedDays);
   const isUnverified = UNVERIFIED_VENUE_IDS.has(v.id);
   const unverifiedNotice = isUnverified
@@ -2362,7 +2464,7 @@ ${facts
   <section class="info-section">
     <h2 class="section-heading"><span class="section-heading-icon">📋</span>店舗情報</h2>
     ${factsGridHtml}
-    ${isNightBusiness ? '<p class="notice">接待を伴う飲食店です。20歳未満の方はご利用いただけません。</p>' : ""}
+    ${ageRestrictionNoticeHtml(v.category, v.id)}
   </section>
 
   ${dtagsHtml ? `<section class="info-section"><h2 class="section-heading"><span class="section-heading-icon">🏷</span>特徴・タグ</h2><div class="dtags">${dtagsHtml}</div></section>` : ""}
@@ -2375,10 +2477,7 @@ ${facts
 
   <section class="info-section">
     <h2 class="section-heading"><span class="section-heading-icon">🔗</span>情報源</h2>
-    <p class="small">上記の情報は下記の公開情報をもとにした要約です(${BUILD_DATE}時点)。最新の営業状況は各出典元、または店舗の公式サイト・SNSでご確認ください。</p>
-    <ul class="sources">
-${sourcesHtml}
-    </ul>
+${sourcesBodyHtml}
   </section>
 
   <section class="info-section">
@@ -2410,12 +2509,13 @@ ${relatedInArea}
 function renderAboutPage() {
   const body = `
 <h1>このサイトについて</h1>
-<p>久留米飲み屋ナビは、福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街周辺エリア)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバーなど、飲み屋を幅広く紹介する情報サイトです。</p>
+<p>久留米飲み屋ナビは、福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街周辺エリア)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラ・ラウンジ・クラブ・ガールズバーなど、飲み屋を幅広く紹介する情報サイトです。</p>
 
 <h2>掲載方針</h2>
 <ul>
   <li>性風俗関連特殊営業(いわゆる「風俗」)は掲載対象外です。</li>
-  <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各ページに情報源のリンクを掲載しています。</li>
+  <li>掲載情報は、店舗の公式サイト・SNS、飲食店情報サイト、業界団体(組合)の公表情報など、インターネット上に公開されている情報をもとに要約・作成しています。各店舗ページに情報源のリンクを掲載しています(参照した情報源が、当サイトの掲載方針により店舗ページに掲載しない媒体だけだった場合は、その旨を当該店舗ページに記載しています)。</li>
+  <li>店舗の営業状況を当サイトで確認できていない場合は、その店舗ページに「営業状況を確認できていません」の注記を表示し、確認できていない営業時間・定休日は掲載していません。</li>
   <li>他サイトの文章・写真をそのまま転載(コピー・保存)することはしていません。店舗写真は、(1)店舗の公式サイト・公式Instagramなど<strong>店ご自身の公式発信</strong>、または(2)<strong>ホットペッパー グルメ Webサービス</strong>(リクルートが提供する公式API)を出典とし、いずれも提供元のサーバー上の画像を直接参照する形で表示しています(当サイトには保存していません)。ホットペッパー グルメ由来の写真には「【画像提供：ホットペッパー グルメ】」のクレジットと同サイトへのリンクを付けています。写真がない店舗は、業態を示す汎用アイコンを表示しています。</li>
   <li>店舗のロゴは、その店(またはチェーンの運営元)の公式サイト・公式Facebook、ホットペッパー グルメ Webサービス、または各店の公式Instagramに掲載されている画像を出典としています。多くは提供元のサーバー上の画像を直接参照する形で表示しています(当サイトのサーバーには保存していません)が、一部の店舗ロゴのみ、各店の公式Instagramのプロフィール画像を出典として当サイトに保存(再ホスト)して表示しています。いずれも出典元へのリンクを各店舗ページに記載しています。ロゴの掲載を希望されない場合は、下記の連絡先までお知らせください。</li>
   <li>営業時間・料金等は変更されることがあります。最新情報は各店舗の公式情報でご確認ください。</li>
@@ -2430,8 +2530,9 @@ function renderAboutPage() {
 <h2>掲載店舗の関係者の方へ</h2>
 <p>当サイトへの掲載内容に誤りがある場合の修正依頼、掲載を希望されない場合の削除依頼については、${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。速やかに対応いたします。</p>
 
-<h2>年齢確認について</h2>
-<p>接待を伴う飲食店は、20歳未満の方はご利用いただけません。</p>
+<h2>年齢制限について</h2>
+<p>${escapeHtml(AGE_RESTRICTION_NOTICE)}</p>
+<p>当サイトは、各店舗が風営法上のどの営業区分で営業しているかを確認しているものではありません。スナック・キャバクラ・ラウンジ・クラブ・ガールズバーの各業態ページおよび店舗ページには、同じ注意喚起を表示しています。</p>
 `;
   return layout({
     title: "このサイトについて",
@@ -2452,10 +2553,11 @@ function build() {
   const areas = readJSON("areas.json");
   const allCategories = readJSON("categories.json");
 
-  // 公開対象に絞り込む。非公開は2種類あり、いずれも data/venues.json にはデータとして残すが
+  // 公開対象に絞り込む。非公開の判定は2種類あり、いずれも data/venues.json にはデータとして残すが
   // dist/ 配下にページを一切生成しない(リンクを隠すだけでなく、ファイル自体を作らない):
-  //   (a) 非公開カテゴリ(スナック・キャバクラ) … PUBLISHED_CATEGORIES 外
-  //   (b) 店舗単位のフェーズ2(接待性のある店) … PHASE2_VENUE_IDS
+  //   (a) PUBLISHED_CATEGORIES 外のカテゴリ
+  //   (b) 店舗単位の非公開指定 … PHASE2_VENUE_IDS
+  // 2026-07-30 時点では (a)(b) いずれも該当0件(全カテゴリ・全店を公開)。仕組みは残してある。
   const venues = allVenues.filter(
     (v) => PUBLISHED_CATEGORIES.includes(v.category) && !PHASE2_VENUE_IDS.has(v.id)
   );
@@ -2473,32 +2575,40 @@ function build() {
     console.warn(`[warn] UNVERIFIED_VENUE_IDS にデータ上存在しないIDがあります: ${missingUnverified.join(", ")}`);
   }
 
-  // 求人媒体URLが公開店の sources に紛れ込んでいないかのチェック。
-  // README「削除・非公開化の記録を残す」のルール: 求人サイト由来の情報は業態・接待性の分類の
+  // 求人媒体等のURLが公開店の sources に紛れ込んでいないかのチェック。
+  // README「削除・非掲載化の記録を残す」のルール: 求人サイト由来の情報は業態の分類の
   // 手がかりとして参照してよいが、店舗ページには出さない(= sources に載せない)。
-  // フェーズ2(非公開)のデータは、そもそも求人媒体にしか掲載が無い店が多くページも生成しないため
-  // sources に保持している(2026-07-29)。その店を将来フェーズ1へ上げるときに求人URLを外し忘れると
-  // 公開ページに出てしまうので、公開対象になった時点で warn を出して気付けるようにする。
   // 対象は求人媒体だけではない。出会い系マッチングアプリのオウンドメディア(happymail)や
   // ナイトワーク系ポータル(yoasobi-net)も、実店舗ページに「出典」として並べるとブランドを損ない、
   // 掲載店にとっても迷惑になるため公開してはいけない。
+  // 2026-07-30: 接待を伴う業態を公開するにあたり、該当した83店のURLを sources から
+  // data/venues.json の internalSources(ビルドで一切出力しない内部管理用のフィールド)へ退避した。
   const NON_PUBLISHABLE_SOURCE_RE = /(job-chocolat|menschocolat|picsastock|tainew|emily-job|pokepara-tainew|baitoru|indeed|gb-walker|hotworks|happymail|yoasobi-net)\./i;
   const nonPublishableLeaks = venues.filter((v) => (v.sources || []).some((s) => NON_PUBLISHABLE_SOURCE_RE.test(s.url)));
   if (nonPublishableLeaks.length > 0) {
     // warn ではなくビルドを止める。deploy.yml はビルド直後に無条件でデプロイするため、
     // 警告のままでは「ログを読み飛ばして公開してしまう」事故を防げない。
-    // 現状ヒット0件なので致命エラー化のコストはゼロで、穴を恒久的に塞げる。
     throw new Error(
       `公開店の sources に、公開してはいけない媒体のURLがあります(公開前に外すこと): ${nonPublishableLeaks.map((v) => v.id).join(", ")}`
     );
   }
+  // 上記の退避の結果、表示できる出典が1件も無くなった店。店舗ページ側では空の出典リストを出さず
+  // 理由を明記する実装になっているが、件数は運用上の課題として毎回ログに出す
+  // (別系統の出典を取得できたら sources に追加してこの件数を減らす)。
+  const noShownSource = venues.filter((v) => (v.sources || []).length === 0);
+  if (noShownSource.length > 0) {
+    console.log(
+      `[info] 表示できる出典が0件の公開店舗: ${noShownSource.length}件(店舗ページには理由を明記。別系統の出典が取得でき次第 sources に追加する): ${noShownSource
+        .map((v) => v.id)
+        .join(", ")}`
+    );
+  }
 
+  const hiddenCategories = allCategories.filter((c) => !PUBLISHED_CATEGORIES.includes(c.id));
   const phase2Published = [...PHASE2_VENUE_IDS].filter((id) => PUBLISHED_CATEGORIES.includes((allVenues.find((v) => v.id === id) || {}).category));
   console.log(
-    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件 = 非公開カテゴリ${allCategories
-      .filter((c) => !PUBLISHED_CATEGORIES.includes(c.id))
-      .map((c) => c.name)
-      .join("・")} + 店舗単位フェーズ2${phase2Published.length}件)`
+    `公開対象: ${venues.length}件 / 全データ: ${allVenues.length}件(非公開: ${hiddenCount}件 = ` +
+      `非公開カテゴリ${hiddenCategories.length > 0 ? hiddenCategories.map((c) => c.name).join("・") : "なし"} + 店舗単位の非公開指定${phase2Published.length}件)`
   );
 
   // ロゴ登録の整合性チェック。
