@@ -742,6 +742,13 @@ const VENUE_LOGOS = {
     siteLabel: "CLUB FOUR SEASON 公式サイト",
     siteUrl: "https://club-fourseason.com/",
   },
+  // 公式Instagramもあるが、公式サイトのロゴが取れる店は
+  // ホットリンク(自サイトに保存しない)= より低リスクな方を採る。
+  "girlsbar-tree": {
+    imageUrl: "https://girlsbartree.m-nanaumi.com/wp-content/uploads/2021/10/treelogo1.png",
+    siteLabel: "Girl's Bar TREE 公式サイト",
+    siteUrl: "https://girlsbartree.m-nanaumi.com/",
+  },
 
   // --- 公式サイトロゴ 自動拡充(2026-07-27) ---
   "bar-141saketen": {
@@ -1078,6 +1085,21 @@ const INSTAGRAM_LOGOS = {
   // --- 第3弾(2026-07-29): 引き継ぎメモの「確認済みハンドル」6店を実アクセスで再検証し、
   //     唯一実在が確認できた1店を追加(残り5件は無効ハンドル/公式IG不在。詳細は data/venue-audit-log.md) ---
   "izakaya-grill-party": "https://www.instagram.com/grillparty.yakiniku/",
+  // --- 第4弾(2026-07-30): 接待を伴う業態の掲載開始にあわせて追加 ---
+  // この業態はホットペッパー・Facebookのルートが使えないため(いずれも3班の調査で0件)、
+  // 公式サイトが無い店は公式Instagramのプロフィール画像が唯一の手段になる。
+  // 全件、画像を実際に取得して**店名ロゴであることを目視確認**済み
+  // (人物写真・キャスト写真・店内写真は不採用)。
+  "snack-himari": "https://www.instagram.com/snack_himari/",
+  "snack-destino": "https://www.instagram.com/destino0942/",
+  "snack-takefuji": "https://www.instagram.com/fuji_ou.uo/",
+  "snack-komorebi": "https://www.instagram.com/komorebikurume/",
+  "snack-stella": "https://www.instagram.com/members_stellae/",
+  "girlsbar-lips": "https://www.instagram.com/girls.bar_lips/",
+  "girlsbar-secret": "https://www.instagram.com/girls.bar.secret/",
+  "lounge-carat": "https://www.instagram.com/lounge.carat/",
+  "lounge-ryusei": "https://www.instagram.com/loungeryusei/",
+  "lounge-kanade": "https://www.instagram.com/members_kanade/",
 };
 
 // INSTAGRAM_LOGOS の件数上限(2026-07-29 制定の運用ルール③)。
