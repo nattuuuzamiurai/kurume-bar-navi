@@ -731,9 +731,141 @@
     "businessStatus": "OPERATIONAL",
     "updatedAt": "2026-07-30T19:23:51.869Z"
   },
+  "kyabakura-swarovski": {
+    "rating": 4,
+    "userRatingCount": 3,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:24.690Z"
+  },
+  "lounge-aoi": {
+    "rating": 5,
+    "userRatingCount": 1,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:25.017Z"
+  },
+  "lounge-athena": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:25.343Z"
+  },
+  "lounge-carat": {
+    "rating": 4.5,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:25.673Z"
+  },
+  "lounge-chester": {
+    "rating": 2,
+    "userRatingCount": 2,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:25.992Z"
+  },
+  "lounge-endless": {
+    "rating": 4.1,
+    "userRatingCount": 7,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:26.320Z"
+  },
+  "lounge-kanade": {
+    "rating": 5,
+    "userRatingCount": 7,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:26.638Z"
+  },
+  "lounge-lepin": {
+    "rating": 4.1,
+    "userRatingCount": 18,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:26.961Z"
+  },
+  "lounge-megami": {
+    "rating": 3.8,
+    "userRatingCount": 6,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:27.290Z"
+  },
+  "lounge-new-impact": {
+    "rating": 3.3,
+    "userRatingCount": 3,
+    "businessStatus": "CLOSED_PERMANENTLY",
+    "updatedAt": "2026-07-31T19:21:27.617Z"
+  },
+  "lounge-papico": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:27.939Z"
+  },
+  "lounge-ryusei": {
+    "rating": 4.9,
+    "userRatingCount": 7,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:28.260Z"
+  },
+  "lounge-st-christopher": {
+    "rating": 2.9,
+    "userRatingCount": 8,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:28.582Z"
+  },
   "shisha-x": {
     "rating": 4,
     "userRatingCount": 10,
     "updatedAt": "2026-07-27T19:24:51.439Z"
+  },
+  "snack-a-king": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:28.908Z"
+  },
+  "snack-aramis": {
+    "rating": 4.4,
+    "userRatingCount": 7,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:29.230Z"
+  },
+  "snack-belta-salone": {
+    "rating": 4.8,
+    "userRatingCount": 4,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:29.557Z"
+  },
+  "snack-bluemoon": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:29.898Z"
+  },
+  "snack-brilliant": {
+    "rating": 4.5,
+    "userRatingCount": 8,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:30.221Z"
+  },
+  "snack-calm": {
+    "rating": null,
+    "userRatingCount": 0,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:30.554Z"
+  },
+  "snack-charmant": {
+    "rating": 4.3,
+    "userRatingCount": 4,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:30.854Z"
+  },
+  "snack-cookie": {
+    "rating": 4.5,
+    "userRatingCount": 11,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:31.158Z"
+  },
+  "snack-courage": {
+    "rating": 4.5,
+    "userRatingCount": 4,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-07-31T19:21:31.459Z"
   }
 }
