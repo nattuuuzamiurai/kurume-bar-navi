@@ -140,17 +140,20 @@
   "bar-shuffle": {
     "rating": 4.2,
     "userRatingCount": 6,
-    "updatedAt": "2026-07-28T19:20:10.431Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:28.205Z"
   },
   "bar-tabetaria": {
     "rating": 3.6,
     "userRatingCount": 111,
-    "updatedAt": "2026-07-28T19:20:10.759Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:28.515Z"
   },
   "bar-welmona": {
     "rating": 4.9,
     "userRatingCount": 22,
-    "updatedAt": "2026-07-28T19:20:11.081Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:28.833Z"
   },
   "club-313": {
     "rating": 5,
@@ -179,22 +182,26 @@
   "concafe-hakuchumu": {
     "rating": 3.8,
     "userRatingCount": 18,
-    "updatedAt": "2026-07-28T19:20:11.406Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:29.142Z"
   },
   "concafe-kurukuru-bakyun": {
     "rating": 4.7,
     "userRatingCount": 6,
-    "updatedAt": "2026-07-28T19:20:11.733Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:29.458Z"
   },
   "concafe-paracora": {
     "rating": 5,
     "userRatingCount": 1,
-    "updatedAt": "2026-07-28T19:20:12.060Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:29.760Z"
   },
   "concafe-seventh-heaven": {
     "rating": 4.4,
     "userRatingCount": 37,
-    "updatedAt": "2026-07-28T19:20:12.390Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:30.077Z"
   },
   "girlsbar-axia": {
     "rating": 4.7,
@@ -222,73 +229,87 @@
   },
   "izakaya-amenita-pizzeria": {
     "rating": 4.2,
-    "userRatingCount": 302,
-    "updatedAt": "2026-07-28T19:20:12.715Z"
+    "userRatingCount": 303,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:30.384Z"
   },
   "izakaya-arbequina": {
     "rating": 4.3,
     "userRatingCount": 74,
-    "updatedAt": "2026-07-28T19:20:13.066Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:30.688Z"
   },
   "izakaya-bansun": {
     "rating": 4.6,
     "userRatingCount": 45,
-    "updatedAt": "2026-07-28T19:20:13.389Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:30.991Z"
   },
   "izakaya-bonbori": {
     "rating": 4,
     "userRatingCount": 44,
-    "updatedAt": "2026-07-28T19:20:13.711Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:31.291Z"
   },
   "izakaya-bracca-brocco": {
     "rating": 4.3,
     "userRatingCount": 36,
-    "updatedAt": "2026-07-28T19:20:14.014Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:31.591Z"
   },
   "izakaya-brioso": {
     "rating": 4.3,
     "userRatingCount": 157,
-    "updatedAt": "2026-07-28T19:20:14.314Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:31.897Z"
   },
   "izakaya-buonricordo": {
     "rating": null,
     "userRatingCount": 0,
-    "updatedAt": "2026-07-28T19:20:14.615Z"
+    "businessStatus": "CLOSED_PERMANENTLY",
+    "updatedAt": "2026-08-06T23:56:32.194Z"
   },
   "izakaya-choutei": {
     "rating": 4.4,
-    "userRatingCount": 162,
-    "updatedAt": "2026-07-29T19:12:50.122Z"
+    "userRatingCount": 163,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:32.801Z"
   },
   "izakaya-ciaogola-van": {
     "rating": 4.1,
     "userRatingCount": 42,
-    "updatedAt": "2026-07-29T19:12:50.476Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:33.116Z"
   },
   "izakaya-daisen": {
     "rating": 3.9,
     "userRatingCount": 82,
-    "updatedAt": "2026-07-29T19:12:50.824Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:33.417Z"
   },
   "izakaya-delica-amenita": {
     "rating": 3.8,
     "userRatingCount": 29,
-    "updatedAt": "2026-07-29T19:12:51.161Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:33.702Z"
   },
   "izakaya-gekkoyoku": {
     "rating": 3.8,
     "userRatingCount": 147,
-    "updatedAt": "2026-07-29T19:12:51.513Z"
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:33.985Z"
   },
   "izakaya-geta": {
     "rating": 4.2,
-    "userRatingCount": 93,
-    "updatedAt": "2026-07-29T19:12:51.848Z"
+    "userRatingCount": 94,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:34.268Z"
   },
   "izakaya-ginshari": {
     "rating": 4.7,
-    "userRatingCount": 565,
-    "updatedAt": "2026-07-29T19:12:52.188Z"
+    "userRatingCount": 609,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:34.553Z"
   },
   "izakaya-goju-ban": {
     "rating": 4.3,
@@ -632,8 +653,9 @@
   },
   "izakaya-tantanen": {
     "rating": 3.2,
-    "userRatingCount": 40,
-    "updatedAt": "2026-07-29T19:12:49.772Z"
+    "userRatingCount": 39,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-08-06T23:56:32.495Z"
   },
   "izakaya-tashu": {
     "rating": 4.7,
