@@ -426,136 +426,136 @@
     "updatedAt": "2026-08-10T18:54:20.130Z"
   },
   "izakaya-karisamu": {
-    "rating": 4.7,
-    "userRatingCount": 6,
+    "rating": 4.6,
+    "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:22.566Z"
+    "updatedAt": "2026-08-11T18:59:05.815Z"
   },
   "izakaya-kasuriya": {
     "rating": 3.6,
     "userRatingCount": 68,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:22.899Z"
+    "updatedAt": "2026-08-11T18:59:06.134Z"
   },
   "izakaya-kawakko": {
     "rating": 4.2,
     "userRatingCount": 386,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:23.234Z"
+    "updatedAt": "2026-08-11T18:59:06.452Z"
   },
   "izakaya-kengohyaku": {
     "rating": 3.7,
     "userRatingCount": 223,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:23.569Z"
+    "updatedAt": "2026-08-11T18:59:06.782Z"
   },
   "izakaya-kiseki-tebasaki": {
     "rating": 3.1,
     "userRatingCount": 31,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:23.910Z"
+    "updatedAt": "2026-08-11T18:59:07.098Z"
   },
   "izakaya-kokaro": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:24.244Z"
+    "updatedAt": "2026-08-11T18:59:07.432Z"
   },
   "izakaya-korean-mutsumon-pocha": {
     "rating": 3.6,
     "userRatingCount": 46,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:24.579Z"
+    "updatedAt": "2026-08-11T18:59:07.752Z"
   },
   "izakaya-kuimonoya-wan": {
-    "rating": 3.4,
-    "userRatingCount": 139,
+    "rating": 3.5,
+    "userRatingCount": 152,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:24.913Z"
+    "updatedAt": "2026-08-11T18:59:08.061Z"
   },
   "izakaya-kunsei-mammauto": {
-    "rating": 4.3,
-    "userRatingCount": 70,
+    "rating": 4.4,
+    "userRatingCount": 71,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:25.250Z"
+    "updatedAt": "2026-08-11T18:59:08.377Z"
   },
   "izakaya-kushi-tanaka": {
     "rating": 4.1,
     "userRatingCount": 380,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:25.583Z"
+    "updatedAt": "2026-08-11T18:59:08.685Z"
   },
   "izakaya-lucky-raku": {
-    "rating": 4.4,
-    "userRatingCount": 52,
+    "rating": 4.5,
+    "userRatingCount": 54,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:25.914Z"
+    "updatedAt": "2026-08-11T18:59:08.991Z"
   },
   "izakaya-makanai-dojo": {
     "rating": 3.8,
     "userRatingCount": 107,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:26.225Z"
+    "updatedAt": "2026-08-11T18:59:09.298Z"
   },
   "izakaya-marukichi": {
     "rating": 3.6,
     "userRatingCount": 40,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:26.534Z"
+    "updatedAt": "2026-08-11T18:59:09.627Z"
   },
   "izakaya-matabee": {
     "rating": 4,
-    "userRatingCount": 477,
+    "userRatingCount": 478,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-02T19:06:26.845Z"
+    "updatedAt": "2026-08-11T18:59:09.942Z"
   },
   "izakaya-matsuo": {
     "rating": 4,
     "userRatingCount": 62,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:31.478Z"
+    "updatedAt": "2026-08-11T18:59:10.249Z"
   },
   "izakaya-miraizaka": {
     "rating": 3.3,
-    "userRatingCount": 186,
+    "userRatingCount": 187,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:31.824Z"
+    "updatedAt": "2026-08-11T18:59:10.572Z"
   },
   "izakaya-moija": {
     "rating": 3.8,
     "userRatingCount": 91,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:32.171Z"
+    "updatedAt": "2026-08-11T18:59:10.893Z"
   },
   "izakaya-momolabo": {
     "rating": 4,
     "userRatingCount": 25,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:32.516Z"
+    "updatedAt": "2026-08-11T18:59:11.199Z"
   },
   "izakaya-momonosuke": {
     "rating": 3.4,
     "userRatingCount": 54,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:32.859Z"
+    "updatedAt": "2026-08-11T18:59:11.486Z"
   },
   "izakaya-motsunabe-sato": {
     "rating": 4.4,
     "userRatingCount": 9,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:33.202Z"
+    "updatedAt": "2026-08-11T18:59:11.780Z"
   },
   "izakaya-mui": {
     "rating": 3.9,
-    "userRatingCount": 65,
+    "userRatingCount": 66,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:33.553Z"
+    "updatedAt": "2026-08-11T18:59:12.068Z"
   },
   "izakaya-muttsumon-biyori": {
     "rating": 4.5,
     "userRatingCount": 22,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-03T19:27:33.931Z"
+    "updatedAt": "2026-08-11T18:59:12.358Z"
   },
   "izakaya-nyanko-sakaba": {
     "rating": 4.5,
