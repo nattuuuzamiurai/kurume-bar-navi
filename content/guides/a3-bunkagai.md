@@ -61,7 +61,6 @@
 - [ウルトラギョーザ 極虎餃子 通町店](/venues/izakaya-gyoza-gokutora-toorimachi/)
 - [鉄鍋ぎょうざながた](/venues/izakaya-tetsunabe-nagata/)
 - [Italian bar MOMOLABO(イタリアンバル モモラボ)](/venues/izakaya-momolabo/)
-- [ブオンリコルド](/venues/izakaya-buonricordo/)(イタリアン)
 - [韓国家庭料理 オモニ](/venues/izakaya-omoni/)
 - [SouL in SeouL](/venues/izakaya-soul-in-seoul/)(韓国料理)
 - [通町 接吻](/venues/izakaya-seppun/)(海鮮・しゃぶしゃぶ、個室あり)
