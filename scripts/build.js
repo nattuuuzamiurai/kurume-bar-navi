@@ -1891,7 +1891,7 @@ ${tabs
 </nav>`;
 }
 
-function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript, activeTab }) {
+function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript, activeTab, footerNote }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
   const canonical = absoluteUrl(pathname);
   const jsonLdScript = jsonLd
@@ -1929,7 +1929,7 @@ ${jsonLdScript}
 ${bodyHtml}
 </main>
 <footer class="site-footer">
-  <p>${escapeHtml(DISCLAIMER)}</p>
+  <p>${escapeHtml(footerNote || DISCLAIMER)}</p>
   <p class="powered-by"><a href="https://webservice.recruit.co.jp/" rel="nofollow noopener" target="_blank">Powered by ホットペッパーグルメ Webサービス</a></p>
   <p><a href="${url("/about/")}">このサイトについて・掲載店舗の関係者の方へ</a></p>
   <p>&copy; ${SITE_NAME}</p>
@@ -2708,9 +2708,26 @@ ${relatedInArea}
   });
 }
 
+// about ページ専用のフッター注記。
+//
+// 【なぜ専用にするか(2026-08-22)】通常ページのフッターは共通 DISCLAIMER(掲載方針・出典・
+// 商標帰属や提携関係の有無・年齢制限などをまとめた1段落)を表示する。about ページはその内容を
+// 本文側で見出しごとに詳しく説明し直しているため、フッターにも同じ DISCLAIMER をそのまま出すと
+// 同一ページ内で同じ趣旨の文(特に「提携・協賛・推奨・公認等の関係はない」旨)が繰り返される。
+// 内容は削らず、about ページでは「本文で詳しく説明済み」であることだけをフッターで案内する形にして
+// 重複を整理する(他の379ページのフッターは従来どおり DISCLAIMER 全文のまま変更しない)。
+const ABOUT_FOOTER_NOTE =
+  "掲載方針・情報源、写真・ロゴの出典、商標の帰属や提携関係の有無、年齢制限についてのご案内は、このページの本文でまとめて説明しています。";
+
 function renderAboutPage() {
   const body = `
 <h1>このサイトについて</h1>
+<p class="about-lead">西鉄久留米・一番街 / 二番街 / 文化街エリアの飲み屋を紹介している「久留米飲み屋ナビ」です。運営者情報と、掲載にあたっての考え方をこのページにまとめました。</p>
+
+<h2>運営者情報</h2>
+<p>運営: エースハイ合同会社</p>
+
+<h2>どんなサイトか</h2>
 <p>久留米飲み屋ナビは、福岡県久留米市・西鉄久留米駅周辺(一番街・二番街・文化街周辺エリア)のバー・居酒屋・コンカフェ・シーシャ・アミューズメントポーカーバー・スナック・キャバクラ・ラウンジ・クラブ・ガールズバーなど、飲み屋を幅広く紹介する情報サイトです。</p>
 
 <h2>掲載方針</h2>
@@ -2726,7 +2743,7 @@ function renderAboutPage() {
 <h2>外部サービスの埋め込み・参照について</h2>
 <p>本サイトの各店舗ページでは、Instagram公式の投稿埋め込み、Googleマップの地図埋め込み、各店の公式サイト画像・ホットペッパー グルメ Webサービスの画像の参照などを行っています。そのため、ページ閲覧時にお使いのブラウザから Instagram(Meta)・Google・リクルート(ホットペッパー グルメ)・各店の公式サイト等の外部サーバーへ通信が発生する場合があります。これら外部サービス側での情報の取り扱いは、各サービスのプライバシーポリシーに従います。</p>
 
-<h2>商標・権利の帰属、および提携関係がないことについて</h2>
+<h2>商標・権利の帰属、および提携関係について</h2>
 <p>本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは、公開されている情報をもとに店舗を紹介する情報サイトであり、<strong>掲載店舗との間に提携・協賛・推奨・公認等の関係は一切ありません</strong>。ロゴは、その店舗(またはチェーンの運営元)を識別しやすくする目的で、各店の公式サイト上の画像を参照して表示しているものであり、当サイトが各店舗から掲載の許諾や対価を受けていることを示すものではありません。</p>
 
 <h2>掲載店舗の関係者の方へ</h2>
@@ -2738,9 +2755,10 @@ function renderAboutPage() {
 `;
   return layout({
     title: "このサイトについて",
-    description: "久留米飲み屋ナビの掲載方針、情報源、掲載店舗の関係者の方向けのご案内。",
+    description: "久留米飲み屋ナビの運営者情報、掲載方針、情報源、掲載店舗の関係者の方向けのご案内。",
     pathname: "/about/",
     bodyHtml: body,
+    footerNote: ABOUT_FOOTER_NOTE,
   });
 }
 

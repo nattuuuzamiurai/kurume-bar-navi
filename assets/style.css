@@ -156,6 +156,17 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
 .home-hero h1 { font-size: 1.75rem; margin: 0 0 4px; }
 .home-sub { color: var(--muted); font-size: .92rem; margin: 0 0 16px; }
 
+/* ============================================================
+   about ページ(トップの砕けたトーンに寄せるリード文)
+   ============================================================ */
+.about-lead {
+  color: var(--muted);
+  font-size: .95rem;
+  margin: 0 0 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
 /* いま開いてる = 主役ボタン */
 .open-cta {
   display: flex;
