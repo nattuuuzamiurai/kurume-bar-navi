@@ -956,6 +956,43 @@ details.facet-accordion[open] > .tag-filter-list {
   .link-list { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
 }
 
+/* ============================================================
+   エリアガイド記事(/guides/)
+   ============================================================ */
+
+/* 記事本文(Markdownを変換したもの)。他ページの .venue-list 等と衝突しないよう
+   .guide-body 配下だけに効くスコープにする(main 直下ではなく専用クラスでラップして使う)。 */
+.guide-body > h2 { margin-top: 28px; }
+.guide-body > h3 { margin-top: 20px; font-size: .95rem; }
+.guide-body > p { margin: 0 0 14px; }
+.guide-body > ul { margin: 0 0 14px; padding-left: 1.2em; }
+.guide-body > ul li { margin-bottom: 6px; }
+
+.md-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 18px;
+  font-size: .86rem;
+  background: var(--panel);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.md-table th, .md-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.md-table th { background: var(--panel-2); color: var(--ink); font-weight: 800; }
+
+.guide-crosslink {
+  margin: 10px 0 18px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.guide-crosslink a { font-weight: 700; }
+
 /* PC/大タブレット: 下部タブバーを隠し、ヘッダーナビを出す */
 @media (min-width: 780px) {
   .site-nav { display: flex; }

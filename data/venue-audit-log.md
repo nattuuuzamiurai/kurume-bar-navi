@@ -1012,3 +1012,27 @@ Tier Cの「その他エリア」に記載された店のうち、当サイト�
 1. **「非公開データの取り込み」であっても、既存の公開店との重複チェックは通常の新規追加と同じ厳密さで行う必要がある。** 今回、表Aで検出した15件の重複のうち `shisha-x`(公開中のシーシャ店)との重複は、もし見逃していれば非公開の`snack-*`データとして同一店を二重管理する状態になっていた(表示上の実害はないが、データ品質・将来の棚卸しの手間として問題になる)。
 2. **Tier Cのような「店名の羅列のみで個別出典URLがない」データは、`sources` に一覧ページURLを付与しても、個々の店の実在を裏付ける力は弱い。** 将来これらのデータを参照する際は、`verification: "C"` かつ「出典は一覧ページであり個別ページではない」という限界を踏まえること。
 3. 今回、既存データの「出典間で住所が食い違う店」の記録(本ログ2026-07-29節)が、Tier Cの重複検出に直接役立った(`snack-jun-members` / `snack-bluemoon` / `snack-stella` の3件)。**この種の記録は将来の重複検出のための資産になる**ため、今後も残していくこと。
+
+## 2026-08-22(中身の質の底上げ・社長指示 対応中に検知 — Google businessStatus 閉店シグナル4件を未確認扱いに)
+
+### 経緯
+
+エリアガイド公開作業(社長指示(2)、`content/guides/*.md` → `/guides/`)のビルド確認中、`node scripts/build.js` の警告ログで、`fetch-ratings.js` のローリング更新(2026-08-13〜18、`chore(ratings)` コミット)が次の4店の Google `businessStatus` を「営業中でない」と返していることに気づいた。build.js は PR #38 の方針どおり自動では非掲載にしないため、警告が出たまま誰も対応していなかった。
+
+| id | 店名 | businessStatus | 検知日(ratings.jsonのupdatedAt) |
+|---|---|---|---|
+| `bar-cupanddish` | bal*cafe cup&dish(バル カフェ カップアンドディッシュ) | CLOSED_PERMANENTLY | 2026-08-13 |
+| `izakaya-buonricordo` | ブオンリコルド | CLOSED_PERMANENTLY | 2026-08-15 |
+| `lounge-new-impact` | ラウンジニューインパクト | CLOSED_PERMANENTLY | 2026-08-17 |
+| `snack-orfe` | スナックオルフェ | CLOSED_TEMPORARILY | 2026-08-18 |
+
+### 対応
+
+- 4店とも `data/venues.json` からの削除・非掲載化はしていない(place_id誤マッチの可能性を否定できないため、過去の反省(poker-aa-aces / izakaya-sakuraya)を踏まえ人力確認を経ずに delist しない方針を維持)。
+- `scripts/build.js` の `UNVERIFIED_VENUE_IDS` に4店を追加。各店舗ページに「営業状況を確認できていません」の注記を表示し、営業時間表示・「今営業中」絞り込みの対象から外した。
+- `izakaya-buonricordo` は新規公開するエリアガイド `content/guides/a3-bunkagai.md`(文化街)の「初めてでも入りやすい飲食店」リストに掲載予定だったが、閉店シグナルが出ている店を新規コンテンツで積極的に紹介するのは避け、当該リンクを削除した。
+- 2026-08-22追記: 上記の確認が不十分で、`bar-cupanddish` も新規公開エリアガイド `content/guides/a4-eki-shuhen.md`(駅周辺)の「イタリアン・バル系」リストに掲載されたまま(無警告)になっていた点をレビュー部が指摘し発覚。`izakaya-buonricordo`と同じ扱い(リンク削除)で対応した。残る2店(`lounge-new-impact`, `snack-orfe`)はどの原稿にも登場していないことを再確認済みで、原稿側の修正は不要。
+
+### 今後のために記録する知見
+
+4. **Google businessStatus の閉店シグナルは、検知(build時のwarnログ)と対応(`UNVERIFIED_VENUE_IDS`への追加)が別工程であるため、warnを見た人が能動的に対応しないと放置される。** 今回も2026-08-13の最初の検知から本対応まで9日間、警告が出たまま放置されていた。将来的には、warnログをダッシュボードや棚卸しチェックリストに機械的に転記する仕組みがあるとより確実(現状は人力運用)。

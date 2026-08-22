@@ -15,11 +15,14 @@ const path = require("path");
 
 // 公開/非公開の判定は fetch 系スクリプトと共有する(単一の真実の源)。詳細は lib/published.js。
 const { PUBLISHED_CATEGORIES, PHASE2_VENUE_IDS } = require("./lib/published");
+// エリアガイド記事(content/guides/*.md)用の最小Markdown→HTML変換。詳細は lib/markdown.js。
+const { parseGuideMarkdown } = require("./lib/markdown");
 
 const ROOT = path.resolve(__dirname, "..");
 const DATA_DIR = path.join(ROOT, "data");
 const DIST_DIR = path.join(ROOT, "dist");
 const ASSETS_DIR = path.join(ROOT, "assets");
+const GUIDES_DIR = path.join(ROOT, "content", "guides");
 
 const SITE_NAME = "久留米飲み屋ナビ";
 const SITE_URL = "https://nattuuuzamiurai.github.io/kurume-bar-navi";
@@ -107,6 +110,13 @@ const UNVERIFIED_VENUE_IDS = new Set([
   "girlsbar-8eight", "girlsbar-hrb", "girlsbar-all-new-ace",
   "girlsbar-pallas", "girlsbar-baccara", "girlsbar-bully",
   "girlsbar-secret", "girlsbar-family",
+  // ------------------------------------------------------------------
+  // 2026-08-22: エリアガイド公開作業(社長指示(2))のビルド確認中に、fetch-ratings.js の
+  // ローリング更新(chore(ratings)コミット、2026-08-13〜18)が Google businessStatus を
+  // CLOSED_PERMANENTLY/CLOSED_TEMPORARILY と返している4店を検知した。build.js は既存方針どおり
+  // 自動delistはしないが、営業状況未確認として掲載し続けるのはリスクなのでここに追加する。
+  // 詳細は data/venue-audit-log.md「2026-08-22」参照。
+  "bar-cupanddish", "izakaya-buonricordo", "lounge-new-impact", "snack-orfe",
 ]);
 function todayJST() {
   const now = new Date();
@@ -2054,7 +2064,7 @@ const CARD_OPEN_SCRIPT = `<script>
 })();
 </script>`;
 
-function renderTop(venues, areas, categories) {
+function renderTop(venues, areas, categories, guides) {
   const countBy = (fn) => venues.filter(fn).length;
 
   // 業態タイル(色・アイコン・件数の大きなタップ領域)。
@@ -2149,7 +2159,7 @@ ${chips}
 </section>
 
 <section class="home-sec">
-  <div class="sec-title"><h2>エリアから選ぶ</h2></div>
+  <div class="sec-title"><h2>エリアから選ぶ</h2>${(guides || []).some((g) => !g.areaId) ? `<a href="${url("/guides/")}">エリアガイドを読む →</a>` : ""}</div>
   <div class="area-tiles">
 ${areaTiles}
   </div>
@@ -2173,17 +2183,129 @@ ${venues.slice(0, 8).map((v) => venueCardHtml(v, categories, areas)).join("\n")}
   });
 }
 
-function renderAreaIndex(areas, venues) {
+// ============================================================
+// エリアガイド記事(社長指示 2026-08-22「中身の質の底上げ」(2))
+//
+// 企画部・コンテンツ制作部が執筆した地元編集コンテンツ(content/guides/*.md)を
+// /guides/{id}/ ページとして公開する。a0-hub.md は4エリアを比較する「ハブ」記事で
+// /guides/ トップに、a1〜a4 は各エリアの個別ガイドとして /guides/{areaId}/ に対応させる
+// (areaId は data/areas.json の area.id と同じ値を使い、エリアページとの相互リンクを単純にする)。
+// ============================================================
+const GUIDES = [
+  { file: "a0-hub", slug: "", areaId: null, navLabel: "エリア比較ガイド" },
+  { file: "a1-ichibangai", slug: "ichibangai", areaId: "ichibangai" },
+  { file: "a2-nibangai", slug: "nibangai", areaId: "nibangai" },
+  { file: "a3-bunkagai", slug: "bunkagai", areaId: "bunkagai" },
+  { file: "a4-eki-shuhen", slug: "eki-shuhen", areaId: "eki-shuhen" },
+];
+
+function guidePathname(slug) {
+  return slug ? `/guides/${slug}/` : "/guides/";
+}
+
+// content/guides/*.md を読み込み、GUIDES の並び順で { ...guide, title, description, bodyHtml } の配列を返す。
+// ファイルが無い場合は警告してスキップする(ビルド自体は止めない。原稿が未着手のエリアがあっても
+// サイトは成立するようにするため)。
+function loadGuides() {
+  const loaded = [];
+  for (const g of GUIDES) {
+    const filePath = path.join(GUIDES_DIR, `${g.file}.md`);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`[warn] ガイド原稿が見つかりません: ${filePath}`);
+      continue;
+    }
+    const raw = fs.readFileSync(filePath, "utf-8");
+    // Markdown中のリンクURLを実際の出力先URLに変換する。
+    //   - "./aN-xxx.md" 形式(記事間の相互リンク) → 対応する /guides/{slug}/
+    //   - "/venues/..." 等サイト内絶対パス → BASE_PATH を付与
+    //   - "http(s)://..." → 外部リンクとしてそのまま
+    const resolveLink = (href) => {
+      const mdMatch = href.match(/^\.\/(a\d-[a-z-]+)\.md$/);
+      if (mdMatch) {
+        const target = GUIDES.find((x) => x.file === mdMatch[1]);
+        if (target) return { href: url(guidePathname(target.slug)) };
+        console.warn(`[warn] ガイド内リンクの参照先が見つかりません: ${href}(${g.file}.md)`);
+        return { href: "#" };
+      }
+      if (/^https?:\/\//i.test(href)) return { href };
+      // それ以外(/venues/..., /about/ など)はサイト内絶対パスとして扱う。
+      return { href: url(href) };
+    };
+    const { title, description, bodyHtml } = parseGuideMarkdown(raw, { resolveLink });
+    loaded.push({ ...g, title, description, bodyHtml });
+  }
+  return loaded;
+}
+
+// エリアページ・店舗ページから、対応するエリアガイドへのリンクを出すための共通ヘルパー。
+function guideLinkForArea(guides, areaId) {
+  const g = guides.find((x) => x.areaId === areaId);
+  if (!g) return "";
+  return `<p class="guide-crosslink"><a href="${url(guidePathname(g.slug))}">📖 ${escapeHtml(g.title)} を読む →</a></p>`;
+}
+
+function renderGuideIndexPage(hubGuide, guides) {
+  const areaGuides = guides.filter((g) => g.areaId);
+  const body = `
+<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; エリアガイド</nav>
+<h1>${escapeHtml(hubGuide.title)}</h1>
+<div class="guide-body">
+${hubGuide.bodyHtml}
+</div>
+<section class="info-section">
+  <h2 class="section-heading">エリア別ガイド一覧</h2>
+  <ul class="link-list-detailed">
+${areaGuides
+  .map((g) => `    <li><a href="${url(guidePathname(g.slug))}"><strong>${escapeHtml(g.title)}</strong></a></li>`)
+  .join("\n")}
+  </ul>
+</section>
+`;
+  return layout({
+    title: hubGuide.title,
+    description: hubGuide.description || hubGuide.title,
+    pathname: guidePathname(hubGuide.slug),
+    bodyHtml: body,
+  });
+}
+
+function renderGuidePage(guide, area) {
+  const breadcrumb = area
+    ? `<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/guides/")}">エリアガイド</a> &gt; <a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a></nav>`
+    : `<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/guides/")}">エリアガイド</a></nav>`;
+  const areaLinkHtml = area
+    ? `<p class="guide-crosslink"><a href="${url(`/areas/${area.id}/`)}">📍 ${escapeHtml(area.name)}の店舗一覧を見る →</a></p>`
+    : "";
+  const body = `
+${breadcrumb}
+<h1>${escapeHtml(guide.title)}</h1>
+<div class="guide-body">
+${guide.bodyHtml}
+</div>
+${areaLinkHtml}
+<p class="guide-crosslink"><a href="${url("/guides/")}">← エリアガイド一覧・4エリア比較に戻る</a></p>
+`;
+  return layout({
+    title: guide.title,
+    description: guide.description || guide.title,
+    pathname: guidePathname(guide.slug),
+    bodyHtml: body,
+  });
+}
+
+function renderAreaIndex(areas, venues, guides) {
   const items = areas
     .map(
       (a) => `<li><a href="${url(`/areas/${a.id}/`)}"><strong>${escapeHtml(a.name)}</strong>(${venues.filter((v) => v.area === a.id).length}件)</a><p>${escapeHtml(a.summary)}</p></li>`
     )
     .join("\n");
+  const hubGuide = (guides || []).find((g) => !g.areaId);
   const body = `
 <h1>エリア一覧</h1>
 <ul class="link-list-detailed">
 ${items}
 </ul>
+${hubGuide ? `<p class="guide-crosslink"><a href="${url("/guides/")}">📖 4エリアの違い・使い分けガイドを読む →</a></p>` : ""}
 <p><a href="${url("/search/")}">エリア・業態・タグを組み合わせて絞り込む →</a></p>
 `;
   return layout({
@@ -2217,7 +2339,7 @@ ${items}
   });
 }
 
-function renderAreaPage(area, venues, categories, areas) {
+function renderAreaPage(area, venues, categories, areas, guides) {
   const areaVenues = venues.filter((v) => v.area === area.id);
   const list = areaVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
   const listId = "venue-list-area";
@@ -2225,6 +2347,7 @@ function renderAreaPage(area, venues, categories, areas) {
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/areas/")}">エリア</a> &gt; ${escapeHtml(area.name)}</nav>
 <h1>${escapeHtml(area.name)}の飲み屋一覧</h1>
 <p>${escapeHtml(area.summary)}</p>
+${guideLinkForArea(guides || [], area.id)}
 ${filterWidgetHtml(areaVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
@@ -2432,7 +2555,7 @@ const OPEN_NOW_BADGE_SCRIPT = `<script>
 })();
 </script>`;
 
-function renderVenuePage(v, area, category, allVenues, areas, categories) {
+function renderVenuePage(v, area, category, allVenues, areas, categories, guides) {
   // 表示できる出典。求人媒体等(NON_PUBLISHABLE_SOURCE_RE)は data/venues.json の
   // internalSources に退避してあり、そもそも v.sources には入っていない。
   const shownSources = v.sources || [];
@@ -2569,6 +2692,7 @@ ${sourcesBodyHtml}
   <ul class="venue-list">
 ${relatedInArea}
   </ul>
+  ${guideLinkForArea(guides || [], area.id)}
 </section>
 `;
 
@@ -2762,10 +2886,15 @@ function build() {
   // クリーンビルド
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
 
+  // エリアガイド記事(社長指示 2026-08-22(2))。content/guides/*.md を読み込む。
+  // トップページ・エリアページ・店舗ページいずれの相互リンクにも使うため、他の生成処理より前に読み込む。
+  const guides = loadGuides();
+  const hubGuide = guides.find((g) => !g.areaId);
+
   const urls = [];
 
   // トップページ
-  writeFile("index.html", renderTop(venues, areas, categories));
+  writeFile("index.html", renderTop(venues, areas, categories, guides));
   urls.push("/");
 
   // about
@@ -2776,11 +2905,23 @@ function build() {
   writeFile("search/index.html", renderSearchPage(venues, areas, categories));
   urls.push("/search/");
 
+  // エリアガイド記事のページを生成
+  if (hubGuide) {
+    writeFile("guides/index.html", renderGuideIndexPage(hubGuide, guides));
+    urls.push("/guides/");
+  }
+  for (const g of guides.filter((x) => x.areaId)) {
+    const area = areas.find((a) => a.id === g.areaId);
+    writeFile(`guides/${g.slug}/index.html`, renderGuidePage(g, area));
+    urls.push(`/guides/${g.slug}/`);
+  }
+  console.log(`エリアガイド: ${guides.length}件を /guides/ 配下に生成`);
+
   // エリア一覧・個別(店舗数・一覧は公開対象のみでカウント)
-  writeFile("areas/index.html", renderAreaIndex(areas, venues));
+  writeFile("areas/index.html", renderAreaIndex(areas, venues, guides));
   urls.push("/areas/");
   for (const area of areas) {
-    writeFile(`areas/${area.id}/index.html`, renderAreaPage(area, venues, categories, areas));
+    writeFile(`areas/${area.id}/index.html`, renderAreaPage(area, venues, categories, areas, guides));
     urls.push(`/areas/${area.id}/`);
   }
 
@@ -2800,7 +2941,7 @@ function build() {
       console.warn(`[skip] ${v.id}: area or category not found`);
       continue;
     }
-    writeFile(`venues/${v.id}/index.html`, renderVenuePage(v, area, category, venues, areas, categories));
+    writeFile(`venues/${v.id}/index.html`, renderVenuePage(v, area, category, venues, areas, categories, guides));
     urls.push(`/venues/${v.id}/`);
   }
 
