@@ -29,7 +29,6 @@
 - [Pizzeria Amenita(ピッツェリア アメニータ)](/venues/izakaya-amenita-pizzeria/)
 - [Dining BRIOSO(ダイニング ブリオッソ)](/venues/izakaya-brioso/)
 - [ビストロシアター Bistro Theater](/venues/bar-bistro-theater/)
-- [bal*cafe cup&dish(バル カフェ カップアンドディッシュ)](/venues/bar-cupanddish/)
 - [アデイ](/venues/bar-adei/)
 
 ## 海鮮・焼肉
