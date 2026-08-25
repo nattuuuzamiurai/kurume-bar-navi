@@ -165,19 +165,19 @@
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:08.419Z"
+    "updatedAt": "2026-08-25T18:36:19.843Z"
   },
   "club-sowaca": {
-    "rating": 4.3,
-    "userRatingCount": 8,
+    "rating": 4.7,
+    "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:08.767Z"
+    "updatedAt": "2026-08-25T18:36:20.194Z"
   },
   "club-the-member": {
     "rating": 3.8,
     "userRatingCount": 34,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:09.111Z"
+    "updatedAt": "2026-08-25T18:36:20.547Z"
   },
   "concafe-hakuchumu": {
     "rating": 3.8,
@@ -205,27 +205,27 @@
   },
   "girlsbar-axia": {
     "rating": 4.7,
-    "userRatingCount": 23,
+    "userRatingCount": 24,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:09.461Z"
+    "updatedAt": "2026-08-25T18:36:20.898Z"
   },
   "girlsbar-platinum-seven": {
     "rating": 4.4,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:09.801Z"
+    "updatedAt": "2026-08-25T18:36:21.251Z"
   },
   "girlsbar-secret": {
     "rating": 5,
     "userRatingCount": 12,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:10.146Z"
+    "updatedAt": "2026-08-25T18:36:21.593Z"
   },
   "girlsbar-tree": {
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:10.494Z"
+    "updatedAt": "2026-08-25T18:36:21.939Z"
   },
   "izakaya-amenita-pizzeria": {
     "rating": 4.2,
@@ -561,7 +561,7 @@
     "rating": 4.6,
     "userRatingCount": 9,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:10.830Z"
+    "updatedAt": "2026-08-25T18:36:22.292Z"
   },
   "izakaya-nyanyan-chinese": {
     "rating": 4.1,
@@ -783,85 +783,85 @@
     "rating": 4.6,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:11.168Z"
+    "updatedAt": "2026-08-25T18:36:22.639Z"
   },
   "kyabakura-crescent": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:11.514Z"
+    "updatedAt": "2026-08-25T18:36:22.985Z"
   },
   "kyabakura-dolce": {
     "rating": 4,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:11.830Z"
+    "updatedAt": "2026-08-25T18:36:23.330Z"
   },
   "kyabakura-globe": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:12.142Z"
+    "updatedAt": "2026-08-25T18:36:23.669Z"
   },
   "kyabakura-hal": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:12.450Z"
+    "updatedAt": "2026-08-25T18:36:24.024Z"
   },
   "kyabakura-honey": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-16T18:25:12.766Z"
+    "updatedAt": "2026-08-25T18:36:24.368Z"
   },
   "kyabakura-laluna": {
     "rating": 4.2,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:23.108Z"
+    "updatedAt": "2026-08-25T18:36:24.709Z"
   },
   "kyabakura-lounge-loop": {
     "rating": 3,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:23.444Z"
+    "updatedAt": "2026-08-25T18:36:25.048Z"
   },
   "kyabakura-moncoeur": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:23.779Z"
+    "updatedAt": "2026-08-25T18:36:25.397Z"
   },
   "kyabakura-precious": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:24.115Z"
+    "updatedAt": "2026-08-25T18:36:25.777Z"
   },
   "kyabakura-rady": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:24.460Z"
+    "updatedAt": "2026-08-25T18:36:26.092Z"
   },
   "kyabakura-richard": {
     "rating": 5,
-    "userRatingCount": 2,
+    "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:24.784Z"
+    "updatedAt": "2026-08-25T18:36:26.406Z"
   },
   "kyabakura-swarovski": {
     "rating": 4,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:25.112Z"
+    "updatedAt": "2026-08-25T18:36:26.723Z"
   },
   "lounge-aoi": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-08-17T18:36:25.440Z"
+    "updatedAt": "2026-08-25T18:36:27.038Z"
   },
   "lounge-athena": {
     "rating": null,
