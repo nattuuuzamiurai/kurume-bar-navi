@@ -1146,7 +1146,7 @@ Tier Cの「その他エリア」に記載された店のうち、当サイト�
 27店の`venues.json`を更新(営業時間26件新規、定休日18件新規、`priceRange`4件新規)。あわせて出典として個別店舗ページのURLを`sources`に追加した(既存のカテゴリ一覧ページURLは残したまま追加)。
 
 - 更新店: `kyabakura-mary` `kyabakura-ariel` `kyabakura-premier` `kyabakura-loop-vip` `kyabakura-lounge-loop` `club-313` `club-cube` `club-r` `club-winx` `lounge-aoi` `lounge-rebo` `lounge-indigo` `lounge-sky` `lounge-ryusei` `lounge-amon` `lounge-shion` `lounge-sugar` `snack-takefuji` `snack-koto` `snack-hanaakari` `snack-status` `snack-lemon` `snack-yu` `snack-courage` `snack-lapin` `snack-heart-station` `snack-ichiro`
-- **候補に挙がったが既存値が既に埋まっていたため変更なしだった店(15件)**: `kyabakura-chanter` `kyabakura-laluna` `kyabakura-crescent` `kyabakura-honey` `kyabakura-orfe` `kyabakura-million` `kyabakura-hal` `club-sowaca` `club-four-season` `club-ange` `lounge-new-impact` `lounge-papico` `snack-saten`(既存営業時間・定休日は別出典で充足済み、`priceRange`欄はページ上に記載なし)。これらは既に別バッチで充実済みだったと判明したため、本バッチの成果としては数えていない。
+- **候補に挙がったが既存値が既に埋まっていたため変更なしだった店(13件)**: `kyabakura-chanter` `kyabakura-laluna` `kyabakura-crescent` `kyabakura-honey` `kyabakura-orfe` `kyabakura-million` `kyabakura-hal` `club-sowaca` `club-four-season` `club-ange` `lounge-new-impact` `lounge-papico` `snack-saten`(既存営業時間・定休日は別出典で充足済み、`priceRange`欄はページ上に記載なし)。これらは既に別バッチで充実済みだったと判明したため、本バッチの成果としては数えていない。
 - **`snack-the-ritz`**: 個別ページ(shop 012111)は取得できたが、営業時間欄が「お問い合わせください」(実データなし)、住所欄も空欄だったため、実質的に得られる情報がなく変更なし。
 - **`lounge-athena`**: 個別ページURLがHTTP 404(消失)のため対象から除外。カテゴリ一覧ページの出典のみのまま。
 
@@ -1200,10 +1200,43 @@ PR #46時点では、`kyaba-kura.jp`記事内ブロックの電話番号(094-233
 - **`www.snack-map.com`**: 一覧ページがクライアントサイドレンダリング(Next.jsアプリと思われるがJSON埋め込みなし)で、curlでは店舗別データ(営業時間・定休日)を取得できなかった。
 - **`map.yahoo.co.jp`**: 個別ページもクライアントサイドレンダリングで、curlでは営業時間・電話番号等の構造化データを取得できなかった。
 - **`www.mapion.co.jp`(電話帳)**: 住所・電話番号のみのシンプルな電話帳ページで、営業時間・定休日の情報は元々掲載がない(該当2店は既に電話番号が別出典で充足済みのため実害なし)。
-- **`snacker.jp`**: `snack-bluemoon`の該当ページを取得したが、営業時間・定休日・電話番号のいずれのキーワードも本文に見つからず、抽出できるデータがなかった。
+- **`snacker.jp`**: `snack-bluemoon`の該当ページを取得したが、営業時間・定休日・電話番号のいずれのキーワードも本文に見つからず、抽出できるデータがなかった。**(2026-08-28追記: 本記述は事実誤認だった。訂正内容は本ログ末尾「2026-08-28(PR #50 品質管理部指摘の反映)」節を参照)**
 - **`www.instagram.com`**: 非ログイン環境では構造化データを取得できない(従来からの既知の制約、今回は個別に取得を試みていない)。
 - **`con-ca.jp`**: town-night.jpと同一エンジン(URL形式が同一)だが、town-night.jpのようなカテゴリ一覧ページ(`city_448/biz_N/`)は404で存在しなかった。個別ページのshop IDを機械的に洗い出す手段が見つからず、今回は新規個別ページの発見に至らなかった。
 
 ### 検証方法
 
 `node scripts/build.js`でビルド成功を確認済み。今回のバッチはすべて住所または既存値との完全一致で裏取りしたうえで適用した(推測による穴埋めなし)。
+
+## 2026-08-28(PR #50 品質管理部指摘の反映 — 軽微修正3件+申し送り1件)
+
+品質管理部からPR #50に対して出た軽微な指摘3点(+任意1点)を反映した。
+
+### 1. `snack-bluemoon`(snacker.jp)の監査ログ記述の事実誤認を訂正
+
+上記バッチ3節(2026-08-28)の記述「営業時間・定休日・電話番号のいずれのキーワードも本文に見つからず、抽出できるデータがなかった」は事実誤認だった。該当ページを再取得し確認したところ、`<th>電話番号</th>`欄の直後に`0942-35-7701`が明記されている。`<th>営業時間</th>` `<th>定休日</th>`は空欄で、こちらは記述どおり事実だった。正しくは「営業時間・定休日は空欄、電話番号(`0942-35-7701`)は掲載あり」である。
+
+`data/venues.json`の`snack-bluemoon.phone`に`0942-35-7701`を追加した。
+
+なお、同ページの住所欄は`日吉町15-34`であり、当サイトが採用している主住所`13-19`(本ログ2026-07-29節「出典間で住所が食い違う店」参照)とは異なる「別説」側にあたる。同節では「電話番号が確定できず null にした店」として`snack-bluemoon`(掲載番号が旧番号の可能性)を挙げており、本ページのこの番号を指していたとみられる。当時の懸念(住所が現在の主採用住所と異なるため、番号も旧いものである可能性)は解消されていないが、他に矛盾する電話番号の情報源がなく、当該番号が唯一確認できた出典情報であるため、品質管理部の確認に基づき今回は採用した。将来別の出典で異なる番号が見つかった場合は、この経緯を踏まえて再検討すること。
+
+### 2. `kyabakura-shiki`の未反映データを追加
+
+caba2.net個別ページ(バッチ3節で出典追加済み)の構造化欄に明記されている次の2項目を、既存フィールドが空欄(`closedDays`は未設定、`priceRange`はnull)だったため追加した。
+
+- `closedDays`: `日曜・祝祭日`(caba2.net「店休日」欄。公式サイト`new-club-shiki.com`の「店休日 日曜日│祝日」とも一致することを確認)
+- `priceRange`: `60分4,400円〜`(caba2.net「最低料金」欄。公式サイトの提示額「20:00〜21:00 ￥5,500(税込)」はサービス料込みの表示とみられ〔4,400円の約1.25倍〕、税別・サービス料抜きの基本額として矛盾しない)
+
+### 3. 件数表記の誤りを訂正
+
+バッチ2節(2026-08-27)の「候補に挙がったが既存値が既に埋まっていたため変更なしだった店(15件)」は、実際に列挙されているID(`kyabakura-chanter` `kyabakura-laluna` `kyabakura-crescent` `kyabakura-honey` `kyabakura-orfe` `kyabakura-million` `kyabakura-hal` `club-sowaca` `club-four-season` `club-ange` `lounge-new-impact` `lounge-papico` `snack-saten`の13件)と件数が合っていなかったため、「13件」に訂正した。
+
+### 4. 申し送り: `lounge-aoi`の`priceRange`の疑義(本PRでは変更せず)
+
+品質管理部の指摘: 既存`priceRange`「60分4,000円〜」(PR #46由来、本PR範囲外)が、今回`sources`に追加した町night.jp個別ページの構造化欄(`60分:6,000円～`、`dd`要素内)と食い違っている。同ページ内には店ごとに異なる「業界最安値」等の割引訴求バナー(`4,000`円という数字を含む複数の広告的要素)が多数存在しており、実際に該当ページを確認したところ`4,000`という数値はそうした販促要素側にのみ出現し、構造化サマリー欄(`shopData-dl`相当)には出現しなかった。PR #46がこの販促バナー側の数字を誤って拾った疑いがある。
+
+**本PRでは`data/venues.json`を変更しない。** 次バッチでの裏取り・修正要否の確認課題として記録する。
+
+### 検証方法
+
+`node scripts/build.js`でビルド成功を確認。追加した`snack-bluemoon.phone`・`kyabakura-shiki.closedDays`/`priceRange`が`dist/venues/snack-bluemoon/index.html`・`dist/venues/kyabakura-shiki/index.html`(本文の`fact`欄・構造化データ`application/ld+json`の両方)に反映されていることを確認した。
