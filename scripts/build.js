@@ -117,6 +117,11 @@ const UNVERIFIED_VENUE_IDS = new Set([
   // 自動delistはしないが、営業状況未確認として掲載し続けるのはリスクなのでここに追加する。
   // 詳細は data/venue-audit-log.md「2026-08-22」参照。
   "bar-cupanddish", "izakaya-buonricordo", "lounge-new-impact", "snack-orfe",
+  // 2026-08-27: PR #48(editorial-notes)のQAレビューで発覚。izakaya-bonbori は
+  // data/ratings.json の2026-08-23更新でGoogle businessStatusが CLOSED_TEMPORARILY を
+  // 返している(ビルド時のwarnログにも出力済み)が未登録だった。本PR自体のバグではなく
+  // 既存のギャップだが、発見した以上ここで解消する。
+  "izakaya-bonbori",
 ]);
 function todayJST() {
   const now = new Date();
