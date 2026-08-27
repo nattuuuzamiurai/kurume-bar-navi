@@ -117,6 +117,11 @@ const UNVERIFIED_VENUE_IDS = new Set([
   // 自動delistはしないが、営業状況未確認として掲載し続けるのはリスクなのでここに追加する。
   // 詳細は data/venue-audit-log.md「2026-08-22」参照。
   "bar-cupanddish", "izakaya-buonricordo", "lounge-new-impact", "snack-orfe",
+  // 2026-08-27: PR #48(editorial-notes)のQAレビューで発覚。izakaya-bonbori は
+  // data/ratings.json の2026-08-23更新でGoogle businessStatusが CLOSED_TEMPORARILY を
+  // 返している(ビルド時のwarnログにも出力済み)が未登録だった。本PR自体のバグではなく
+  // 既存のギャップだが、発見した以上ここで解消する。
+  "izakaya-bonbori",
 ]);
 function todayJST() {
   const now = new Date();
@@ -128,6 +133,10 @@ const BUILD_DATE = todayJST();
 function readJSON(file) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), "utf-8"));
 }
+
+// 店舗ページに載せる編集部コメント(店舗ID → コメント文)。任意項目で、無い店舗も多い。
+// コンテンツ制作部が data/venues.json の既存情報(タグ・営業時間・予算等)をもとに作成したもの。
+const EDITORIAL_NOTES = readJSON("editorial-notes.json");
 
 function escapeHtml(str) {
   if (str === null || str === undefined) return "";
@@ -2531,6 +2540,13 @@ function chargeCalloutHtml(v) {
   </div>`;
 }
 
+// 編集部コメント(EDITORIAL_NOTES にその店の記載がある場合のみ表示)。
+function editorialNoteHtml(v) {
+  const note = EDITORIAL_NOTES[v.id];
+  if (!note) return "";
+  return `<p class="venue-editorial-note">${escapeHtml(note)}</p>`;
+}
+
 // 店舗ページ上部に出す営業状況バッジ(端末の現在時刻で判定するためクライアントサイドで描画)。
 const OPEN_NOW_BADGE_SCRIPT = `<script>
 (function () {
@@ -2654,6 +2670,7 @@ ${facts
       </div>
     </div>
   </header>
+  ${editorialNoteHtml(v)}
   ${ratingHeroHtml(v)}
   ${venueLogoCreditHtml(v)}
   ${unverifiedNotice}
