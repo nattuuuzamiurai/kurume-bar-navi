@@ -1126,3 +1126,41 @@ Tier Cの「その他エリア」に記載された店のうち、当サイト�
 ### 作業環境について(補足)
 
 作業中、`/Users/watanabeken/cloude code/kurume-bar-navi` の通常の作業ディレクトリを別セッションが並行して操作しており(ブランチの切り替え・作業ツリーの巻き戻り)、最初に加えた変更が失われる事象が発生した。**`git worktree`で独立した作業ディレクトリ(本ブランチ用)を新設して以降の作業を行い、以後の消失は発生していない。** 今後、複数セッションが同一プロジェクトで同時に動く場合は、`git worktree`の利用が競合の回避に有効。
+
+## 2026-08-27(フェーズ2データ充実 バッチ2 — town-night.jp個別店舗ページの追加発見によるバッチ1(公開121店中28店)以外の残り店への展開、27店を更新)
+
+### 対象・経緯
+
+社長指示「残りもやっちゃって」を受け、PR #46(バッチ1、28店)で未着手だった残り約91店(スナック51・キャバクラ20・クラブ7・ラウンジ13。公開121店 - バッチ1の28店 - ガールズバー7店等の計算根拠は本PRの元コミットとPR #46の実差分をJSON意味比較で突き合わせて確定)を対象に着手。
+
+### 手法(README「town-night.jp / con-ca.jp(個別店舗ページ)から抽出する際の注意」恒久ルールの遵守)
+
+- 既存`sources`に`town-night.jp`のカテゴリ一覧ページ(`city_448/biz_N/`)を持つ店が多数あったため、まず一覧ページ(`biz_1`キャバクラ・`biz_4`クラブ・`biz_5`スナック・`biz_6`ラウンジ)をタイムアウト付きcurlで取得し、ページ内の`dataLayer.push`イベント(`item_name`/`item_id`)から**個別店舗ページを持つ店(合計61件のユニーク店舗ID)の店名を機械的に一覧化**した。これはランキング枠の店名表示であり、PR #46で問題になった「おすすめ枠からの誤爬取」と同種のリスクがあるため、**ここでは店名とshop IDの対応表を得る目的のみに使い、料金等の値は一切ここから採用していない**(値は必ず個別ページ側で取り直す)。
+- 得られた店名を対象店の`name`と正規化(全角/半角カッコ・アポストロフィ・空白の除去)して突き合わせ、**完全一致38件+住所照合で確認した準一致2件(`snack-ichiro`→`New イチロー`、`lounge-papico`→`ラウンジ PAPICO`)+手動確認2件(`kyabakura-hal`→`HAL`、`snack-heart-station`→`HEART STATION`)の計42件**の個別店舗ページ候補を特定した。
+- 各個別ページを取得し、**`shopData-dl`(店名・ジャンル・営業時間・定休日・料金目安・住所・アクセス・タグを持つ、ページ上部の構造化サマリー欄)からのみ値を採用**した。この欄は今回確認した全ページで`shopRecommend-ttl`(おすすめ枠見出し)より前に1回だけ出現し、おすすめ枠内には出現しないことをコード側で機械的に確認(`shopRecommend-ttl`の出現位置が`shopData-dl`より後であることを全件アサート)したうえで採用しており、PR #46のバグ(`info-item__price`をおすすめ枠越しに拾ってしまう問題)とは異なる、汚染のない抽出経路である。
+- 取得前に**全42件の住所を`shopData-dl`内の住所欄と突き合わせ、既存`data/venues.json`の住所と(丁目・番地・ビル名の表記ゆれの範囲で)一致することを確認**してから採用した(1件、`lounge-athena`の該当ページはHTTP 404で個別ページが消失していたため対象から除外)。
+- 電話番号は個別ページ側に一切掲載がなかった(town-night.jpの仕様上、電話番号は表示されない)ため、今回は営業時間・定休日・料金目安(`priceRange`)のみを対象とした。**既存値がnullのフィールドのみ**を埋め、既存値がある場合は上書きしていない。
+
+### 結果
+
+27店の`venues.json`を更新(営業時間26件新規、定休日18件新規、`priceRange`4件新規)。あわせて出典として個別店舗ページのURLを`sources`に追加した(既存のカテゴリ一覧ページURLは残したまま追加)。
+
+- 更新店: `kyabakura-mary` `kyabakura-ariel` `kyabakura-premier` `kyabakura-loop-vip` `kyabakura-lounge-loop` `club-313` `club-cube` `club-r` `club-winx` `lounge-aoi` `lounge-rebo` `lounge-indigo` `lounge-sky` `lounge-ryusei` `lounge-amon` `lounge-shion` `lounge-sugar` `snack-takefuji` `snack-koto` `snack-hanaakari` `snack-status` `snack-lemon` `snack-yu` `snack-courage` `snack-lapin` `snack-heart-station` `snack-ichiro`
+- **候補に挙がったが既存値が既に埋まっていたため変更なしだった店(15件)**: `kyabakura-chanter` `kyabakura-laluna` `kyabakura-crescent` `kyabakura-honey` `kyabakura-orfe` `kyabakura-million` `kyabakura-hal` `club-sowaca` `club-four-season` `club-ange` `lounge-new-impact` `lounge-papico` `snack-saten`(既存営業時間・定休日は別出典で充足済み、`priceRange`欄はページ上に記載なし)。これらは既に別バッチで充実済みだったと判明したため、本バッチの成果としては数えていない。
+- **`snack-the-ritz`**: 個別ページ(shop 012111)は取得できたが、営業時間欄が「お問い合わせください」(実データなし)、住所欄も空欄だったため、実質的に得られる情報がなく変更なし。
+- **`lounge-athena`**: 個別ページURLがHTTP 404(消失)のため対象から除外。カテゴリ一覧ページの出典のみのまま。
+
+### `snack-ichiro`について(前回PR #46で「見送り」とされた店への追加判断の記録)
+
+PR #46時点では、`kyaba-kura.jp`記事内ブロックの電話番号(094-233-9200)が既存値(f-ryoin組合名簿由来、0942-37-0072)と一致せず、店名も記事側は「New イチロー」・当サイトは「イチロー」で完全一致ではなかったため、**電話番号の採用を見送った**という経緯がある(`data/venue-audit-log.md`2026-08-27節参照)。
+今回、town-night.jpの個別ページ(shop 000848、店名も同じく「New イチロー」)を見つけたが、住所が「日吉町7-1 第6泉屋ビル2F」で当サイトの既存住所「日吉町7-1 第六泉屋ビル2F」(表記ゆれのみで同一建物・同一階)と一致しており、**同一店であることの確度は高いと判断**した。ただし前回の懸念(電話番号の不一致)は未解決のまま残っているため、**電話番号には一切触れず**、今回はページに記載のあった営業時間・定休日のみを追加した。電話番号の採否は今後も保留のまま。
+
+### 検証方法
+
+- `node scripts/build.js` を実行し、エラーなく完了することを確認(ビルドが通ることの確認のみで、品質管理部による出典との実照合は別途必要)。
+- 追加した27件の個別ページURLについて、住所照合済みであることを本セクションに記録した(前回教訓「監査ログに書いた『修正した』は必ず`data/venues.json`の実値と突き合わせてから記録する」を踏まえ、本記述は実際に適用後の`git diff`を確認して作成している)。
+
+### 残作業への申し送り
+
+- 今回の一覧ページ調査で判明した**個別店舗ページを持つ61店(4カテゴリ合計)のうち、まだ`data/venues.json`側にマッチする店が見つからなかった/対象外だった店**(例: `RICHARD` `Club NESTIA` `Club Active` `New Club Leciel` `久留米離宮` `Lounge K2` `Lounge POISON` `Lounge Soleil` `member's 奏` `キサス` 等)は、当サイト側に該当店がない(未掲載)か、既存店と別名・別扱いになっている可能性があるため、今回は無理な突き合わせをせず見送った。
+- `con-ca.jp`・`caba2.net`・`kyaba-kura.jp`(未処理分)・組合名簿・公式サイト/Instagram/TikTokからのデータ充実は次バッチ以降の課題として残る(残り約64店)。
