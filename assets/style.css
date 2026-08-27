@@ -620,6 +620,18 @@ details.facet-accordion[open] > .tag-filter-list {
 .venue-hero h1 { margin: 3px 0 10px; font-size: 1.4rem; }
 .venue-hero-badges { display: flex; flex-wrap: wrap; gap: 7px; }
 
+/* 編集部コメント(店舗ページ、任意) */
+.venue-editorial-note {
+  margin: 12px 0 16px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-left: 3px solid var(--line);
+  border-radius: 8px;
+  font-size: .88rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
 /* 営業中バッジ(店舗ページ) */
 .open-badge {
   display: inline-flex;
