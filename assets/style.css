@@ -812,6 +812,25 @@ details.facet-accordion[open] > .tag-filter-list {
 .instagram-embed-wrap { display: flex; justify-content: center; }
 .instagram-embed-wrap .instagram-media { margin: 0 auto !important; }
 
+/* 公式Instagram投稿が2件以上のときの横スクロールギャラリー(2026-08-28 追加)。
+   写真ギャラリー(.photo-gallery)と同様、CSS scroll-snapのみで動かしJSライブラリは使わない。
+   スマホは指スワイプ、PCはドラッグ/トラックパッド、キーボードはフォーカスした状態での矢印キー。
+   Instagram公式のblockquote/iframe埋め込みは可変幅になりうるため、各カードに最小幅を確保する。 */
+.instagram-embed-gallery {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.instagram-embed-gallery .instagram-media {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-width: 300px;
+  margin: 0 !important;
+}
+
 /* 公式SNS・ホームページ(店の公式チャネルへのアイコン付きボタン) */
 .official-links { display: flex; flex-wrap: wrap; gap: 9px; }
 .official-link {
