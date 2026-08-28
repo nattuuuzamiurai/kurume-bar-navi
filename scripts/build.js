@@ -633,6 +633,143 @@ const OFFICIAL_PHOTOS = {
       sourceUrl: "https://kiseteba.com/",
     },
   ],
+  // ============================================================
+  // 【2026-08-28 対象店拡大】公式サイトに複数枚のギャラリー/スライダーを持つ店を追加調査し、
+  // レビュー部提示の8ガードレール(対象店上限20店程度・1店あたり最大5〜8枚程度・肖像権の目視
+  // 選別・ソースの公開性確認・既存4条件=公式ソース限定/非rehost/出典明記/削除導線あり・記録の
+  // 徹底)に従って10店を追加。選定・除外の詳細根拠は data/venue-audit-log.md
+  // 「2026-08-28(公式写真ギャラリーの対象店拡大)」を参照。
+  //
+  // 【肖像権チェックの方法】各店の公式サイトに掲載されている全画像を目視確認し、識別可能な個人
+  // (客・スタッフの顔)が写り込む写真は機械的にも人力にも一切採用しない。同じ公式サイト内でも、
+  // 店内装飾・什器・グラス等の写真と、キャスト/客の顔が写る写真が混在する場合は前者のみを採用
+  // (例: kyabakura-moncoeur は公式サイトの大半がキャスト・客の顔が写る写真だったため、
+  // 顔が写っていない3枚のみを採用)。
+  //
+  // 【ソース公開性の確認】いずれも robots.txt が一般クローラーをブロックしておらず、ログイン・
+  // 会員限定の注記もない通常の公開ページ。ホットリンク時の挙動も、当サイトのGitHub Pagesドメインを
+  // Refererに付けたHTTP実測で確認済み(2026-08-28)。141酒店(bar-141saketen)は公式サイト自体に
+  // 複数枚の非人物写真(外観・内観・グラス等)があり調査対象にしたが、外部Refererを付けた
+  // クロスオリジン要求がHTTP 403(自ドメイン/リファラ無しのみ許可)で技術的なホットリンク防止を
+  // 検知したため、既存4条件の「誰でもアクセス可能」の精神に反すると判断し**対象外**とした
+  // (詳細は監査ログ参照)。
+  "club-haven": [
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/IMG_0932.jpg",
+      sourceLabel: "クラブヘイヴン 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/haven",
+    },
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/IMG_0963.jpg",
+      sourceLabel: "クラブヘイヴン 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/haven",
+    },
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/IMG_1068.jpg",
+      sourceLabel: "クラブヘイヴン 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/haven",
+    },
+  ],
+  "bar-huit": [
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/IMG_1001.jpg",
+      sourceLabel: "Huit 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/huit",
+    },
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/IMG_1004.jpg",
+      sourceLabel: "Huit 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/huit",
+    },
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/IMG_1019.jpg",
+      sourceLabel: "Huit 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/huit",
+    },
+    {
+      imageUrl: "https://www.haven-huit.com/60012355/wp-content/uploads/2020/01/teaser_03.jpg",
+      sourceLabel: "Huit 公式サイト",
+      sourceUrl: "https://www.haven-huit.com/huit",
+    },
+  ],
+  // kyabakura-moncoeur: 公式サイトの写真の大半はキャスト・客の顔が写るため不採用。
+  // 顔が写っていない個室内観・洗面台・壁面装飾の3枚のみ採用。
+  "kyabakura-moncoeur": [
+    {
+      imageUrl: "https://website-sample.jp/mon-coeur/wp-content/uploads/2021/11/5-768x1024.jpg",
+      sourceLabel: "mon coeur 公式サイト",
+      sourceUrl: "https://website-sample.jp/mon-coeur",
+    },
+    {
+      imageUrl: "https://website-sample.jp/mon-coeur/wp-content/uploads/2021/11/6-768x1024.jpg",
+      sourceLabel: "mon coeur 公式サイト",
+      sourceUrl: "https://website-sample.jp/mon-coeur",
+    },
+    {
+      imageUrl: "https://website-sample.jp/mon-coeur/wp-content/uploads/2021/11/shop-1024x576.jpg",
+      sourceLabel: "mon coeur 公式サイト",
+      sourceUrl: "https://website-sample.jp/mon-coeur",
+    },
+  ],
+  "kyabakura-shiki": [
+    {
+      imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/slider1.jpg",
+      sourceLabel: "NEW CLUB 四季 公式サイト",
+      sourceUrl: "https://new-club-shiki.com/shop/",
+    },
+    {
+      imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/slider2.jpg",
+      sourceLabel: "NEW CLUB 四季 公式サイト",
+      sourceUrl: "https://new-club-shiki.com/shop/",
+    },
+    {
+      imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/slider3.jpg",
+      sourceLabel: "NEW CLUB 四季 公式サイト",
+      sourceUrl: "https://new-club-shiki.com/shop/",
+    },
+    {
+      imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/slider4.jpg",
+      sourceLabel: "NEW CLUB 四季 公式サイト",
+      sourceUrl: "https://new-club-shiki.com/shop/",
+    },
+    {
+      imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/vip1.jpg",
+      sourceLabel: "NEW CLUB 四季 公式サイト",
+      sourceUrl: "https://new-club-shiki.com/shop/",
+    },
+    {
+      imageUrl: "https://new-club-shiki.com/wp-content/uploads/2019/11/vip2.jpg",
+      sourceLabel: "NEW CLUB 四季 公式サイト",
+      sourceUrl: "https://new-club-shiki.com/shop/",
+    },
+  ],
+  "kyabakura-ace": [
+    {
+      imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/interior/a1.jpg",
+      sourceLabel: "A〈エース〉 公式サイト",
+      sourceUrl: "https://kurume-ace.com/access/",
+    },
+    {
+      imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/interior/a2.jpg",
+      sourceLabel: "A〈エース〉 公式サイト",
+      sourceUrl: "https://kurume-ace.com/access/",
+    },
+    {
+      imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/interior/a3.jpg",
+      sourceLabel: "A〈エース〉 公式サイト",
+      sourceUrl: "https://kurume-ace.com/access/",
+    },
+    {
+      imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/interior/a4.jpg",
+      sourceLabel: "A〈エース〉 公式サイト",
+      sourceUrl: "https://kurume-ace.com/access/",
+    },
+    {
+      imageUrl: "https://kurume-ace.com/wp-content/themes/onepixel-child/images/interior/a5.jpg",
+      sourceLabel: "A〈エース〉 公式サイト",
+      sourceUrl: "https://kurume-ace.com/access/",
+    },
+  ],
 };
 
 // ============================================================
@@ -669,6 +806,11 @@ ${figuresHtml}
   return footerHtml ? `${galleryHtml}\n  ${footerHtml}` : galleryHtml;
 }
 
+// onerror: 画像が読めなかった場合(公式サイト側の仕様変更・将来のホットリンク制限追加等)は
+// そのスライドだけを非表示にする(venueHeroPhotoHtml と同じ方針。壊れた画像アイコン+空クレジットが
+// 残るのを防ぐ)。2026-08-28の対象店拡大調査で bar-141saketen がリファラベースのホットリンク防止を
+// していることを確認した(このため掲載自体を見送った。data/venue-audit-log.md 参照)のを踏まえ、
+// 掲載済みの店についても将来同様の制限が追加された場合に備えた保険として付与する。
 function officialPhotoHtml(venueId) {
   const photos = OFFICIAL_PHOTOS[venueId];
   if (!photos || photos.length === 0) return "";
@@ -677,6 +819,7 @@ function officialPhotoHtml(venueId) {
     alt: `${p.sourceLabel}の写真`,
     itemClass: "official-photo",
     captionHtml: `提供: <a href="${escapeHtml(p.sourceUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(p.sourceLabel)}</a>(画像は公式サイトのものを直接参照して表示しています。当サイトに保存はしていません)`,
+    onerror: "this.closest('.photo-gallery-item').style.display='none'",
   }));
   return photoGalleryHtml(items);
 }
