@@ -564,40 +564,89 @@ function instagramEmbedHtml(venueId) {
 //
 // 対象は、公式ドメイン(店名を含む店自身のサイト)の og:image が上記実測を満たした店舗に限定。
 // ============================================================
+// 【2026-08-28 データ構造変更】1店舗1枚固定 { imageUrl, sourceLabel, sourceUrl } から、
+// 複数枚を受け付けられる配列 [{ imageUrl, sourceLabel, sourceUrl }, ...] に拡張した(表示側の
+// 横スクロールギャラリー対応にあわせたもの。データの中身・出典元・取得方法は変更していない。
+// 既存の1枚データをそのまま配列化しただけ)。写真を追加する場合はこの配列に要素を足すだけでよい。
 const OFFICIAL_PHOTOS = {
-  "bar-remember": {
-    imageUrl: "https://static.wixstatic.com/media/d671d7_b6cf8175b8d54a8a886dbc8580952a06~mv2.png/v1/fit/w_2500,h_1330,al_c/d671d7_b6cf8175b8d54a8a886dbc8580952a06~mv2.png",
-    sourceLabel: "Remember 公式サイト",
-    sourceUrl: "https://www.kurume-remember.com/",
-  },
-  "bar-oshu-kitchen-alma": {
-    imageUrl: "https://oshukitchen-alma.com/img/ogp.png",
-    sourceLabel: "欧州キッチンアルマ 公式サイト",
-    sourceUrl: "https://oshukitchen-alma.com/",
-  },
-  "izakaya-sumibi-sakagura-kita": {
-    imageUrl: "https://www.sumibishuzo-kita.com/shared/img/shared/ogp.png",
-    sourceLabel: "炭火酒蔵 喜多 公式サイト",
-    sourceUrl: "https://www.sumibishuzo-kita.com/",
-  },
+  "bar-remember": [
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_b6cf8175b8d54a8a886dbc8580952a06~mv2.png/v1/fit/w_2500,h_1330,al_c/d671d7_b6cf8175b8d54a8a886dbc8580952a06~mv2.png",
+      sourceLabel: "Remember 公式サイト",
+      sourceUrl: "https://www.kurume-remember.com/",
+    },
+  ],
+  "bar-oshu-kitchen-alma": [
+    {
+      imageUrl: "https://oshukitchen-alma.com/img/ogp.png",
+      sourceLabel: "欧州キッチンアルマ 公式サイト",
+      sourceUrl: "https://oshukitchen-alma.com/",
+    },
+  ],
+  "izakaya-sumibi-sakagura-kita": [
+    {
+      imageUrl: "https://www.sumibishuzo-kita.com/shared/img/shared/ogp.png",
+      sourceLabel: "炭火酒蔵 喜多 公式サイト",
+      sourceUrl: "https://www.sumibishuzo-kita.com/",
+    },
+  ],
   // 【2026-07-21 レビュー部の条件付きGOにより除外】bar-lampsquare は画像が cdn.r-corona.jp
   // (Recruit系CDN)上にあり、公式サイト自体が Recruit の店舗ページ作成サービス owst.jp
   // (RestaurantBOARD)製。Recruit は今回禁止対象にしたホットペッパーグルメの親会社であり、
   // 「クリーンな公式ソース限定」の線引きを濁すため対象外とした(写真なし=ビジュアルヒーローのまま)。
-  "izakaya-kiseki-tebasaki": {
-    imageUrl: "https://kiseteba.com/img/ogp.png",
-    sourceLabel: "奇跡の手羽先 公式サイト",
-    sourceUrl: "https://kiseteba.com/",
-  },
+  "izakaya-kiseki-tebasaki": [
+    {
+      imageUrl: "https://kiseteba.com/img/ogp.png",
+      sourceLabel: "奇跡の手羽先 公式サイト",
+      sourceUrl: "https://kiseteba.com/",
+    },
+  ],
 };
 
+// ============================================================
+// 横スクロール写真ギャラリー(共通部品、2026-08-28 追加)
+//
+// 【方針】1枚でも複数枚でも同じ構造・同じ関数で描画する。CSS の scroll-snap のみで動かし
+// (assets/style.css の .photo-gallery / .photo-gallery-item)、JSライブラリは使わない。
+// - 1枚のときはギャラリー幅=写真幅になり横スクロールは発生しない(従来の単一写真表示と同じ見た目)。
+// - 2枚以上のときだけ実際に横スクロール(スマホは指スワイプ、PCはドラッグ/トラックパッド、
+//   キーボードは要素にフォーカスした状態での矢印キー)で切り替えられる。フォーカス可能にする
+//   のもスクロールが実際に発生する(=2枚以上の)ときだけにしている(1枚だけの非スクロール要素を
+//   無意味にタブストップにしないため)。
+// - items: [{ img, alt, captionHtml? }]。captionHtml を渡した項目は写真ごとに個別の
+//   figcaption(出典クレジット)を表示する(出典が写真ごとに異なりうる公式サイト画像向け)。
+// - footerHtml を渡すと、ギャラリー全体の下に共有の説明文(単一の出典元表記など)を1つだけ表示する。
+// ============================================================
+function photoGalleryHtml(items, footerHtml) {
+  if (!items || items.length === 0) return "";
+  const multi = items.length > 1;
+  const figuresHtml = items
+    .map((it) => {
+      const captionHtml = it.captionHtml ? `<figcaption class="small">${it.captionHtml}</figcaption>` : "";
+      const onerrorAttr = it.onerror ? ` onerror="${it.onerror}"` : "";
+      return `    <figure class="photo-gallery-item${it.itemClass ? ` ${it.itemClass}` : ""}">
+      <img src="${escapeHtml(it.img)}" alt="${escapeHtml(it.alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade"${onerrorAttr}>
+      ${captionHtml}
+    </figure>`;
+    })
+    .join("\n");
+  const galleryAttrs = multi ? ` tabindex="0" role="group" aria-label="写真ギャラリー(${items.length}枚。左右にスワイプ・スクロールできます)"` : "";
+  const galleryHtml = `<div class="photo-gallery"${galleryAttrs}>
+${figuresHtml}
+  </div>`;
+  return footerHtml ? `${galleryHtml}\n  ${footerHtml}` : galleryHtml;
+}
+
 function officialPhotoHtml(venueId) {
-  const p = OFFICIAL_PHOTOS[venueId];
-  if (!p) return "";
-  return `<figure class="official-photo">
-    <img src="${escapeHtml(p.imageUrl)}" alt="${escapeHtml(p.sourceLabel)}の写真" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-    <figcaption class="small">提供: <a href="${escapeHtml(p.sourceUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(p.sourceLabel)}</a>(画像は公式サイトのものを直接参照して表示しています。当サイトに保存はしていません)</figcaption>
-  </figure>`;
+  const photos = OFFICIAL_PHOTOS[venueId];
+  if (!photos || photos.length === 0) return "";
+  const items = photos.map((p) => ({
+    img: p.imageUrl,
+    alt: `${p.sourceLabel}の写真`,
+    itemClass: "official-photo",
+    captionHtml: `提供: <a href="${escapeHtml(p.sourceUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(p.sourceLabel)}</a>(画像は公式サイトのものを直接参照して表示しています。当サイトに保存はしていません)`,
+  }));
+  return photoGalleryHtml(items);
 }
 
 // ============================================================
@@ -696,17 +745,43 @@ function ratingCardHtml(v) {
   return `<span class="venue-card-rating" role="img" aria-label="${escapeHtml(aria)}">${starsHtml(r.rating, "stars-sm")}<span class="rating-score-sm">${r.rating.toFixed(1)}</span><span class="rating-src-sm">Google</span></span>`;
 }
 
-// ヒーロー写真1枚(ホットペッパー グルメ)。写真が無ければ空文字。
-// onerror: 画像が読めなかったら figure ごと非表示にする(空クレジットだけ残るのを防ぐ)。
+// ヒーロー写真(ホットペッパー グルメ)。写真が無ければ空文字。
+// onerror: 画像が読めなかったら figure(1枚のとき)/ 該当スライド(複数枚のとき)を非表示にする
+// (空クレジットだけ残るのを防ぐ)。
+//
+// 【2026-08-28 将来の複数枚対応に備えた読み取り拡張】現状 scripts/fetch-photos.js は
+// data/photos.generated.json に venue id -> { photo, logo?, hpUrl } と写真1枚(photo:文字列)
+// しか書き出さない(今回のタスクではこのフェッチ側ロジックは変更していない)。将来
+// fetch-photos.js が複数枚(photos: string[])を返すように拡張された場合に備え、ここでは
+// `photos` 配列が来ていればそれを、無ければ従来の `photo`(単数)を1件配列にして使う、という
+// 読み取りだけを先に用意しておく。現状は実質的に常に0〜1件なので、1枚のときの出力(HTML構造)は
+// 変更前と完全に同一(=既存の描画は壊さない)。2枚以上になったときだけ横スクロールギャラリー
+// (photoGalleryHtml、photo-section の公式写真ギャラリーと共通のCSS)で表示する。
 function venueHeroPhotoHtml(v) {
   const p = VENUE_PHOTOS[v.id];
-  if (!p || !p.photo) return "";
+  if (!p) return "";
+  const photoUrls = Array.isArray(p.photos) && p.photos.length > 0 ? p.photos : p.photo ? [p.photo] : [];
+  if (photoUrls.length === 0) return "";
   const moreLink = p.hpUrl
     ? ` <a class="venue-hero-photo-more" href="${escapeHtml(p.hpUrl)}" rel="nofollow noopener" target="_blank">ホットペッパーで写真をもっと見る ↗</a>`
     : "";
+  const credit = `<figcaption class="small venue-hero-photo-credit">【画像提供：ホットペッパー グルメ】${moreLink}</figcaption>`;
+  if (photoUrls.length === 1) {
+    // 現状(実質すべての店)はここを通る。変更前と同一のHTMLを出力する。
+    return `<figure class="venue-hero-photo">
+    <img src="${escapeHtml(photoUrls[0])}" alt="${escapeHtml(v.name)}の写真(ホットペッパー グルメ)" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="this.parentNode.style.display='none'">
+    ${credit}
+  </figure>`;
+  }
+  const items = photoUrls.map((src) => ({
+    img: src,
+    alt: `${v.name}の写真(ホットペッパー グルメ)`,
+    // 複数枚のうち1枚だけ読めなかった場合は、そのスライドだけ非表示にする(ギャラリー全体は残す)。
+    onerror: "this.closest('.photo-gallery-item').style.display='none'",
+  }));
   return `<figure class="venue-hero-photo">
-    <img src="${escapeHtml(p.photo)}" alt="${escapeHtml(v.name)}の写真(ホットペッパー グルメ)" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="this.parentNode.style.display='none'">
-    <figcaption class="small venue-hero-photo-credit">【画像提供：ホットペッパー グルメ】${moreLink}</figcaption>
+    ${photoGalleryHtml(items)}
+    ${credit}
   </figure>`;
 }
 
@@ -1309,8 +1384,8 @@ function venueLogoCreditHtml(v) {
 //       これらのアカウントURLは既存運用で「店舗公式アカウント本人」であることを目視照合して
 //       から sources に登録している(README「Instagram公式埋め込み・公式プロフィールリンク」
 //       参照)。プラットフォームのホスト名が固定なので、第三者のグルメ/情報サイトが混入しない。
-//   (B) 公式サイト: VENUE_LOGOS[id].siteUrl / OFFICIAL_PHOTOS[id].sourceUrl。これらは
-//       ロゴ・公式写真の採用時に「禁止対象の第三者グルメサイト系列(owst.jp / r-corona.jp 等)
+//   (B) 公式サイト: VENUE_LOGOS[id].siteUrl / OFFICIAL_PHOTOS[id][0].sourceUrl(配列の1枚目)。
+//       これらはロゴ・公式写真の採用時に「禁止対象の第三者グルメサイト系列(owst.jp / r-corona.jp 等)
 //       でないか」を確認済みのキュレーション済みURL(README「ロゴ・写真の採否基準」参照)。
 //
 // 【なぜ sources から公式サイトを機械抽出しないか】公開137店の sources を全走査したところ、
@@ -1385,9 +1460,12 @@ function officialLinksFor(v) {
   const seenTypes = new Set(); // SNSはプラットフォームごとに1つ
 
   // (B) 公式サイト(allowlist): ロゴ・公式写真のキュレーション済みURL
+  // OFFICIAL_PHOTOS は配列(複数枚対応)なので、代表として1枚目の sourceUrl を使う
+  // (同じ店の公式写真は基本的に同一の公式サイトから採っているため1件で十分)。
   const siteUrls = [];
   if (VENUE_LOGOS[v.id] && VENUE_LOGOS[v.id].siteUrl) siteUrls.push(VENUE_LOGOS[v.id].siteUrl);
-  if (OFFICIAL_PHOTOS[v.id] && OFFICIAL_PHOTOS[v.id].sourceUrl) siteUrls.push(OFFICIAL_PHOTOS[v.id].sourceUrl);
+  const officialPhotos = OFFICIAL_PHOTOS[v.id];
+  if (officialPhotos && officialPhotos[0] && officialPhotos[0].sourceUrl) siteUrls.push(officialPhotos[0].sourceUrl);
   for (const su of siteUrls) {
     const h = linkHost(su);
     if (!h || seenHosts.has(h)) continue;
