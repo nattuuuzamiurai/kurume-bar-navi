@@ -770,6 +770,118 @@ const OFFICIAL_PHOTOS = {
       sourceUrl: "https://kurume-ace.com/access/",
     },
   ],
+  "kyabakura-carnet": [
+    {
+      imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/slider/slider1.jpg",
+      sourceLabel: "NEW CLUB CARNET 公式サイト",
+      sourceUrl: "https://new-club-carnet.com/",
+    },
+    {
+      imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/slider/slider2.jpg",
+      sourceLabel: "NEW CLUB CARNET 公式サイト",
+      sourceUrl: "https://new-club-carnet.com/",
+    },
+    {
+      imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/slider/slider4.jpg",
+      sourceLabel: "NEW CLUB CARNET 公式サイト",
+      sourceUrl: "https://new-club-carnet.com/",
+    },
+    {
+      imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/slider/slider5.jpg",
+      sourceLabel: "NEW CLUB CARNET 公式サイト",
+      sourceUrl: "https://new-club-carnet.com/",
+    },
+    {
+      imageUrl: "https://new-club-carnet.com/assets/new-club-carnet.com/wp-content/themes/onepixel-child/images/slider/slider6.jpg",
+      sourceLabel: "NEW CLUB CARNET 公式サイト",
+      sourceUrl: "https://new-club-carnet.com/",
+    },
+  ],
+  "club-four-season": [
+    {
+      imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/interior/fourseason1.jpg",
+      sourceLabel: "CLUB FOUR SEASON 公式サイト",
+      sourceUrl: "https://club-fourseason.com/fourseason/",
+    },
+    {
+      imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/interior/fourseason2.jpg",
+      sourceLabel: "CLUB FOUR SEASON 公式サイト",
+      sourceUrl: "https://club-fourseason.com/fourseason/",
+    },
+    {
+      imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/interior/fourseason3.jpg",
+      sourceLabel: "CLUB FOUR SEASON 公式サイト",
+      sourceUrl: "https://club-fourseason.com/fourseason/",
+    },
+    {
+      imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/interior/fourseason4.jpg",
+      sourceLabel: "CLUB FOUR SEASON 公式サイト",
+      sourceUrl: "https://club-fourseason.com/fourseason/",
+    },
+    {
+      imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/interior/fourseason5.jpg",
+      sourceLabel: "CLUB FOUR SEASON 公式サイト",
+      sourceUrl: "https://club-fourseason.com/fourseason/",
+    },
+    {
+      imageUrl: "https://club-fourseason.com/wp-content/themes/onepixel-child/images/interior/fourseason6.jpg",
+      sourceLabel: "CLUB FOUR SEASON 公式サイト",
+      sourceUrl: "https://club-fourseason.com/fourseason/",
+    },
+  ],
+  // snack-brilliant: 公式サイトの実写真は3枚のみで、うち2枚は人物(客の後ろ姿含む)/花火の
+  // 無関係な写真のため、店内の小鉢料理を写した1枚のみ採用。
+  "snack-brilliant": [
+    {
+      imageUrl: "https://www.brilliant-kurume.com/60011370/wp-content/uploads/2019/07/IMG_8116.jpg",
+      sourceLabel: "ブリリアント 公式サイト",
+      sourceUrl: "https://www.brilliant-kurume.com/",
+    },
+  ],
+  "girlsbar-tree": [
+    {
+      imageUrl: "https://girlsbartree.m-nanaumi.com/wp-content/uploads/2021/10/059C76AF-54D5-4E55-B880-76F9266CFC8C_1_201_a.jpeg",
+      sourceLabel: "Girl's Bar TREE 公式サイト",
+      sourceUrl: "https://girlsbartree.m-nanaumi.com/",
+    },
+    {
+      imageUrl: "https://girlsbartree.m-nanaumi.com/wp-content/uploads/2021/10/348D626B-60A4-416E-82C5-C53F99B3D791_1_201_a-1-570x570.jpeg",
+      sourceLabel: "Girl's Bar TREE 公式サイト",
+      sourceUrl: "https://girlsbartree.m-nanaumi.com/",
+    },
+  ],
+  "club-sowaca": [
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_10fd2865e98d446dbfdab9bfde290c79~mv2.jpg/v1/fill/w_915,h_609,q_90,enc_avif,quality_auto/d671d7_10fd2865e98d446dbfdab9bfde290c79~mv2.jpg",
+      sourceLabel: "Sowaca 公式サイト",
+      sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_168c2995be3e4f0ab0ad101876879fb0~mv2.jpg/v1/fit/w_1920,h_1280,q_90,enc_avif,quality_auto/d671d7_168c2995be3e4f0ab0ad101876879fb0~mv2.jpg",
+      sourceLabel: "Sowaca 公式サイト",
+      sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_243671869a11460aa874e37450c083da~mv2.jpg/v1/fill/w_1080,h_720,q_90,enc_avif,quality_auto/d671d7_243671869a11460aa874e37450c083da~mv2.jpg",
+      sourceLabel: "Sowaca 公式サイト",
+      sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_40bf93222a5b403badf8d9b883f1b25b~mv2.jpg/v1/fit/w_1920,h_1280,q_90,enc_avif,quality_auto/d671d7_40bf93222a5b403badf8d9b883f1b25b~mv2.jpg",
+      sourceLabel: "Sowaca 公式サイト",
+      sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_793c9f6755ff420a85e579e5607b2422~mv2.jpg/v1/fit/w_1920,h_1280,q_90,enc_avif,quality_auto/d671d7_793c9f6755ff420a85e579e5607b2422~mv2.jpg",
+      sourceLabel: "Sowaca 公式サイト",
+      sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+    {
+      imageUrl: "https://static.wixstatic.com/media/d671d7_84e60dd47f0742269fa33432a51c0501~mv2.jpg/v1/fit/w_1920,h_1280,q_90,enc_avif,quality_auto/d671d7_84e60dd47f0742269fa33432a51c0501~mv2.jpg",
+      sourceLabel: "Sowaca 公式サイト",
+      sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+  ],
 };
 
 // ============================================================
