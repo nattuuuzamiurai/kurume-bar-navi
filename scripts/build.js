@@ -525,25 +525,57 @@ function pickPhotoSource(v) {
 // パーマリンクを特定できるものが見つからなかったため、この店舗は埋め込み対象とせず、
 // 「写真を見る」外部リンクボタン(pickPhotoSource)にフォールバックする。
 // ============================================================
+// 【2026-08-28 データ構造変更】1店舗1投稿固定の文字列から、複数投稿を受け付けられる配列に
+// 拡張した。追加する投稿も、既存と同じ確認プロセス(embed.jsが生成する埋め込みの
+// alt="Instagram post shared by @<handle>"表記、または検索結果の投稿者帰属フォーマット
+// 「N likes, M comments - <handle> on <date>:」で投稿者アカウントを確認する)を経てから
+// 追記すること。1件も確認できなければ従来通り登録しない(無理に埋めない)。
+// 【2026-08-28 品質管理部指摘によりチェック観点を追加】投稿者確認だけでは不十分。
+// 追加前に必ず「画像内テキスト(コースター・看板・POP・黒板等に印字/手書きされた文字)に
+// 日付・期間限定情報が含まれていないか」を目視確認すること(bar-rojiura-sakahariで
+// コースターの日付限定営業告知を見落として誤掲載した再発防止。詳細はREADME参照)。
 const INSTAGRAM_POST_EMBEDS = {
-  "poker-ken": "https://www.instagram.com/p/DHUYDOMTOvi/",
-  "poker-ace-and-king": "https://www.instagram.com/p/DMzHAQgzjCE/",
-  "shisha-aima": "https://www.instagram.com/p/DIYIdGqBCkm/",
+  "poker-ken": ["https://www.instagram.com/p/DHUYDOMTOvi/"],
+  "poker-ace-and-king": ["https://www.instagram.com/p/DMzHAQgzjCE/"],
+  "shisha-aima": ["https://www.instagram.com/p/DIYIdGqBCkm/"],
   // 2026-07-19 追加。ロヂウラ酒八利の公式アカウント @rodiurasyuhari 自身が投稿した
   // パーマリンク。検索結果の投稿者表記(「33 likes, 0 comments - rodiurasyuhari on
   // May 8, 2025:」というInstagramの投稿者帰属フォーマット)で、投稿者が公式アカウント
   // @rodiurasyuhari 本人であることを確認済み(店舗紹介スニペットでも
   // 「ロヂウラ酒八利 豆津橋渡 (@rodiurasyuhari) 久留米の立ち飲み酒場」と一致確認)。
-  "bar-rojiura-sakahari": "https://www.instagram.com/p/DJZZcLayobg/",
+  // 【2026-08-28 追加→同日差し戻し】同じ公式アカウント @rodiurasyuhari の投稿
+  // (https://www.instagram.com/p/DNVL2G-yFii/、店内カウンターのコースター写真)を
+  // 一度追加したが、投稿者確認(alt文言照合)はできていたものの画像内テキストの確認が
+  // 漏れており、品質管理部の指摘でコースターに「8月15日（金）通常営業いたします」
+  // 「18時まで『せんべろ』やってますよ」という日付限定の営業告知が印字されていたことが
+  // 判明。他候補(臨時休業告知・周年記念キャンペーン等)と同一カテゴリ(特定期間の告知)で
+  // 不採用にすべきものだったため削除し、1件に戻した。再調査で日付・期間に紐づかない
+  // 代替候補は見つからなかった(詳細はREADME「Instagram公式埋め込み・公式プロフィール
+  // リンク」参照)。
+  "bar-rojiura-sakahari": ["https://www.instagram.com/p/DJZZcLayobg/"],
 };
 
 const INSTAGRAM_EMBED_SCRIPT = `<script async src="//www.instagram.com/embed.js"></script>`;
 
 function instagramEmbedHtml(venueId) {
-  const postUrl = INSTAGRAM_POST_EMBEDS[venueId];
-  if (!postUrl) return "";
-  return `<div class="instagram-embed-wrap">
-  <blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(postUrl)}" data-instgrm-version="14"></blockquote>
+  const postUrls = INSTAGRAM_POST_EMBEDS[venueId];
+  if (!postUrls || postUrls.length === 0) return "";
+  const blockquotesHtml = postUrls
+    .map(
+      (postUrl) =>
+        `    <blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(postUrl)}" data-instgrm-version="14"></blockquote>`
+    )
+    .join("\n");
+  if (postUrls.length === 1) {
+    // 1件のときは従来どおり中央寄せの単一表示(出力するHTML構造は変更前と同一)。
+    return `<div class="instagram-embed-wrap">
+${blockquotesHtml}
+</div>`;
+  }
+  // 2件以上のときは横スクロールで並べる(スマホは指スワイプ、PCはドラッグ/トラックパッド)。
+  // 各投稿は幅300px程度で確保し、embed.js が実際の投稿を非同期に描画する。
+  return `<div class="instagram-embed-gallery" tabindex="0" role="group" aria-label="Instagram投稿ギャラリー(${postUrls.length}件。左右にスワイプ・スクロールできます)">
+${blockquotesHtml}
 </div>`;
 }
 
