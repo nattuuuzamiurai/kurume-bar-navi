@@ -1334,3 +1334,48 @@ PR #46(2026-08-22)の誤爬取バグ(town-night.jp個別ページ下部の「お
 社長の承認を得て、出典(`https://town-night.jp/fukuoka/a_962/shop/015757/`)を再取得し、構造化欄(`shopData-dl`)の「料金目安」欄が「60分:6,000円～」であることを独立に確認した(`hours`「20:00〜LAST」・`closedDays`「月曜」は既存値と一致、変更不要)。`priceRange`を正しい値「60分6,000円〜」に修正した。
 
 この件は本番公開中のデータに誤りが実在した事案であり、以下を教訓として記録する: PR #46のバグ修正時(2026-08-27)に既存公開データ12件の遡及点検を行ったが、対象を「`town-night.jp`個別店舗ページを出典に持ち`priceRange`が入っている店」に限定していたため、`lounge-aoi`のようにこの時点でまだ`priceRange`欄が該当する形で見つからなかった、または点検範囲の切り分けで漏れた可能性がある。バグ修正時の遡及点検は、対象条件を可能な限り広く取り、漏れがないか複数の切り口で確認することが望ましい。
+
+## 2026-08-29(公式写真ギャラリーの対象店拡大 — 複数枚化、社長承認・レビュー部8ガードレール準拠)
+
+社長承認(2026-08-28)を受け、公式サイトに複数枚のギャラリー/スライダーを持つ店を追加調査し、既存4店(bar-remember, bar-oshu-kitchen-alma, izakaya-sumibi-sakagura-kita, izakaya-kiseki-tebasaki)に加えて`OFFICIAL_PHOTOS`(`scripts/build.js`)を拡張した。レビュー部提示の8ガードレールに沿って対応した内容を以下に記録する。**この節に書いた内容は、コミット前に`scripts/build.js`の実データおよび`node scripts/build.js`のビルド出力(`dist/venues/<id>/index.html`の`photo-gallery-item`件数)と1件ずつ突き合わせて確認済み**(過去5回の「記録と実態の不一致」再発を踏まえた念押し確認)。
+
+### 調査手順(ガードレール1・4関連)
+
+1. `data/venues.json`の公開285店(`scripts/lib/published.js`の`isPublished`基準)のうち、`sources`に既知の第三者プラットフォーム(Instagram/X/Facebook/TikTok/食べログ/ホットペッパー/Retty/ぐるなび/Yahoo!検索/Googleマップ/組合サイト等)ではないURLを持つ店を機械抽出 → 84件。
+2. さらに、食べログ系・ホットペッパー系列・組合系ポータル(`hitosara.com` `ekiten.jp` `kurumefan.com` `arne.media` `web-soigner.jp` `nights.fun` `poker.dmm.com` `cafecon.jp` `caba2.net` `kyaba-kura.jp` `concafe-ranking.jp` `welcome-kurume.com` `kyabakura-web.com` `snsn.jp` `snacknavi.com` `snacker.jp` `mapion.co.jp` `snakaranavi.net` `snack-map.com` `nightmap.hotomeki-fukuoka.com` `map.yahoo.co.jp` `restaurant.kushi-tanaka.com`(チェーン公式だが個別店舗の独自ドメインではない)`alert-hd.co.jp`)を除外 → 店自身の独自ドメインと見られる**12件**に絞り込み。
+3. 12件それぞれの公式サイトを`curl`(タイムアウト付き・誠実なUAで通常のブラウザと同等のリクエストヘッダのみ、Origin/Refererの偽装等の調査専用ヘッダは実装に持ち込まない)で確認し、`robots.txt`(一般クローラーの全面ブロックなし)・ログイン/会員限定注記の有無・複数枚ギャラリーの有無を確認した。
+
+### 対象店(10店)と採用写真
+
+いずれも(1)公式ソース限定 (2)非rehost=ホットリンクのみ (3)出典明記 (4)削除導線あり、の既存4条件を満たす。件数は各店とも上限(5〜8枚程度)の範囲内。
+
+| ID | 店名・業態 | 出典(公式サイト) | 採用枚数 | 内容(肖像権チェック結果) |
+|---|---|---|---|---|
+| `club-haven` | クラブヘイヴン(club) | `https://www.haven-huit.com/haven` | 3 | 個室内観・シャンパンボトル什器・水槽のある内観。全て人物なし |
+| `bar-huit` | Huit(ユイット)(bar、`club-haven`と同一ビルの1F/2F違いの別店) | `https://www.haven-huit.com/huit` | 4 | 内観(什器・ソファ)・ボトル陳列棚2枚・外観風ティザー画像。全て人物なし |
+| `kyabakura-moncoeur` | mon coeur(モンクール)(kyabakura) | `https://website-sample.jp/mon-coeur`(ホスティング基盤のドメイン名だが実際は同店の公式サイト。titleタグで「【公式】mon coeur」を確認) | 3 | **公式サイト掲載写真12枚中9枚はキャスト・客の顔が写る写真だったため不採用**。顔が写っていない個室内観2枚・洗面台1枚のみ採用 |
+| `kyabakura-shiki` | NEW CLUB 四季(kyabakura) | `https://new-club-shiki.com/shop/` | 6 | フロア内観2枚・VIPルーム2枚・バーカウンター2枚。全て人物なし |
+| `kyabakura-ace` | A〈エース〉(kyabakura) | `https://kurume-ace.com/access/` | 5 | バーカウンター・棚・個室内観(公式サイトには計12枚あり`a1`〜`a5`のみ採用、残り`a6`〜`a12`は全量転載回避のため不使用)。全て人物なし |
+| `kyabakura-carnet` | NEW CLUB CARNET(カルネ)(kyabakura) | `https://new-club-carnet.com/` | 5 | バーカウンター・フロア内観・VIPルーム・ボトル什器。公式サイトのスライダー7枚中5枚を採用(`slider3`のボトルクローズアップ・`slider7`のウイスキー棚クローズアップは他カットと内容が近いため割愛)。全て人物なし |
+| `club-four-season` | CLUB FOUR SEASON(フォーシーズン)(club、`kyabakura-shiki`と同一ビルの3F/1F違いの別店) | `https://club-fourseason.com/fourseason/` | 6 | エントランス・ロビー・フロア内観・個室2部屋(和風)。全て人物なし |
+| `snack-brilliant` | ブリリアント(Brilliant)(snack) | `https://www.brilliant-kurume.com/` | 1 | 公式サイトの実写真は3枚のみで、うち2枚は客の後ろ姿(顔は写っていないが人物が主題のため不採用)・花火(店と無関係)。小鉢料理を写した1枚のみ採用 |
+| `girlsbar-tree` | Girl's Bar TREE(ツリー)(girlsbar) | `https://girlsbartree.m-nanaumi.com/` | 2 | グラス・カクテルシェイカーの写真2枚。公式サイトには他にInstagram画面のスクリーンショット・ネオンサイングラフィックもあったが、前者は無関係な二次情報、後者は実写真か判別できないデザイン素材のため不採用。全て人物なし |
+| `club-sowaca` | Sowaca(ソワカ)(club) | `https://www.kurume-sowaca.com/`(Wixサイトのため画像URLは`static.wixstatic.com`のCDNパス) | 6 | 外観サイン・グランドピアノのあるラウンジ・銘板装飾・個室2部屋・バーカウンター席。全て人物なし |
+
+**採用枚数の合計: 41枚(10店)。既存4店と合わせて掲載店14店・写真45枚。** ガードレール1(追加は最大20店程度・合計24店程度)に対し、追加10店・合計14店で上限内。ガードレール2(1店最大5〜8枚)もすべて範囲内(公式サイトに現存する全量を転載した店はゼロ)。
+
+### 除外した候補(2店)とその理由
+
+- **`bar-141saketen`(141酒店、bar)**: 公式サイト(`https://www.141saketen-kurume.com/`)に外観・内観・グラス什器等の複数枚の非人物写真があり有力候補だったが、`curl`で当サイトのGitHub Pagesドメイン(`https://nattuuuzamiurai.github.io/kurume-bar-navi/`)をRefererに付けてcrawlしたところ**HTTP 403**(Refererなし・自ドメインRefererでは200)を返し、**技術的なホットリンク防止(Referrerベースの画像ブロック)を検知した**。既存4条件の「誰でもアクセス可能・robots.txt等でブロックされていない」の趣旨(ガードレール4)に照らし、Referrerブロックを回避する実装(`referrerpolicy="no-referrer"`等での迂回)は行わず、**対象外とした**。既存の写真掲載店には含めていない(`OFFICIAL_PHOTOS`に`bar-141saketen`のキーは追加していない)。
+- **`girlsbar-secret`(GIRLS BAR SECRET、girlsbar)**: 公式サイト(`https://girlsbarsecret.jimdofree.com/`)は全ページ合わせて実質2枚しか画像がなく、うち1枚は客・スタッフとみられる人物が写り込む写真(奥にぼやけているが人物が写っている)、もう1枚は店ロゴのスタイライズ画像(女性の唇のクローズアップを使った装飾グラフィックで、実写真かどうか不明・仮に実写真だとしても口元の識別可能な人物画像)。**いずれも肖像権ガードレール(識別可能な個人が写り込む/写り込みの疑いがある写真は対象外)に抵触するため不採用**。ギャラリーとして掲載できる写真がゼロのため、`OFFICIAL_PHOTOS`に`girlsbar-secret`のキーは追加していない。
+
+### 突き合わせ確認の記録(ガードレール6)
+
+- `node scripts/build.js`を実行し、ビルドが正常終了すること(400ページ生成、既存の警告=Google営業状況5件・営業時間パース対象外2件は本変更と無関係の既知事項)を確認した。
+- 追加した10店それぞれについて`dist/venues/<id>/index.html`の`photo-gallery-item`出現数を`grep -c`で数え、上表の「採用枚数」と1件ずつ一致することを確認した(club-haven=3, bar-huit=4, kyabakura-moncoeur=3, kyabakura-shiki=6, kyabakura-ace=5, kyabakura-carnet=5, club-four-season=6, snack-brilliant=1, girlsbar-tree=2, club-sowaca=6)。
+- `dist/venues/club-sowaca/index.html`を実際に開き、各写真に出典クレジット(「提供: Sowaca 公式サイト」+リンク)と削除依頼案内文が個別に表示されていることを確認した。他9店も同一の共通部品(`officialPhotoHtml()`)を通るため同様に表示される。
+- `bar-141saketen`・`girlsbar-secret`のいずれも`OFFICIAL_PHOTOS`にキーが存在しないこと(`grep -n "bar-141saketen\|girlsbar-secret" scripts/build.js`でOFFICIAL_PHOTOS内に該当行がないこと)を確認した。
+
+### 画像URLのホットリンク実測(ガードレール5=非rehostの裏付け)
+
+採用した41枚すべてについて、`curl`で当サイトのGitHub Pagesドメインを`Referer`に付けたクロスオリジン要求がHTTP 200・`Content-Type: image/*`を返すことを実測済み(2026-08-28〜29時点)。`club-sowaca`(Wix)は素の`static.wixstatic.com/media/<hash>~mv2.jpg`へのアクセスはHTTP 403だったが、公式サイトが実際に配信で使っている変換パラメータ付きURL(`/v1/fill/...` `/v1/fit/...`)であれば200になることを確認し、そのURLを`imageUrl`に採用した。
