@@ -790,7 +790,29 @@ details.facet-accordion[open] > .tag-filter-list {
 .official-photo figcaption { margin-top: 6px; }
 .photo-removal-notice { margin-top: 8px; }
 
-/* ヒーロー写真(ホットペッパー グルメ)。店舗ページ上部に出す代表写真1枚 */
+/* 横スクロール写真ギャラリー(2026-08-28)。JSライブラリは使わず CSS scroll-snap のみで実装。
+   1枚のときはギャラリー幅=写真幅になるためスクロール自体が発生せず、従来の単一写真表示と
+   見た目は変わらない。2枚以上のときだけ実際に横スクロールになる(スマホは指スワイプ、PCは
+   ドラッグ/トラックパッド、キーボードは要素にフォーカス(tabindex)した状態での矢印キーで、
+   ブラウザ標準のスクロール動作により移動できる)。 */
+.photo-gallery {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  padding-bottom: 2px; /* スクロールバー表示時の見切れ防止 */
+}
+.photo-gallery:focus-visible { outline: 2px solid var(--lantern); outline-offset: 2px; border-radius: 12px; }
+.photo-gallery::-webkit-scrollbar { height: 6px; }
+.photo-gallery::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+.photo-gallery-item { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; margin: 0; }
+.photo-gallery .official-photo { margin: 0; }
+
+/* ヒーロー写真(ホットペッパー グルメ)。店舗ページ上部に出す代表写真(現状は常に1枚。
+   将来複数枚に対応した場合は上の .photo-gallery で横スクロール表示する) */
 .venue-hero-photo { margin: 0 0 18px; }
 .venue-hero-photo img {
   display: block;
