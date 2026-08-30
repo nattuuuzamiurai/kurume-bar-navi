@@ -66,7 +66,6 @@
 - [ホルモン家 しろ壱](/venues/izakaya-shiroichi/)
 - [Grill Party(グリルパーティー) 久留米店](/venues/izakaya-grill-party/)
 - [炭焼ダイニング 炭々苑](/venues/izakaya-tantanen/)
-- [全席個室 居酒屋 九州料理 かこみ庵 西鉄久留米駅前店](/venues/izakaya-kakomian/)(全席個室)
 - [とんやどんや 久留米一番街店](/venues/izakaya-tonya-donya/)
 - [奇跡の手羽先 久留米一番街店](/venues/izakaya-kiseki-tebasaki/)
 - [SANZOKU DINING さっさん](/venues/izakaya-sanzoku-dining/)
