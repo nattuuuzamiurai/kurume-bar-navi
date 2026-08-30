@@ -1446,3 +1446,144 @@ PR #46(2026-08-22)の誤爬取バグ(town-night.jp個別ページ下部の「お
 - 追加した10店それぞれについて `dist/venues/<id>/index.html` の `photo-gallery-item` 出現数(1枚につき2箇所ヒット=`<figure class="photo-gallery-item...">`と`onerror`属性内の同クラス名参照)を`grep -c`で数え、2で割った値が上表の「採用枚数」と1件ずつ一致することを確認した(club-the-member=6, izakaya-shanghai-shuka=6, bar-manuka=5, bar-live-actor=5, izakaya-sengoku-ieyasu=5, izakaya-okinawa-kizuna=5, izakaya-amenita-pizzeria=5, izakaya-kalbi-yokocho=5, izakaya-tori-shiki=4, bar-welmona=4)。
 - 採用した50枚すべてについて、`curl`で当サイトのGitHub Pagesドメイン(`https://nattuuuzamiurai.github.io/kurume-bar-navi/`)を`Referer`に付けたクロスオリジン要求がHTTP 200・`Content-Type: image/*`を返すことを実測済み(2026-08-30時点、代表URL10件で確認、robots.txtも10ドメイン全てで一般クローラーのブロック無しを確認)。
 - `izakaya-sengoku-ieyasu`はチェーン店のため、採用した5枚が久留米店(11号店)以外の姉妹店の写真を誤って含んでいないかを個別に確認した(ファイル名の`11_`プレフィックスと、外観写真に写る「11号店」の看板テキストで同定)。同じ公式サイトのギャラリーに含まれていた「2号店」「18号店」の看板が写る写真は誤掲載防止のため除外した。
+## 2026-08-30(フェーズ2データ充実 バッチ4 — 前回「未着手」55店の再試行。新規発見1件(job-chocolat.jp個別ページ)を追加、正味16店を更新)
+
+### 経緯
+
+前回バッチ(PR #46・#50、2026-08-27〜28)で「出典が尽きた」として保留されていた店(スナック・キャバクラ・ラウンジ・クラブでhours/closedDays/phone/tags/priceRange等が空欄のまま残る店、概算50店台)を対象に、指示された4ドメイン(`nightmap.hotomeki-fukuoka.com`・`con-ca.jp`・`www.snack-map.com`・`map.yahoo.co.jp`)を再試行した。加えて、既存`internalSources`に登録済みだが個別ページを未調査だった`job-chocolat.jp`を追加調査した。
+
+### 1. `nightmap.hotomeki-fukuoka.com`: 依然DNS障害。今回は複数の外部DNSリゾルバで裏取りし「一時的な自環境の問題」ではないことを確認
+
+前回は自環境のDNSリゾルバで`SERVFAIL`だった。今回は`8.8.8.8`(Google)・`1.1.1.1`(Cloudflare)の外部リゾルバに直接問い合わせたが、いずれも同ドメインの委任先(Cloudflareのネームサーバー`172.64.52.144`/`172.64.53.131`)が`REFUSED`を返した(`dig @8.8.8.8 hotomeki-fukuoka.com SOA`で確認)。これは「委任先には浸透しているが、そのゾーンがCloudflare側で設定されていない/一時停止している」状態を示しており、当社のネットワーク環境固有の問題ではなく、ドメイン自体がインターネット全体から見て名前解決不能な状態にあると判断できる。既存`sources`に個別ページURLが登録済みの5店(`snack-saito` `snack-calm` `snack-the-ritz` `snack-a-king` `snack-partir`)は今回も取得できず、変更なし。
+
+### 2. `con-ca.jp`: 個別ページの発見方法を確立できたが、業態が対象外(コンカフェ専門ポータル)と判明。今後この用途では使用不可と結論
+
+`robots.txt`の`Sitemap:`から`sitemap_index.xml`→`sitemap_shop.xml`をたどり、`town-night.jp`と同一の`/fukuoka/a_962/shop/NNNNNN/`形式の個別ページURLを機械的に洗い出せることを確認した(発見方法自体は解決)。しかし久留米エリア(`a_962`)の該当ページは10件のみで、全件を実際に取得し`<title>`を確認したところ、**全10件が「〜 - 久留米コンカフェ【コンカ】」というコンセプトカフェ専業ページ**だった(例: `shop/002000/`→「カフェラウンジ PLATINUM SEVEN」、`shop/002001/`→「娘娘酒場 久留米店」など、いずれも既存の`concafe-*`/フェーズ2転入済みのコンカフェ系店舗と対応)。`con-ca.jp`は`town-night.jp`と同じ運営元エンジンを使っているが**業態としてコンカフェしか扱っておらず、スナック・キャバクラ・ラウンジ・クラブは1件も掲載していない**。前回「個別ページの発見方法が見つからない」としていたが、正しくは「発見方法はあるが対象業態が最初から存在しない」。今後このドメインをスナック・キャバクラ・ラウンジ・クラブのデータ源として再調査する必要はない。
+
+### 3. `www.snack-map.com`: 埋め込みJSON(Next.js RSCペイロード)の読み取りに成功。ただし久留米の掲載数が11店と少なく、大半は既存データと一致(裏取りの価値はあるが新規は僅少)
+
+トップページはNext.js App Routerで`__NEXT_DATA__`のような単純な埋め込みは無いが、`self.__next_f.push(...)`で送られるRSCペイロード(JS文字列の中にJSON文字列がエスケープされた状態で埋め込まれている)から、バックスラッシュの連続を単純に引用符へ畳み込む変換(`replace(/\\+"/g, '"')`)でほぼそのまま読める構造化データ(営業時間・定休日・電話番号・最寄り駅からの距離)を確認した。
+
+- サイトマップ(`/sitemap.xml`)から`/fukuoka/kurume`・`/fukuoka/kurumeshi`のエリアページを発見し、久留米エリアの個別店舗ページは`/snack/40070101`〜`/snack/40070111`(連番11件)+`/snack/axia1`(既存の別業態店、対象外)の**計11件のみ**と判明(id範囲を実際に1件ずつHTTPコードで確認し境界を確定)。
+- 11件全件を取得・照合した結果、**全店が既に`venues.json`に存在**しており(電話番号での一致確認込み)、新規店舗の発見はゼロだった。
+- 既存データとの突き合わせで新規に埋まったのは3件: `snack-cookie-vip.phone`(090-3603-2330)・`snack-ichiyou.phone`(080-3964-2722)・`snack-rosso.hours`(20:00〜翌1:00)/`closedDays`(日曜・祝日)。他8件(`snack-cookie` `snack-mitsubachi` `snack-luxe` `snack-aramis` `snack-jun` `snack-suijin` `snack-sakura` `snack-rinrin`)は電話番号が完全一致し既存データの正しさを裏付けたのみで、フィールド追加なし。
+- **【重要・誤爬取防止の確認】** id=40070111のタイトルは「凛琳」で、店名の音が近い既存店が2件(`snack-rin`「rin.(リン)」住所12-63 / `snack-rinrin`「凛琳(リンリン)」住所13-45)存在したため、電話番号(0942-37-0733)で照合したところ**`snack-rinrin`と一致**(`snack-rin`とは別店)と確定した。`snack-rinrin`は既にhours/closedDays/phoneとも充足済みだったため変更なし、`snack-rin`は今回も情報を得られず空欄のまま。
+- サイト取得は同一URLへの再リクエストで成功/失敗(フォールバック用の汎用シェルHTML)が入れ替わる挙動が散見された(robots.txtのクロール制限による遮断ではなく、サーバー側SSRの一時的な不調とみられる)。再試行で解消することを確認済み。
+
+### 4. `map.yahoo.co.jp`: `application/ld+json`のschema.org構造化データ(LocalBusiness)を発見・抽出成功。既知のYahoo!マップ出典5件のうち1件(Amore)を充実
+
+同じくRSCペイロードの中に`<script type="application/ld+json">`のLocalBusiness/Restaurant構造化データが埋め込まれており、`openingHoursSpecification`(曜日別の開閉店時刻)・`telephone`・`address`を機械的に取得できることを確認した(前述と同じバックスラッシュ畳み込みで復元可能)。
+
+- 既存`sources`/`internalSources`に`map.yahoo.co.jp`の個別ページURLを持つ5店(`kyabakura-all` `snack-lavender` `snack-ok` `snack-amore` `snack-saito`)を再取得した。
+- `snack-amore`: `openingHoursSpecification`(月〜土 20:00〜24:00)・`telephone`(0942-30-0038)・`payment.methods`(QRコード/PayPay、`isShow:true`)を取得し、`hours`・`closedDays`(日曜・祝日、`holidayText`欄より)・`phone`・`payment`(PayPay可)を新規に埋めた。住所欄(`日吉町15`)も既存住所(15-73)と整合。
+- `snack-ok`: `telephone`が既存値(0942-34-1596)と完全一致することを確認(裏取りのみ、新規なし)。この店の`openingHoursSpecification`はページ上に存在しなかった。
+- `kyabakura-all`・`snack-saito`は複数回(それぞれ2〜3回)再取得を試みたが、いずれも店舗名や構造化データを含まない汎用テンプレートHTML(既知の"データなしpage"、`snack-amore`成功時の70KB前後に対し23〜25KB程度)が一貫して返ってきた。`snack-map.com`のような一過性のSSR不調ではなく再現性のある挙動だったため、この2件は今回は取得を断念した(Yahoo側のプレイスIDごとにSSR完全版が出るかどうかにばらつきがある可能性。原因不明)。
+
+### 5. `job-chocolat.jp`(追加調査・4ドメインの対象外だが既存`internalSources`から発見): 個別求人ページの構造化テーブル(営業時間・定休日)を機械的に抽出し、正味12店を充実
+
+複数の店で`internalSources`に`job-chocolat.jp`の**一覧ページ**(`/fukuoka/city_448/shoplist/`)URLが既に登録されていたが、個別ページは未調査だった。一覧ページを取得したところ、`town-night.jp`・`con-ca.jp`と同じ`a_962`エリアコードで個別求人ページ(`/fukuoka/a_962/shop/NNNNN/`)が**37件**機械的に列挙できることを発見した。
+
+- 37件全てを取得し、`<title>`(店名)、`営業時間`・`定休日`の構造化`<th>/<td>`テーブルセルを抽出した(求人ページのため電話番号・住所は掲載されていない)。
+- 店名をローマ字表記・カタカナ表記の両方で正規化して`venues.json`(snack/kyabakura/lounge/club)と突き合わせ、**32/37件が既存店と一致**(完全一致のみを採用。「Club R」と「Club Rudan」のような部分一致による誤爬取を避けるため、正規化後の文字列が完全一致する候補のみを採用し、部分文字列一致は不採用とした)。
+- 既存フィールドが空欄だった**12店**の`hours`・`closedDays`を新規に埋めた: `lounge-new-impact`(closedDays)・`kyabakura-ariel`(closedDays)・`kyabakura-nestia`(hours+closedDays)・`club-ari`(hours+closedDays)・`kyabakura-rudan`(hours+closedDays)・`snack-ok`(hours+closedDays)・`kyabakura-vega`(hours+closedDays)・`kyabakura-all`(hours+closedDays)・`kyabakura-premier`(closedDays)・`lounge-jewel`(hours+closedDays)・`lounge-athena`(hours+closedDays)・`snack-nakagawa-r`(hours+closedDays、あわせて`closedDays`キー自体が存在しなかったため新規追加)。残り20件は既に別出典で充足済みで、job-chocolatの値と付き合わせて矛盾がないことを確認したのみ(変更なし)。
+- 表記は既存の`HH:MM〜LAST`/`HH:MM〜翌H:MM`規約に合わせて正規化した(元表記「20:00 ～ LAST」→「20:00〜LAST」、「20:30 ～ 1:00」→「20:30〜翌1:00」、「日曜日」→「日曜」等)。
+- **新規未掲載店を4件発見(今回は追加せず記録のみ)**: `Club Active(アクティブ)`・`BAR GenGer(ゲンガー)`・`Club SHANDRA(シャンドラ)`・`CLUB 帝(ミカド)`。いずれも`venues.json`に該当エントリなし。2026-08-22の社長指示によりフェーズ2新規追加は一時停止中のため、今回は追加せず、一時停止解除後の調査候補としてここに記録する。**【2026-08-30 品質管理部・レビュー部の指摘により訂正】このうち`Club SHANDRA(シャンドラ)`(福岡県大川市大字榎津111-13 第2東光ビル2F)・`CLUB 帝(ミカド)`(大牟田エリア、最寄り駅は新栄町駅)の2件は、個別ページ本文を精査した結果、実際には久留米市ではなく大川市・大牟田市の店舗であることが判明した。久留米エリアの新規候補としては対象外であり、一時停止解除後の調査候補からも除外する。真に久留米エリアの新規未掲載候補として残るのは`Club Active(アクティブ)`・`BAR GenGer(ゲンガー)`の2件のみ。**
+- **対象エリア外のため除外(2件)**: `【二日市】Lounge Soleil` `【八女】SEDNA` — job-chocolat.jpの久留米エリアコード(`a_962`)一覧には、店名に地名プレフィックスが付いた形で**近隣の別市(二日市・八女)の店が混在**していることが判明した。今後`a_962`の一覧を機械的に使う際は、店名の地名プレフィックスの有無を必ず確認すること(新たな注意点として記録)。
+- `娘娘酒場 久留米店`は名前一致したが対応先`izakaya-nyanko-sakaba`はizakaya業態(フェーズ境界の都合で非公開/フェーズ2転入済み)であり、本バッチのスコープ(snack/kyabakura/lounge/club)外のため変更していない。
+- **懸念点(記録のみ・対応不要)**: `lounge-new-impact`はGoogle businessStatusが`CLOSED_PERMANENTLY`を返し`UNVERIFIED_VENUE_IDS`の未確認バナー対象になっている。今回job-chocolat.jpの求人ページ(現役の営業時間・定休日表記あり)から`closedDays`を追加したが、これは既存の未確認バナー表示の仕組みとは独立して動作するため実害はないと判断した(店舗ページには引き続き「営業状況未確認」の注記が出る)。
+
+### 6. 組合名簿(`f-ryoin.jp`)の再確認: 既に完全に反映済みと確認(新規なし)
+
+`https://f-ryoin.jp/union/kurume-bunkagai/`を再取得し、掲載16件全てを電話番号で`venues.json`と突き合わせた。13件は既存データと完全一致(=既に反映済み)、3件(`カラオケスタジオ謝謝` `山忠うどん` `GOCCI`)は当サイトのデータに該当エントリなし(スナック・キャバクラ以外の業態、または未掲載店の可能性。新規追加は一時停止中のため今回は追加せず)。新規に埋まったフィールドはゼロ。
+
+### 公式サイト・公式Instagram・公式TikTokでの個別再確認について
+
+開発部(dev-lead)はWebSearch/WebFetchツールを保有せず、既知のURL(`curl`で直接アクセス可能なもの)以外は発見手段がない。今回の再試行はすべて「既に`sources`/`internalSources`に登録済みのURL」または「その運営元サイトの一覧ページ・サイトマップから機械的に辿れる個別ページ」に限られる。企画部(`planning-lead`、WebSearch保有)による候補探索がなければ、未知の公式サイト・Instagram・TikTokアカウントの新規発見はできない(2026-08-27のレビュー部指摘と同じ制約が今回も該当)。
+
+### 結果まとめ
+
+- **更新した店舗数: 16店**(`snack-cookie-vip` `snack-ichiyou` `snack-rosso` `snack-amore` `lounge-new-impact` `kyabakura-ariel` `kyabakura-nestia` `club-ari` `kyabakura-rudan` `snack-ok` `kyabakura-vega` `kyabakura-all` `kyabakura-premier` `lounge-jewel` `lounge-athena` `snack-nakagawa-r`)。埋めたフィールド数は延べ24件(hours 11・closedDays 12・phone 3・payment 1、一部重複カウントあり)。
+- **依然埋められなかった店は多数残る**(スナック単独で100店規模)。今回発見した新規ソース(job-chocolat.jp個別ページ)はkyabakura/lounge/club寄りの求人サイトのため、スナックの空欄(tags・budgetDinner・seats・priceRange等)への寄与は限定的だった。tags(タグ)・budgetDinner(予算)・seats(席数)・priceRange(料金)は今回のいずれの出典からも構造化データとしては得られず、依然大半が空欄のまま。
+- **正直な結論**: 前回同様、今回も「出典が尽きて埋められない店」が大多数残った。今回の成果は主に(a)前回DNS障害/発見方法不明だった論点に決着をつけたこと(nightmap=依然ダウンだが原因を裏取り、con-ca.jp=業態対象外と確定)、(b)snack-map.com/map.yahoo.co.jpの埋め込みJSON読み取り手法を確立したこと、(c)job-chocolat.jpという新出典を追加できたこと、の3点であり、店舗単位の充実効果は16店・限定的。
+
+### 検証方法
+
+- 上記の全変更は、抽出したJSON/HTMLの値と`data/venues.json`の実際の差分(`git diff`)を突き合わせたうえで本セクションを記述した(値の記録前に必ず実ファイルの`git diff`を確認する運用を徹底)。
+- `node scripts/build.js`でビルド成功を確認済み(公開285件、営業時間パース240/242件、既知の警告6件〈Google businessStatus非営業〉は本バッチの変更と無関係の既存事象)。
+## 2026-08-30(ラウンジ・クラブ公開29店 — gb-walker.jp/pokepara-tainew.jp展開。フィールド追加0件・`internalSources`4件追加。電話番号フィールドの重大なデータ品質問題を新規検知)
+
+### 経緯・スコープ
+
+会社側記録(`projects/kurume-bar-navi/README.md` 項目14・15)のレビュー部GO(13条件)に基づき、公開ラウンジ20店・公開クラブ9店(計29店、`scripts/lib/published.js`の`publishedVenues()`で`lounge`/`club`のみ抽出して確定)に`gb-walker.jp`・`pokepara-tainew.jp`を展開した。新規店舗追加は一時停止中のため対象外(条件1)。作業は`git worktree`(`/Users/watanabeken/cloude code/kbn-worktree-lounge-club-pilot`、`feat/lounge-club-pilot`)で他の並行タスクと分離して実施した(条件13の前提である並行バッチはなし、単一バッチで完結)。
+
+### gb-walker.jp: サイトマップで該当ゼロを再確認(条件7、深追いせず)
+
+`sitemap.xml`を確認したところ、「久留米」を含むURLは前回パイロット(2026-08-27)と同じく`list-shop/search-area/fukuoka-kurume/`系3件のみで、個別店舗ページは`family-kurume`(ガールズバーfamily、非公開の`girlsbar-family`)1件だけだった。**対象29店(ラウンジ・クラブ)に該当する掲載は0件。** 指示どおり深追いはしていない。
+
+### pokepara-tainew.jp: 「クラブ/ラウンジ」ジャンルは福岡県全域で0件(サイトマップ・ジャンル一覧の両方で確認)
+
+1. まず`fukuoka/m403/a431/`(久留米市)のジャンル選択UI(「業種」欄)を確認したところ、「クラブ/ラウンジ」は`class="zero"`(リンクなし=該当0件)だった。念のため`fukuoka/m403/`(福岡県全域)でも同じUIを確認したところ、**県内全域で「クラブ/ラウンジ」ジャンルは0件**だった(キャバクラ・ガールズバー・スナック・パブ/ショーパブは県内に掲載がありリンクが生成されている)。
+2. `sitemap_index.ashx` → `sitemap_search_kyushu.ashx`でジャンル別一覧ページのURLを機械的に洗い出したところ、`m403/a431/`配下に生成されているジャンルページは`g31`(キャバクラ)・`g33`(スナック)・`g34`(ガールズバー)の3つのみで、「クラブ/ラウンジ」に対応するジャンルコードのページはサイトマップ上にも存在しなかった。**条件6が指定する「ラウンジ/クラブの各ジャンルタブ」は、この2サイトいずれにも実体が存在しない**ことをサイトマップ起点で確認した(条件11)。
+3. **重要な事実**: pokepara-tainew.jpは「CLUB」を店名に含む久留米の店舗を、サイト自身のジャンル分類では「クラブ/ラウンジ」ではなく「キャバクラ」(`g31`)に分類している(例: CLUB CHESTER・CLUB フォーシーズン・Club 313はいずれも`g31`一覧に掲載)。前回パイロット(2026-08-27、スナック・キャバクラ85店)が採用した「ジャンルタブを経由せず、`sitemap_shop.ashx`から久留米市(`m403/a431`)配下の個別店舗ページを直接列挙する」手法(NH等の性風俗関連ページを一切経由しない)を踏襲し、性風俗タブには一切アクセスせずに`m403/a431`配下の個別店舗ページ**24件**(前回調査時と同一の対象範囲)を全件洗い出した。内訳はキャバクラ15・スナック6(うち2件市外)・ガールズバー1(`girlsbar-doll`、対応済み)・ガールズバー分類だが実質izakaya1(`izakaya-nyanko-sakaba`、対象外)・パブ/ショーパブ1(対象業態外)で前回調査と一致。
+
+### 対象29店とのマッチング結果: 24件中4件が該当
+
+24件の店名・住所を対象29店(ラウンジ20・クラブ9)と突き合わせた結果、**4件が住所完全一致で対応が取れた**(いずれも「キャバクラ」ジャンルとして掲載されているが、当サイトでは既存の出典に基づきlounge/club分類のまま変更していない=条件5遵守)。
+
+| pokepara-tainew.jpの店名(shop ID) | 住所 | 対応する当サイトID |
+|---|---|---|
+| CLUB CHESTER(shop12982) | 福岡県久留米市日吉町7-8 日吉ビル1F | `lounge-chester`(既存住所と完全一致) |
+| member's 奏(shop18674) | 福岡県久留米市日吉町13-59 サードサンビル3F | `lounge-kanade`(既存住所と完全一致) |
+| CLUB フォーシーズン(shop22907) | 福岡県久留米市六ツ門町1-15 第18上野ビル1F | `club-four-season`(既存住所と完全一致) |
+| Club 313(shop24408) | 福岡県久留米市日吉町13-45 ウルトラキャニオンシティ6F | `club-313`(既存住所と完全一致) |
+
+残り20件(24件中、上記4件を除く)は既存の別業態(kyabakura-hal/chanter/laluna/moncoeur/crescent/green等、snack-brilliant/takefuji/lavender、girlsbar-doll、izakaya-nyanko-sakaba)や対象外(外国人クラブハウスMEGA=パブ、市外2件)として前回パイロットで既に照合済みのため、今回は重複調査していない。**対象29店のうち25店は、pokepara-tainew.jpに個別店舗ページ自体が存在しない。**
+
+### 4件それぞれの精査結果: フィールド値の変更は0件(`internalSources`のみ4件追加)
+
+各店の`基本情報`テーブル(営業時間・定休日)とJSON-LD相当の求人情報(住所・電話番号)を、対象店自身のページ内のみから抽出した(条件8: 他店の情報が混在するランキング枠のようなUIはこのサイトの個別店舗ページには存在せず、1ページ=1店の求人情報のみで構成されていることを確認済み)。
+
+- **`lounge-chester`**: 住所は既存値と完全一致(新規確認)。営業時間「20:00～LAST」は既存値「18:00〜LAST(20:00〜の表記もあり)」の別表記側と整合(新規ファクトではない)。**定休日は「不定休」となっており、既存値「日曜」と食い違う**。既定方針(出典間の食い違いは上書きしない)により`closedDays`は変更していない。電話番号は次節の理由により採用していない。
+- **`lounge-kanade`**: 住所は既存値と完全一致。定休日「店休日　火曜」は既存値「火曜」と一致(新規ファクトではない)。営業時間「20:00～翌1:00」は既存値「20:00〜LAST」と整合。電話番号は次節の理由により採用していない。フィールド変更なし。
+- **`club-four-season`**: 住所・定休日(「日曜・祝日」で完全一致)・営業時間(整合)のいずれも既存値(確度A、公式サイト由来)と一致し、新規ファクトはなし。電話番号「0942-48-9082」も既存値と完全一致(次節の懸念があるランダムな携帯番号ではなく市外局番0942の固定電話であり、既存の公式サイト出典と一致することからこのケースでは実際に店の番号である可能性が高いが、条件3によりverificationのランクアップ対象にはしていない=既にAで最上位のため実質影響なし)。フィールド変更なし。
+- **`club-313`**: 住所・定休日(「日曜」で一致)は既存値と整合。**営業時間「22:00～翌1:00」は既存値「20:00〜LAST」と開始時刻が食い違う**(既定方針により`hours`は変更していない)。電話番号「080-2776-4092」は次節の理由により採用していない(既存値はnullのままとした)。フィールド変更なし。
+
+**上記4件について、`internalSources`に該当ページのURLを追加した**(`sources`=公開表示には追加していない。条件2)。ラベルは既存の命名慣行(「ポケパラ体入「店名」」)に統一した。食い違いを検知した2件(`lounge-chester`の定休日、`club-313`の営業時間)についても、既存方針どおり上書きはせず本ログへの記録のみに留めた。
+
+### 【新規検知・重要】電話番号フィールドの重大なデータ品質問題
+
+24件のうち複数店の電話番号を突き合わせたところ、**互いに無関係な店舗間で電話番号が完全一致する事例を3組検知した**。
+
+| 電話番号 | 一致した店舗A | 一致した店舗B |
+|---|---|---|
+| 090-8288-2189 | member's 奏(shop18674、`lounge-kanade`) | NEWイチロー(shop13012、当サイト未確定候補) |
+| 090-3191-1708 | CLUB CHESTER(shop12982、`lounge-chester`) | スナック竹藤(shop22879、既存公開店**`snack-takefuji`**。前回パイロット(2026-08-27, PR #49)でこの番号が`phone`として採用され現在本番公開中) |
+| 090-2397-7409 | スナックJJ(shop23796、福岡県**朝倉市**) | Lounge J-Collection(shop24387、福岡県**小郡市**) |
+
+3組目は久留米市とは無関係な**別々の市**の店舗間で一致しており、同一の求人代行・体入エージェントが複数店の採用ページに自社の携帯連絡先を掲載している可能性が高いと考えられる(Mon Coeur(shop14460)のページでは電話番号の後ろに明示的に「(求人専用直通)」という注記があり、この推測を裏付ける)。**pokepara-tainew.jpの「電話番号」欄は、来店客向けの店舗電話ではなく求人応募者向けの連絡先(エージェント共有の可能性あり)である疑いが強く、当サイトの「電話」欄(来店客が予約・問い合わせに使う想定)の出典として信頼できない。**
+
+このため、本PRでは対象4件のいずれについても`pokepara-tainew.jp`由来の電話番号を`phone`欄に採用していない(既存値がある場合はそれを維持、既存値がnullの`club-313`もnullのまま)。
+
+**申し送り(本PR範囲外): 既存公開店`snack-takefuji`の`phone`("090-3191-1708"、2026-08-27 PR #49で採用・本番公開中)は、上記の理由により誤り(無関係な店の求人代行番号を採用してしまった)である疑いが強い。** 対象業態(snack)・対象PR(本PRはlounge/club限定)のいずれの範囲外のため本PRでは修正していない。次回のスナック業態のデータ充実時、またはレビュー部の判断で別途裏取り・是正を行うことを推奨する。
+
+### 条件3(pokepara.jpとの同一系統扱い)の適用状況
+
+対象29店はいずれも既存`sources`/`internalSources`に`pokepara.jp`(無印)の出典を持っていなかったため、「既存のpokepara.jp出典と二重カウントしてしまう」場面自体が発生しなかった。今回`internalSources`に追加した4件の`pokepara-tainew.jp`はいずれも新規追加であり、`verification`ランクの変更は一切行っていない(`club-four-season`=A、`lounge-chester`=B、`lounge-kanade`=B、`club-313`=Cのまま)。将来この4店に`pokepara.jp`(無印)由来の出典が別途追加される場合は、2026-08-27の教訓(同一データ提供元の姉妹サイトは1系統として数える)に従い、今回追加した`pokepara-tainew.jp`と合わせて1系統として扱うこと。
+
+### 条件12(「該当なし」断定の全件照合)の適用
+
+24件の店名一覧の中に対象29店以外の「CLUB GREEN」(住所: 福岡県久留米市日吉町13-52 第8秋吉ビル1F)が含まれていたため、念のため`data/venues.json`全390件と機械照合したところ、**既に`kyabakura-green`(CLUB GREEN(グリーン)、kyabakura、同一住所)として公開済みであることを確認した**(未掲載ではない)。「NEWイチロー」「Lounge DayDay」の2件は前回パイロット(2026-08-27)時点で既に「未掲載候補として残る2件」として記録済み・本PRの対象(lounge/club)でもないため再調査していない。
+
+### 条件4(キャスト個人情報)の遵守
+
+参照したのは各店ページの「基本情報」テーブル(勤務日・営業時間・定休日・資格)と求人向け概要欄(店舗名・住所・電話番号・職種・給与)のみ。キャストの氏名・年齢・写真が掲載される`girl_voice.html`・`nakayoshi_photo.html`等のサブページには一切アクセスしていない。
+
+### ビルド確認・非公開ドメイン漏洩なしの確認(条件2)
+
+`node scripts/build.js`を実行し、ビルドが正常終了することを確認した。その後`grep -rl "gb-walker\|pokepara-tainew" dist/`を実行し、**0件(該当なし)であることを確認した**(追加した4件は`internalSources`格納のみで、`build.js`はこのフィールドを一切出力しないため)。あわせて、本PRで`internalSources`を追加した4店(`lounge-chester` `lounge-kanade` `club-four-season` `club-313`)について、`node -e`で`data/venues.json`の実値を直接読み出し、本記録(上表)と1件ずつ突き合わせて一致することを確認した(条件9)。
+
+### 結論・レビュー部への申し送り
+
+- 対象29店のうち、pokepara-tainew.jpに個別店舗ページが存在したのは4店のみ(gb-walker.jpは0店)。**`data/venues.json`のフィールド値(hours/closedDays/phone等)の追加・修正は0件**、`internalSources`のURL追加が4件のみ。
+- 前回のガールズバー・スナック/キャバクラパイロットと異なり、**今回は対象カテゴリ(ラウンジ・クラブ)自体がpokepara-tainew.jpの分類体系に存在しない**(「クラブ/ラウンジ」ジャンルが福岡県全域で0件)という構造的な理由により、掲載カバレッジが最も薄い結果になった。ただしサイト自身が「CLUB」を店名に持つ店を「キャバクラ」ジャンルに分類しているため、間接的に4店は捕捉できた。
+- **今回新たに検知した電話番号の信頼性問題(求人代行番号の使い回しの疑い)は、pokepara-tainew.jpを出典とする既存公開データ全般(特に既に電話番号を採用済みの`snack-takefuji`)に波及しうる。** 次回このサイトを出典に使う際は電話番号を採用しない、または固定電話(0942-)かつ既存出典と一致する場合に限定するなど、運用ルールの明文化を検討することを推奨する。
