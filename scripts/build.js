@@ -122,6 +122,12 @@ const UNVERIFIED_VENUE_IDS = new Set([
   // 返している(ビルド時のwarnログにも出力済み)が未登録だった。本PR自体のバグではなく
   // 既存のギャップだが、発見した以上ここで解消する。
   "izakaya-bonbori",
+  // 2026-08-30: ホットペッパー写真カバレッジ調査(開発部)のついでに発覚。izakaya-kakomian は
+  // data/ratings.json の2026-08-29更新でGoogle businessStatusが CLOSED_PERMANENTLY を
+  // 返している(ホットペッパー側も店舗登録写真が取得できずID自体が生きていない可能性が高い)。
+  // 本タスクのバグではないが既存のギャップのため、2026-08-22/08-27と同じ扱いでここに追加し、
+  // content/guides/a1-ichibangai.md のリンクも削除した(詳細は venue-audit-log.md 参照)。
+  "izakaya-kakomian",
 ]);
 function todayJST() {
   const now = new Date();
@@ -880,6 +886,308 @@ const OFFICIAL_PHOTOS = {
       imageUrl: "https://static.wixstatic.com/media/d671d7_84e60dd47f0742269fa33432a51c0501~mv2.jpg/v1/fit/w_1920,h_1280,q_90,enc_avif,quality_auto/d671d7_84e60dd47f0742269fa33432a51c0501~mv2.jpg",
       sourceLabel: "Sowaca 公式サイト",
       sourceUrl: "https://www.kurume-sowaca.com/",
+    },
+  ],
+  // ============================================================
+  // 【2026-08-30 対象店拡大その2】写真カバレッジ拡大調査(開発部)の一環で、独自ドメインの公式
+  // サイトを追加調査し、上記と同じ8ガードレール(対象店上限・1店最大5〜8枚・肖像権の目視選別・
+  // ソース公開性確認・公式ソース限定/非rehost/出典明記/削除導線あり・記録の徹底)に従って10店を
+  // 追加。既存14店と合わせ掲載店24店(ガードレール1の上限)に到達したため、追加調査はここで停止。
+  // 選定・除外の詳細根拠は data/venue-audit-log.md「2026-08-30」を参照。
+  //
+  // 【肖像権チェックの方法】各店の公式サイト掲載画像を全数目視確認し、識別可能な個人(客・
+  // スタッフの顔、または顔が写らずとも人物が構図の主題になっている写真)が写り込むものは不採用。
+  // 調査対象だったが公式サイトの大半・全てがキャスト/客の写真だった girlsbar-axia・
+  // kyabakura-kurume-rikyu、実写真が見つからず日付限定の販促画像しかなかった izakaya-kushi-tanaka・
+  // izakaya-shiroichi、ギャラリー用の実写真が無かった girlsbar-platinum-seven は不採用(採用店には
+  // 含めていない。詳細は監査ログ参照)。
+  //
+  // 【ソース公開性の確認】いずれも robots.txt が一般クローラーをブロックしておらず、ログイン・
+  // 会員限定の注記もない通常の公開ページ。ホットリンク時の挙動も、当サイトのGitHub Pagesドメインを
+  // Refererに付けたHTTP実測(2026-08-30)でHTTP 200・Content-Type: image/*を確認済み。
+  "club-the-member": [
+    {
+      imageUrl: "https://themember.jp/assets/img/mainvisual_01_pc@2x.webp",
+      sourceLabel: "The Member(ザ・メンバー) 公式サイト",
+      sourceUrl: "https://themember.jp/",
+    },
+    {
+      imageUrl: "https://themember.jp/assets/img/gallery_01@2x.webp",
+      sourceLabel: "The Member(ザ・メンバー) 公式サイト",
+      sourceUrl: "https://themember.jp/",
+    },
+    {
+      imageUrl: "https://themember.jp/assets/img/gallery_02@2x.webp",
+      sourceLabel: "The Member(ザ・メンバー) 公式サイト",
+      sourceUrl: "https://themember.jp/",
+    },
+    {
+      imageUrl: "https://themember.jp/assets/img/gallery_03@2x.webp",
+      sourceLabel: "The Member(ザ・メンバー) 公式サイト",
+      sourceUrl: "https://themember.jp/",
+    },
+    {
+      imageUrl: "https://themember.jp/assets/img/gallery_04@2x.webp",
+      sourceLabel: "The Member(ザ・メンバー) 公式サイト",
+      sourceUrl: "https://themember.jp/",
+    },
+    {
+      imageUrl: "https://themember.jp/assets/img/gallery_05@2x.webp",
+      sourceLabel: "The Member(ザ・メンバー) 公式サイト",
+      sourceUrl: "https://themember.jp/",
+    },
+  ],
+  // 公式サイトの写真20枚中、人物(客の後ろ姿含む)が写るものは不採用。外観・エントランス・
+  // 個室・料理のみ採用。
+  "izakaya-shanghai-shuka": [
+    {
+      imageUrl: "https://shanghai-shuka.com/img/top_gally1.jpg",
+      sourceLabel: "上海酒家 公式サイト",
+      sourceUrl: "https://shanghai-shuka.com/",
+    },
+    {
+      imageUrl: "https://shanghai-shuka.com/img/top_gally2.jpg",
+      sourceLabel: "上海酒家 公式サイト",
+      sourceUrl: "https://shanghai-shuka.com/",
+    },
+    {
+      imageUrl: "https://shanghai-shuka.com/img/top_gally3.jpg",
+      sourceLabel: "上海酒家 公式サイト",
+      sourceUrl: "https://shanghai-shuka.com/",
+    },
+    {
+      imageUrl: "https://shanghai-shuka.com/img/top_gally4.jpg",
+      sourceLabel: "上海酒家 公式サイト",
+      sourceUrl: "https://shanghai-shuka.com/",
+    },
+    {
+      imageUrl: "https://shanghai-shuka.com/img/top_gally6.jpg",
+      sourceLabel: "上海酒家 公式サイト",
+      sourceUrl: "https://shanghai-shuka.com/",
+    },
+    {
+      imageUrl: "https://shanghai-shuka.com/img/top_gally7.jpg",
+      sourceLabel: "上海酒家 公式サイト",
+      sourceUrl: "https://shanghai-shuka.com/",
+    },
+  ],
+  // 公式サイトのギャラリー6枚中、DJ機材を操作する人物の手元が写る1枚(g-4)のみ、顔は写って
+  // いないが人物が構図の主題のため不採用。残り5枚を採用。
+  "bar-manuka": [
+    {
+      imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/images/gallery/g-1.jpg",
+      sourceLabel: "MANUQA(マヌカ) 公式サイト",
+      sourceUrl: "https://manuqa.jp/",
+    },
+    {
+      imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/images/gallery/g-2.jpg",
+      sourceLabel: "MANUQA(マヌカ) 公式サイト",
+      sourceUrl: "https://manuqa.jp/",
+    },
+    {
+      imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/images/gallery/g-3.jpg",
+      sourceLabel: "MANUQA(マヌカ) 公式サイト",
+      sourceUrl: "https://manuqa.jp/",
+    },
+    {
+      imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/images/gallery/g-5.jpg",
+      sourceLabel: "MANUQA(マヌカ) 公式サイト",
+      sourceUrl: "https://manuqa.jp/",
+    },
+    {
+      imageUrl: "https://manuqa.jp/wp-content/themes/manuqa-theme/images/gallery/g-6.jpg",
+      sourceLabel: "MANUQA(マヌカ) 公式サイト",
+      sourceUrl: "https://manuqa.jp/",
+    },
+  ],
+  // 公式サイトのトップ写真1枚(top001)は背景にステージ演奏中の人物が写り込む(ボケてはいるが
+  // 人物が写るため)不採用。残りのステージ・楽器・ロゴ写真5枚を採用。
+  "bar-live-actor": [
+    {
+      imageUrl: "https://livebaractor.com/wp-content/uploads/2021/12/top002-1000x561.png",
+      sourceLabel: "Live Bar Actor 公式サイト",
+      sourceUrl: "https://livebaractor.com/",
+    },
+    {
+      imageUrl: "https://livebaractor.com/wp-content/uploads/2021/12/introduction006.jpg",
+      sourceLabel: "Live Bar Actor 公式サイト",
+      sourceUrl: "https://livebaractor.com/",
+    },
+    {
+      imageUrl: "https://livebaractor.com/wp-content/uploads/2021/12/introduction003.jpg",
+      sourceLabel: "Live Bar Actor 公式サイト",
+      sourceUrl: "https://livebaractor.com/",
+    },
+    {
+      imageUrl: "https://livebaractor.com/wp-content/uploads/2021/12/introduction004.jpg",
+      sourceLabel: "Live Bar Actor 公式サイト",
+      sourceUrl: "https://livebaractor.com/",
+    },
+    {
+      imageUrl: "https://livebaractor.com/wp-content/uploads/2021/12/introduction006-%E2%80%93-3.jpg",
+      sourceLabel: "Live Bar Actor 公式サイト",
+      sourceUrl: "https://livebaractor.com/",
+    },
+  ],
+  // 「戦国焼鳥 家康」はチェーン展開のため、公式サイトが姉妹店(2号店・18号店等)の写真も
+  // 同じギャラリーに混在させている。掲載店(久留米店=11号店)の店舗ページ(?plan=11号店)上に
+  // 表示され、かつファイル名が "11_" で始まる=久留米店専用と確認できた写真、および外観に
+  // 「11号店」の看板が写り久留米店と確認できた写真のみを採用(他支店の写真は一切採用しない)。
+  "izakaya-sengoku-ieyasu": [
+    {
+      imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/03/d2a04da8fbd20ddcb15fa80386c53f7f-e1742887853193.jpg",
+      sourceLabel: "戦国焼鳥 家康 久留米店(11号店) 公式サイト",
+      sourceUrl: "https://yakitori-ieyasu.co.jp/?plan=11%e5%8f%b7%e5%ba%97",
+    },
+    {
+      imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/03/11_1000_680_2.jpg",
+      sourceLabel: "戦国焼鳥 家康 久留米店(11号店) 公式サイト",
+      sourceUrl: "https://yakitori-ieyasu.co.jp/?plan=11%e5%8f%b7%e5%ba%97",
+    },
+    {
+      imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/03/11_1000_680_3.jpg",
+      sourceLabel: "戦国焼鳥 家康 久留米店(11号店) 公式サイト",
+      sourceUrl: "https://yakitori-ieyasu.co.jp/?plan=11%e5%8f%b7%e5%ba%97",
+    },
+    {
+      imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/03/11_1000_680_5.jpg",
+      sourceLabel: "戦国焼鳥 家康 久留米店(11号店) 公式サイト",
+      sourceUrl: "https://yakitori-ieyasu.co.jp/?plan=11%e5%8f%b7%e5%ba%97",
+    },
+    {
+      imageUrl: "https://yakitori-ieyasu.co.jp/wp-content/uploads/2019/03/11_1000_680_6.jpg",
+      sourceLabel: "戦国焼鳥 家康 久留米店(11号店) 公式サイト",
+      sourceUrl: "https://yakitori-ieyasu.co.jp/?plan=11%e5%8f%b7%e5%ba%97",
+    },
+  ],
+  // 公式サイトのトップ写真中、店内で三線を演奏するスタッフと歓声を上げる客の顔が写る1枚
+  // (top04)のみ不採用。外観・料理・カウンターの5枚を採用。
+  "izakaya-okinawa-kizuna": [
+    {
+      imageUrl: "https://kizuna1110.com/system_panel/uploads/images/top01.jpg",
+      sourceLabel: "沖縄居酒屋 絆 公式サイト",
+      sourceUrl: "https://kizuna1110.com/",
+    },
+    {
+      imageUrl: "https://kizuna1110.com/system_panel/uploads/images/top02.jpg",
+      sourceLabel: "沖縄居酒屋 絆 公式サイト",
+      sourceUrl: "https://kizuna1110.com/",
+    },
+    {
+      imageUrl: "https://kizuna1110.com/system_panel/uploads/images/top03.jpg",
+      sourceLabel: "沖縄居酒屋 絆 公式サイト",
+      sourceUrl: "https://kizuna1110.com/",
+    },
+    {
+      imageUrl: "https://kizuna1110.com/system_panel/uploads/images/cover02.jpg",
+      sourceLabel: "沖縄居酒屋 絆 公式サイト",
+      sourceUrl: "https://kizuna1110.com/",
+    },
+    {
+      imageUrl: "https://kizuna1110.com/system_panel/uploads/images/cover03.jpg",
+      sourceLabel: "沖縄居酒屋 絆 公式サイト",
+      sourceUrl: "https://kizuna1110.com/",
+    },
+  ],
+  // 公式サイトの料理写真のみで構成(内観・外観写真は無し)。いずれも人物なし。
+  "izakaya-amenita-pizzeria": [
+    {
+      imageUrl: "https://pizzeria-amenita.com/wp-content/uploads/2020/07/pizza-lunch_01main-1.jpg",
+      sourceLabel: "Pizzeria Amenita 公式サイト",
+      sourceUrl: "https://pizzeria-amenita.com/",
+    },
+    {
+      imageUrl: "https://pizzeria-amenita.com/wp-content/uploads/2020/07/share-lunch-1.jpg",
+      sourceLabel: "Pizzeria Amenita 公式サイト",
+      sourceUrl: "https://pizzeria-amenita.com/",
+    },
+    {
+      imageUrl: "https://pizzeria-amenita.com/wp-content/uploads/2020/06/grandmenu2_img.jpg",
+      sourceLabel: "Pizzeria Amenita 公式サイト",
+      sourceUrl: "https://pizzeria-amenita.com/",
+    },
+    {
+      imageUrl: "https://pizzeria-amenita.com/wp-content/uploads/2021/06/grandmenu1_img.jpg",
+      sourceLabel: "Pizzeria Amenita 公式サイト",
+      sourceUrl: "https://pizzeria-amenita.com/",
+    },
+    {
+      imageUrl: "https://pizzeria-amenita.com/wp-content/uploads/2020/06/grandmenu3_img.jpg",
+      sourceLabel: "Pizzeria Amenita 公式サイト",
+      sourceUrl: "https://pizzeria-amenita.com/",
+    },
+  ],
+  "izakaya-kalbi-yokocho": [
+    {
+      imageUrl: "https://karubiyokotyo.com/img/top_about1_1.jpg",
+      sourceLabel: "炭火焼肉 カルビ横丁 公式サイト",
+      sourceUrl: "https://karubiyokotyo.com/",
+    },
+    {
+      imageUrl: "https://karubiyokotyo.com/img/top_gally1.jpg",
+      sourceLabel: "炭火焼肉 カルビ横丁 公式サイト",
+      sourceUrl: "https://karubiyokotyo.com/",
+    },
+    {
+      imageUrl: "https://karubiyokotyo.com/img/top_gally3.jpg",
+      sourceLabel: "炭火焼肉 カルビ横丁 公式サイト",
+      sourceUrl: "https://karubiyokotyo.com/",
+    },
+    {
+      imageUrl: "https://karubiyokotyo.com/img/top_gally4.jpg",
+      sourceLabel: "炭火焼肉 カルビ横丁 公式サイト",
+      sourceUrl: "https://karubiyokotyo.com/",
+    },
+    {
+      imageUrl: "https://karubiyokotyo.com/img/top_gally5.jpg",
+      sourceLabel: "炭火焼肉 カルビ横丁 公式サイト",
+      sourceUrl: "https://karubiyokotyo.com/",
+    },
+  ],
+  "izakaya-tori-shiki": [
+    {
+      imageUrl: "https://torishiki-kurume.com/img/mv1.jpg",
+      sourceLabel: "鶏しき 公式サイト",
+      sourceUrl: "https://torishiki-kurume.com/",
+    },
+    {
+      imageUrl: "https://torishiki-kurume.com/img/mv2.jpg",
+      sourceLabel: "鶏しき 公式サイト",
+      sourceUrl: "https://torishiki-kurume.com/",
+    },
+    {
+      imageUrl: "https://torishiki-kurume.com/img/gallery_02.jpg",
+      sourceLabel: "鶏しき 公式サイト",
+      sourceUrl: "https://torishiki-kurume.com/",
+    },
+    {
+      imageUrl: "https://torishiki-kurume.com/img/gallery_03.jpg",
+      sourceLabel: "鶏しき 公式サイト",
+      sourceUrl: "https://torishiki-kurume.com/",
+    },
+  ],
+  // 公式サイトのトップ写真1枚(mv_1)は背景に店員とみられる人影が写り込むため不採用。
+  // 残りのボトル棚・料理・内装・カクテル4枚を採用。
+  "bar-welmona": [
+    {
+      imageUrl: "https://welmona.com/img/gallery_1.jpg",
+      sourceLabel: "WELMONA 公式サイト",
+      sourceUrl: "https://welmona.com/",
+    },
+    {
+      imageUrl: "https://welmona.com/img/gallery_2.jpg",
+      sourceLabel: "WELMONA 公式サイト",
+      sourceUrl: "https://welmona.com/",
+    },
+    {
+      imageUrl: "https://welmona.com/img/gallery_3.jpg",
+      sourceLabel: "WELMONA 公式サイト",
+      sourceUrl: "https://welmona.com/",
+    },
+    {
+      imageUrl: "https://welmona.com/img/mv_2.jpg",
+      sourceLabel: "WELMONA 公式サイト",
+      sourceUrl: "https://welmona.com/",
     },
   ],
 };
