@@ -1379,3 +1379,68 @@ PR #46(2026-08-22)の誤爬取バグ(town-night.jp個別ページ下部の「お
 ### 画像URLのホットリンク実測(ガードレール5=非rehostの裏付け)
 
 採用した41枚すべてについて、`curl`で当サイトのGitHub Pagesドメインを`Referer`に付けたクロスオリジン要求がHTTP 200・`Content-Type: image/*`を返すことを実測済み(2026-08-28〜29時点)。`club-sowaca`(Wix)は素の`static.wixstatic.com/media/<hash>~mv2.jpg`へのアクセスはHTTP 403だったが、公式サイトが実際に配信で使っている変換パラメータ付きURL(`/v1/fill/...` `/v1/fit/...`)であれば200になることを確認し、そのURLを`imageUrl`に採用した。
+
+## 2026-08-30(フェーズ2データ充実 バッチ4 — 前回「未着手」55店の再試行。新規発見1件(job-chocolat.jp個別ページ)を追加、正味16店を更新)
+
+### 経緯
+
+前回バッチ(PR #46・#50、2026-08-27〜28)で「出典が尽きた」として保留されていた店(スナック・キャバクラ・ラウンジ・クラブでhours/closedDays/phone/tags/priceRange等が空欄のまま残る店、概算50店台)を対象に、指示された4ドメイン(`nightmap.hotomeki-fukuoka.com`・`con-ca.jp`・`www.snack-map.com`・`map.yahoo.co.jp`)を再試行した。加えて、既存`internalSources`に登録済みだが個別ページを未調査だった`job-chocolat.jp`を追加調査した。
+
+### 1. `nightmap.hotomeki-fukuoka.com`: 依然DNS障害。今回は複数の外部DNSリゾルバで裏取りし「一時的な自環境の問題」ではないことを確認
+
+前回は自環境のDNSリゾルバで`SERVFAIL`だった。今回は`8.8.8.8`(Google)・`1.1.1.1`(Cloudflare)の外部リゾルバに直接問い合わせたが、いずれも同ドメインの委任先(Cloudflareのネームサーバー`172.64.52.144`/`172.64.53.131`)が`REFUSED`を返した(`dig @8.8.8.8 hotomeki-fukuoka.com SOA`で確認)。これは「委任先には浸透しているが、そのゾーンがCloudflare側で設定されていない/一時停止している」状態を示しており、当社のネットワーク環境固有の問題ではなく、ドメイン自体がインターネット全体から見て名前解決不能な状態にあると判断できる。既存`sources`に個別ページURLが登録済みの5店(`snack-saito` `snack-calm` `snack-the-ritz` `snack-a-king` `snack-partir`)は今回も取得できず、変更なし。
+
+### 2. `con-ca.jp`: 個別ページの発見方法を確立できたが、業態が対象外(コンカフェ専門ポータル)と判明。今後この用途では使用不可と結論
+
+`robots.txt`の`Sitemap:`から`sitemap_index.xml`→`sitemap_shop.xml`をたどり、`town-night.jp`と同一の`/fukuoka/a_962/shop/NNNNNN/`形式の個別ページURLを機械的に洗い出せることを確認した(発見方法自体は解決)。しかし久留米エリア(`a_962`)の該当ページは10件のみで、全件を実際に取得し`<title>`を確認したところ、**全10件が「〜 - 久留米コンカフェ【コンカ】」というコンセプトカフェ専業ページ**だった(例: `shop/002000/`→「カフェラウンジ PLATINUM SEVEN」、`shop/002001/`→「娘娘酒場 久留米店」など、いずれも既存の`concafe-*`/フェーズ2転入済みのコンカフェ系店舗と対応)。`con-ca.jp`は`town-night.jp`と同じ運営元エンジンを使っているが**業態としてコンカフェしか扱っておらず、スナック・キャバクラ・ラウンジ・クラブは1件も掲載していない**。前回「個別ページの発見方法が見つからない」としていたが、正しくは「発見方法はあるが対象業態が最初から存在しない」。今後このドメインをスナック・キャバクラ・ラウンジ・クラブのデータ源として再調査する必要はない。
+
+### 3. `www.snack-map.com`: 埋め込みJSON(Next.js RSCペイロード)の読み取りに成功。ただし久留米の掲載数が11店と少なく、大半は既存データと一致(裏取りの価値はあるが新規は僅少)
+
+トップページはNext.js App Routerで`__NEXT_DATA__`のような単純な埋め込みは無いが、`self.__next_f.push(...)`で送られるRSCペイロード(JS文字列の中にJSON文字列がエスケープされた状態で埋め込まれている)から、バックスラッシュの連続を単純に引用符へ畳み込む変換(`replace(/\\+"/g, '"')`)でほぼそのまま読める構造化データ(営業時間・定休日・電話番号・最寄り駅からの距離)を確認した。
+
+- サイトマップ(`/sitemap.xml`)から`/fukuoka/kurume`・`/fukuoka/kurumeshi`のエリアページを発見し、久留米エリアの個別店舗ページは`/snack/40070101`〜`/snack/40070111`(連番11件)+`/snack/axia1`(既存の別業態店、対象外)の**計11件のみ**と判明(id範囲を実際に1件ずつHTTPコードで確認し境界を確定)。
+- 11件全件を取得・照合した結果、**全店が既に`venues.json`に存在**しており(電話番号での一致確認込み)、新規店舗の発見はゼロだった。
+- 既存データとの突き合わせで新規に埋まったのは3件: `snack-cookie-vip.phone`(090-3603-2330)・`snack-ichiyou.phone`(080-3964-2722)・`snack-rosso.hours`(20:00〜翌1:00)/`closedDays`(日曜・祝日)。他8件(`snack-cookie` `snack-mitsubachi` `snack-luxe` `snack-aramis` `snack-jun` `snack-suijin` `snack-sakura` `snack-rinrin`)は電話番号が完全一致し既存データの正しさを裏付けたのみで、フィールド追加なし。
+- **【重要・誤爬取防止の確認】** id=40070111のタイトルは「凛琳」で、店名の音が近い既存店が2件(`snack-rin`「rin.(リン)」住所12-63 / `snack-rinrin`「凛琳(リンリン)」住所13-45)存在したため、電話番号(0942-37-0733)で照合したところ**`snack-rinrin`と一致**(`snack-rin`とは別店)と確定した。`snack-rinrin`は既にhours/closedDays/phoneとも充足済みだったため変更なし、`snack-rin`は今回も情報を得られず空欄のまま。
+- サイト取得は同一URLへの再リクエストで成功/失敗(フォールバック用の汎用シェルHTML)が入れ替わる挙動が散見された(robots.txtのクロール制限による遮断ではなく、サーバー側SSRの一時的な不調とみられる)。再試行で解消することを確認済み。
+
+### 4. `map.yahoo.co.jp`: `application/ld+json`のschema.org構造化データ(LocalBusiness)を発見・抽出成功。既知のYahoo!マップ出典5件のうち1件(Amore)を充実
+
+同じくRSCペイロードの中に`<script type="application/ld+json">`のLocalBusiness/Restaurant構造化データが埋め込まれており、`openingHoursSpecification`(曜日別の開閉店時刻)・`telephone`・`address`を機械的に取得できることを確認した(前述と同じバックスラッシュ畳み込みで復元可能)。
+
+- 既存`sources`/`internalSources`に`map.yahoo.co.jp`の個別ページURLを持つ5店(`kyabakura-all` `snack-lavender` `snack-ok` `snack-amore` `snack-saito`)を再取得した。
+- `snack-amore`: `openingHoursSpecification`(月〜土 20:00〜24:00)・`telephone`(0942-30-0038)・`payment.methods`(QRコード/PayPay、`isShow:true`)を取得し、`hours`・`closedDays`(日曜・祝日、`holidayText`欄より)・`phone`・`payment`(PayPay可)を新規に埋めた。住所欄(`日吉町15`)も既存住所(15-73)と整合。
+- `snack-ok`: `telephone`が既存値(0942-34-1596)と完全一致することを確認(裏取りのみ、新規なし)。この店の`openingHoursSpecification`はページ上に存在しなかった。
+- `kyabakura-all`・`snack-saito`は複数回(それぞれ2〜3回)再取得を試みたが、いずれも店舗名や構造化データを含まない汎用テンプレートHTML(既知の"データなしpage"、`snack-amore`成功時の70KB前後に対し23〜25KB程度)が一貫して返ってきた。`snack-map.com`のような一過性のSSR不調ではなく再現性のある挙動だったため、この2件は今回は取得を断念した(Yahoo側のプレイスIDごとにSSR完全版が出るかどうかにばらつきがある可能性。原因不明)。
+
+### 5. `job-chocolat.jp`(追加調査・4ドメインの対象外だが既存`internalSources`から発見): 個別求人ページの構造化テーブル(営業時間・定休日)を機械的に抽出し、正味12店を充実
+
+複数の店で`internalSources`に`job-chocolat.jp`の**一覧ページ**(`/fukuoka/city_448/shoplist/`)URLが既に登録されていたが、個別ページは未調査だった。一覧ページを取得したところ、`town-night.jp`・`con-ca.jp`と同じ`a_962`エリアコードで個別求人ページ(`/fukuoka/a_962/shop/NNNNN/`)が**37件**機械的に列挙できることを発見した。
+
+- 37件全てを取得し、`<title>`(店名)、`営業時間`・`定休日`の構造化`<th>/<td>`テーブルセルを抽出した(求人ページのため電話番号・住所は掲載されていない)。
+- 店名をローマ字表記・カタカナ表記の両方で正規化して`venues.json`(snack/kyabakura/lounge/club)と突き合わせ、**32/37件が既存店と一致**(完全一致のみを採用。「Club R」と「Club Rudan」のような部分一致による誤爬取を避けるため、正規化後の文字列が完全一致する候補のみを採用し、部分文字列一致は不採用とした)。
+- 既存フィールドが空欄だった**12店**の`hours`・`closedDays`を新規に埋めた: `lounge-new-impact`(closedDays)・`kyabakura-ariel`(closedDays)・`kyabakura-nestia`(hours+closedDays)・`club-ari`(hours+closedDays)・`kyabakura-rudan`(hours+closedDays)・`snack-ok`(hours+closedDays)・`kyabakura-vega`(hours+closedDays)・`kyabakura-all`(hours+closedDays)・`kyabakura-premier`(closedDays)・`lounge-jewel`(hours+closedDays)・`lounge-athena`(hours+closedDays)・`snack-nakagawa-r`(hours+closedDays、あわせて`closedDays`キー自体が存在しなかったため新規追加)。残り20件は既に別出典で充足済みで、job-chocolatの値と付き合わせて矛盾がないことを確認したのみ(変更なし)。
+- 表記は既存の`HH:MM〜LAST`/`HH:MM〜翌H:MM`規約に合わせて正規化した(元表記「20:00 ～ LAST」→「20:00〜LAST」、「20:30 ～ 1:00」→「20:30〜翌1:00」、「日曜日」→「日曜」等)。
+- **新規未掲載店を4件発見(今回は追加せず記録のみ)**: `Club Active(アクティブ)`・`BAR GenGer(ゲンガー)`・`Club SHANDRA(シャンドラ)`・`CLUB 帝(ミカド)`。いずれも`venues.json`に該当エントリなし。2026-08-22の社長指示によりフェーズ2新規追加は一時停止中のため、今回は追加せず、一時停止解除後の調査候補としてここに記録する。
+- **対象エリア外のため除外(2件)**: `【二日市】Lounge Soleil` `【八女】SEDNA` — job-chocolat.jpの久留米エリアコード(`a_962`)一覧には、店名に地名プレフィックスが付いた形で**近隣の別市(二日市・八女)の店が混在**していることが判明した。今後`a_962`の一覧を機械的に使う際は、店名の地名プレフィックスの有無を必ず確認すること(新たな注意点として記録)。
+- `娘娘酒場 久留米店`は名前一致したが対応先`izakaya-nyanko-sakaba`はizakaya業態(フェーズ境界の都合で非公開/フェーズ2転入済み)であり、本バッチのスコープ(snack/kyabakura/lounge/club)外のため変更していない。
+- **懸念点(記録のみ・対応不要)**: `lounge-new-impact`はGoogle businessStatusが`CLOSED_PERMANENTLY`を返し`UNVERIFIED_VENUE_IDS`の未確認バナー対象になっている。今回job-chocolat.jpの求人ページ(現役の営業時間・定休日表記あり)から`closedDays`を追加したが、これは既存の未確認バナー表示の仕組みとは独立して動作するため実害はないと判断した(店舗ページには引き続き「営業状況未確認」の注記が出る)。
+
+### 6. 組合名簿(`f-ryoin.jp`)の再確認: 既に完全に反映済みと確認(新規なし)
+
+`https://f-ryoin.jp/union/kurume-bunkagai/`を再取得し、掲載16件全てを電話番号で`venues.json`と突き合わせた。13件は既存データと完全一致(=既に反映済み)、3件(`カラオケスタジオ謝謝` `山忠うどん` `GOCCI`)は当サイトのデータに該当エントリなし(スナック・キャバクラ以外の業態、または未掲載店の可能性。新規追加は一時停止中のため今回は追加せず)。新規に埋まったフィールドはゼロ。
+
+### 公式サイト・公式Instagram・公式TikTokでの個別再確認について
+
+開発部(dev-lead)はWebSearch/WebFetchツールを保有せず、既知のURL(`curl`で直接アクセス可能なもの)以外は発見手段がない。今回の再試行はすべて「既に`sources`/`internalSources`に登録済みのURL」または「その運営元サイトの一覧ページ・サイトマップから機械的に辿れる個別ページ」に限られる。企画部(`planning-lead`、WebSearch保有)による候補探索がなければ、未知の公式サイト・Instagram・TikTokアカウントの新規発見はできない(2026-08-27のレビュー部指摘と同じ制約が今回も該当)。
+
+### 結果まとめ
+
+- **更新した店舗数: 16店**(`snack-cookie-vip` `snack-ichiyou` `snack-rosso` `snack-amore` `lounge-new-impact` `kyabakura-ariel` `kyabakura-nestia` `club-ari` `kyabakura-rudan` `snack-ok` `kyabakura-vega` `kyabakura-all` `kyabakura-premier` `lounge-jewel` `lounge-athena` `snack-nakagawa-r`)。埋めたフィールド数は延べ24件(hours 11・closedDays 12・phone 3・payment 1、一部重複カウントあり)。
+- **依然埋められなかった店は多数残る**(スナック単独で100店規模)。今回発見した新規ソース(job-chocolat.jp個別ページ)はkyabakura/lounge/club寄りの求人サイトのため、スナックの空欄(tags・budgetDinner・seats・priceRange等)への寄与は限定的だった。tags(タグ)・budgetDinner(予算)・seats(席数)・priceRange(料金)は今回のいずれの出典からも構造化データとしては得られず、依然大半が空欄のまま。
+- **正直な結論**: 前回同様、今回も「出典が尽きて埋められない店」が大多数残った。今回の成果は主に(a)前回DNS障害/発見方法不明だった論点に決着をつけたこと(nightmap=依然ダウンだが原因を裏取り、con-ca.jp=業態対象外と確定)、(b)snack-map.com/map.yahoo.co.jpの埋め込みJSON読み取り手法を確立したこと、(c)job-chocolat.jpという新出典を追加できたこと、の3点であり、店舗単位の充実効果は16店・限定的。
+
+### 検証方法
+
+- 上記の全変更は、抽出したJSON/HTMLの値と`data/venues.json`の実際の差分(`git diff`)を突き合わせたうえで本セクションを記述した(値の記録前に必ず実ファイルの`git diff`を確認する運用を徹底)。
+- `node scripts/build.js`でビルド成功を確認済み(公開285件、営業時間パース240/242件、既知の警告6件〈Google businessStatus非営業〉は本バッチの変更と無関係の既存事象)。
