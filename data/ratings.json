@@ -625,45 +625,45 @@
   },
   "izakaya-shinshin-tei": {
     "rating": 4.6,
-    "userRatingCount": 27,
+    "userRatingCount": 28,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:19.028Z"
+    "updatedAt": "2026-09-16T20:52:29.348Z"
   },
   "izakaya-shiroichi": {
     "rating": 4,
     "userRatingCount": 114,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:19.368Z"
+    "updatedAt": "2026-09-16T20:52:29.701Z"
   },
   "izakaya-soul-in-seoul": {
     "rating": 4.7,
     "userRatingCount": 24,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:19.709Z"
+    "updatedAt": "2026-09-16T20:52:30.048Z"
   },
   "izakaya-sumibi-kushiya": {
     "rating": 4.3,
-    "userRatingCount": 538,
+    "userRatingCount": 547,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:20.050Z"
+    "updatedAt": "2026-09-16T20:52:30.398Z"
   },
   "izakaya-sumibi-sakagura-kita": {
     "rating": 3.9,
-    "userRatingCount": 112,
+    "userRatingCount": 113,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:20.390Z"
+    "updatedAt": "2026-09-16T20:52:30.744Z"
   },
   "izakaya-tacchan": {
     "rating": 3.8,
     "userRatingCount": 232,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:20.740Z"
+    "updatedAt": "2026-09-16T20:52:31.086Z"
   },
   "izakaya-taketora": {
     "rating": 4.7,
-    "userRatingCount": 363,
+    "userRatingCount": 366,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:21.081Z"
+    "updatedAt": "2026-09-16T20:52:31.428Z"
   },
   "izakaya-tantanen": {
     "rating": 3.2,
@@ -673,93 +673,93 @@
   },
   "izakaya-tashu": {
     "rating": 4.7,
-    "userRatingCount": 1055,
+    "userRatingCount": 1054,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:21.428Z"
+    "updatedAt": "2026-09-16T20:52:31.783Z"
   },
   "izakaya-tatami": {
-    "rating": 4,
-    "userRatingCount": 66,
+    "rating": 3.9,
+    "userRatingCount": 67,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:21.773Z"
+    "updatedAt": "2026-09-16T20:52:32.142Z"
   },
   "izakaya-todoit": {
     "rating": 4.8,
-    "userRatingCount": 221,
+    "userRatingCount": 220,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:22.114Z"
+    "updatedAt": "2026-09-16T20:52:32.486Z"
   },
   "izakaya-tomosuke": {
     "rating": 3.9,
     "userRatingCount": 262,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:22.423Z"
+    "updatedAt": "2026-09-16T20:52:32.834Z"
   },
   "izakaya-tonya-donya": {
     "rating": 3.5,
     "userRatingCount": 35,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:22.734Z"
+    "updatedAt": "2026-09-16T20:52:33.184Z"
   },
   "izakaya-tori-shiki": {
     "rating": 4.3,
     "userRatingCount": 20,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:23.051Z"
+    "updatedAt": "2026-09-16T20:52:33.532Z"
   },
   "izakaya-toriichizu": {
     "rating": 4.5,
     "userRatingCount": 576,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-07T21:07:23.363Z"
+    "updatedAt": "2026-09-16T20:52:33.870Z"
   },
   "izakaya-torimero": {
     "rating": 3.5,
     "userRatingCount": 212,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:30.628Z"
+    "updatedAt": "2026-09-16T20:52:34.213Z"
   },
   "izakaya-toriya-torisuke": {
     "rating": 4.1,
     "userRatingCount": 74,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:30.978Z"
+    "updatedAt": "2026-09-16T20:52:34.550Z"
   },
   "izakaya-torizakaba-sumibito": {
     "rating": 4.6,
-    "userRatingCount": 26,
+    "userRatingCount": 27,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:31.327Z"
+    "updatedAt": "2026-09-16T20:52:34.887Z"
   },
   "izakaya-tsukasa": {
     "rating": 3.6,
     "userRatingCount": 192,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:31.683Z"
+    "updatedAt": "2026-09-16T20:52:35.253Z"
   },
   "izakaya-tsukune-yokocho": {
     "rating": 3.7,
     "userRatingCount": 253,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:32.035Z"
+    "updatedAt": "2026-09-16T20:52:35.588Z"
   },
   "izakaya-warukaruma": {
     "rating": 4.6,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:32.383Z"
+    "updatedAt": "2026-09-16T20:52:35.908Z"
   },
   "izakaya-yakiniku-zen": {
     "rating": 4.2,
     "userRatingCount": 26,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:32.731Z"
+    "updatedAt": "2026-09-16T20:52:36.231Z"
   },
   "izakaya-yakitori-susumu": {
     "rating": 4.3,
     "userRatingCount": 18,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-08T20:43:33.082Z"
+    "updatedAt": "2026-09-16T20:52:36.557Z"
   },
   "izakaya-yakitori-yokozuna": {
     "rating": 3.7,
