@@ -24,8 +24,8 @@ GitHub Pages で公開
 
 公開から実績(285店舗掲載)があるにもかかわらずGA4が未設置でトラフィックが計測できていなかったため導入した。
 
-- **GA4(Google アナリティクス 4)**: `scripts/build.js` の `GA_MEASUREMENT_ID` 定数に測定ID(`G-`で始まる文字列)を設定すると、`layout()` が全ページの `<head>` に計測タグを出力する(本番ドメイン `nattuuuzamiurai.github.io` 以外では発火しない。ふくおかポーカーナビと同じ方針)。**現時点では空文字のままで未計測**。GA4プロパティの新規作成はGoogle Analyticsアカウントでの操作が必要で、ビルドスクリプト側からは自動化できない。作成手順: [analytics.google.com](https://analytics.google.com/) → 管理 → プロパティを作成 → 「久留米飲み屋ナビ」→ ウェブストリームのURLに `https://nattuuuzamiurai.github.io/kurume-bar-navi/` を設定 → 発行された測定IDを `GA_MEASUREMENT_ID` に設定して再ビルド・デプロイすれば導入完了する(所要作業は定数1行の変更のみ)。
-- **Google AdSense**: 他サイト(ふくおかポーカーナビ・AI実務ナビ)と同一のAdSenseアカウント(`ca-pub-6349478743429747`)に相乗りする形で、広告配信タグ・`ads.txt`(`google.com, pub-6349478743429747, DIRECT, f08c47fec0942fa0`)を先行設置済み。ただし**このサイトをそのAdSenseアカウントに追加して審査を通すのはGoogle AdSenseダッシュボード上の操作**であり、コード側の準備だけでは広告は配信されない。
+- **GA4(Google アナリティクス 4)**: `scripts/build.js` の `GA_MEASUREMENT_ID` 定数に測定ID(`G-`で始まる文字列)を設定すると、`layout()` が全ページの `<head>` に計測タグを出力する(本番ドメイン `nattuuuzamiurai.github.io` 以外では発火しない。他サイトと同じ方針)。**現時点では空文字のままで未計測**。GA4プロパティの新規作成はGoogle Analyticsアカウントでの操作が必要で、ビルドスクリプト側からは自動化できない。作成手順: [analytics.google.com](https://analytics.google.com/) → 管理 → プロパティを作成 → 「久留米飲み屋ナビ」→ ウェブストリームのURLに `https://nattuuuzamiurai.github.io/kurume-bar-navi/` を設定 → 発行された測定IDを `GA_MEASUREMENT_ID` に設定して再ビルド・デプロイすれば導入完了する(所要作業は定数1行の変更のみ)。
+- **Google AdSense**: 他サイトと同一のAdSenseアカウント(`ca-pub-6349478743429747`)に相乗りする形で、広告配信タグ・`ads.txt`(`google.com, pub-6349478743429747, DIRECT, f08c47fec0942fa0`)を先行設置済み。ただし**このサイトをそのAdSenseアカウントに追加して審査を通すのはGoogle AdSenseダッシュボード上の操作**であり、コード側の準備だけでは広告は配信されない。
 - どちらも `about/index.html`(このサイトについて)にCookie利用・オプトアウト方法を明記している(GA4の記述はGA_MEASUREMENT_ID設定時のみ出力され、未設定の間は実態と食い違う記述にならないようにしてある)。
 
 ## なぜこの構成か(2026-07-17時点の判断)

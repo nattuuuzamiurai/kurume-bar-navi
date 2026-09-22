@@ -30,13 +30,13 @@ const BASE_PATH = "/kurume-bar-navi";
 const SITE_HOSTNAME = "nattuuuzamiurai.github.io";
 
 // GA4測定ID。値そのものは秘匿情報ではない(公開ページのソースにそのまま出る)ため、
-// 他サイト(ふくおかポーカーナビ等)と同じくハードコードでよい。
+// 他サイトと同じくハードコードでよい。
 // GA4プロパティ作成にはGoogle Analyticsアカウントでの操作(Admin側の書き込み権限)が必要で、
 // このビルドスクリプトからは自動生成できない。プロパティ作成後、発行された測定ID(G-で始まる文字列)を
 // ここに設定するだけで導入完了する(空文字のままなら計測タグそのものを出さない=安全な既定値)。
 const GA_MEASUREMENT_ID = "";
 
-// Google AdSenseのパブリッシャーID。他サイト(ふくおかポーカーナビ・AI実務ナビ)と
+// Google AdSenseのパブリッシャーID。他サイトと
 // 同一のAdSenseアカウント(ca-pub-6349478743429747)に相乗りする形で、審査前から
 // 広告配信タグ・ads.txtを設置しておく(審査ではサイト全体がクロールされるため)。
 // 値そのものは秘匿情報ではなく、既に他サイトのソースにも同じ値が出ている。
@@ -2602,7 +2602,7 @@ function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex,
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   // 本番ドメイン以外(ローカルの python http.server プレビュー等)からのアクセスを
-  // GA4に計測させない(ふくおかポーカーナビと同じ方針)。configを呼ばない限り
+  // GA4に計測させない。configを呼ばない限り
   // GA4側にヒットは送られない。
   if (location.hostname === '${SITE_HOSTNAME}') {
     gtag('js', new Date());
