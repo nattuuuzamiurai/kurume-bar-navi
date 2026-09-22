@@ -27,6 +27,22 @@ const GUIDES_DIR = path.join(ROOT, "content", "guides");
 const SITE_NAME = "久留米飲み屋ナビ";
 const SITE_URL = "https://nattuuuzamiurai.github.io/kurume-bar-navi";
 const BASE_PATH = "/kurume-bar-navi";
+const SITE_HOSTNAME = "nattuuuzamiurai.github.io";
+
+// GA4測定ID。値そのものは秘匿情報ではない(公開ページのソースにそのまま出る)ため、
+// 他サイト(ふくおかポーカーナビ等)と同じくハードコードでよい。
+// GA4プロパティ作成にはGoogle Analyticsアカウントでの操作(Admin側の書き込み権限)が必要で、
+// このビルドスクリプトからは自動生成できない。プロパティ作成後、発行された測定ID(G-で始まる文字列)を
+// ここに設定するだけで導入完了する(空文字のままなら計測タグそのものを出さない=安全な既定値)。
+const GA_MEASUREMENT_ID = "";
+
+// Google AdSenseのパブリッシャーID。他サイト(ふくおかポーカーナビ・AI実務ナビ)と
+// 同一のAdSenseアカウント(ca-pub-6349478743429747)に相乗りする形で、審査前から
+// 広告配信タグ・ads.txtを設置しておく(審査ではサイト全体がクロールされるため)。
+// 値そのものは秘匿情報ではなく、既に他サイトのソースにも同じ値が出ている。
+// 実際に広告が配信されるかどうかは、Google側でこのサイトを当該アカウントに
+// 追加し審査を通すかに依存する(このビルドスクリプトだけでは有効化されない)。
+const ADSENSE_PUB_ID = "ca-pub-6349478743429747";
 
 // Google Maps Embed API キー(place モードでGoogleのクチコミ★カードを地図枠内に出すために使う)。
 // クライアント(iframe src)に載る性質のキーで、GitHub側でHTTPリファラー制限
@@ -2579,11 +2595,30 @@ function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex,
   const jsonLdScript = jsonLd
     ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>`
     : "";
+  const gaScript = GA_MEASUREMENT_ID
+    ? `<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // 本番ドメイン以外(ローカルの python http.server プレビュー等)からのアクセスを
+  // GA4に計測させない(ふくおかポーカーナビと同じ方針)。configを呼ばない限り
+  // GA4側にヒットは送られない。
+  if (location.hostname === '${SITE_HOSTNAME}') {
+    gtag('js', new Date());
+    gtag('config', '${GA_MEASUREMENT_ID}');
+  }
+</script>
+`
+    : "";
+  const adsenseScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}"
+     crossorigin="anonymous"></script>
+`;
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+${gaScript}${adsenseScript}<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
 <meta name="theme-color" content="#1b1e34">
@@ -3433,6 +3468,16 @@ function renderAboutPage() {
 <h2>外部サービスの埋め込み・参照について</h2>
 <p>本サイトの各店舗ページでは、Instagram公式の投稿埋め込み、Googleマップの地図埋め込み、各店の公式サイト画像・ホットペッパー グルメ Webサービスの画像の参照などを行っています。そのため、ページ閲覧時にお使いのブラウザから Instagram(Meta)・Google・リクルート(ホットペッパー グルメ)・各店の公式サイト等の外部サーバーへ通信が発生する場合があります。これら外部サービス側での情報の取り扱いは、各サービスのプライバシーポリシーに従います。</p>
 
+<h2>アクセス解析・広告について</h2>
+${GA_MEASUREMENT_ID ? `<p>本サイトは、利用状況の把握とサイト改善のため、Google LLCが提供するアクセス解析ツール「Google アナリティクス 4」を使用しています。Google アナリティクスはCookieを使用して、閲覧ページ・滞在時間・参照元・おおよその地域・デバイスやブラウザの種類等の情報を収集します。</p>` : ""}
+<p>本サイトでは、第三者配信の広告サービスとしてGoogle AdSenseを利用しており、そのための広告配信タグを設置しています。Googleを含む第三者配信事業者は、Cookieを使用して、利用者の本サイトや他のサイトへの過去のアクセス情報に基づいた広告を表示することがあります。</p>
+<p>これらのツールで収集される情報が、氏名・住所・電話番号など個人を特定する情報と結びつけて利用されることはありません。</p>
+<ul>
+  <li>データの取り扱い: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Googleのプライバシーポリシー</a>／<a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">Googleのサービスを使用するサイトでのデータ使用</a></li>
+  <li>パーソナライズ広告を無効にする方法: <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Google広告設定</a>、または<a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener">aboutads.info</a></li>
+  ${GA_MEASUREMENT_ID ? `<li>アクセス解析の収集を無効にする方法: <a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener">Google アナリティクス オプトアウト アドオン</a>のご利用、またはブラウザ側でのCookie無効化</li>` : ""}
+</ul>
+
 <h2>商標・権利の帰属、および提携関係について</h2>
 <p>本サイトに掲載している店舗名・ロゴ・商標は、各権利者に帰属します。当サイトは、公開されている情報をもとに店舗を紹介する情報サイトであり、<strong>掲載店舗との間に提携・協賛・推奨・公認等の関係は一切ありません</strong>。ロゴは、その店舗(またはチェーンの運営元)を識別しやすくする目的で、各店の公式サイト上の画像を参照して表示しているものであり、当サイトが各店舗から掲載の許諾や対価を受けていることを示すものではありません。</p>
 
@@ -3689,6 +3734,9 @@ Allow: /
 Sitemap: ${absoluteUrl("/sitemap.xml")}
 `
   );
+
+  // ads.txt(Google AdSense審査・広告配信の正当性を示す。他サイトと同一パブリッシャーID)
+  writeFile("ads.txt", "google.com, pub-6349478743429747, DIRECT, f08c47fec0942fa0\n");
 
   // .nojekyll (GitHub PagesがJekyll処理をスキップするために必要)
   writeFile(".nojekyll", "");
