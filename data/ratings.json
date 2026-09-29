@@ -795,133 +795,133 @@
     "rating": 4,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:55.016Z"
+    "updatedAt": "2026-09-29T21:52:20.266Z"
   },
   "kyabakura-globe": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:55.351Z"
+    "updatedAt": "2026-09-29T21:52:20.584Z"
   },
   "kyabakura-hal": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:55.683Z"
+    "updatedAt": "2026-09-29T21:52:20.901Z"
   },
   "kyabakura-honey": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:56.016Z"
+    "updatedAt": "2026-09-29T21:52:21.221Z"
   },
   "kyabakura-laluna": {
     "rating": 4.2,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:56.348Z"
+    "updatedAt": "2026-09-29T21:52:21.543Z"
   },
   "kyabakura-lounge-loop": {
     "rating": 3,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:56.685Z"
+    "updatedAt": "2026-09-29T21:52:21.860Z"
   },
   "kyabakura-moncoeur": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:57.019Z"
+    "updatedAt": "2026-09-29T21:52:22.166Z"
   },
   "kyabakura-precious": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:57.359Z"
+    "updatedAt": "2026-09-29T21:52:22.458Z"
   },
   "kyabakura-rady": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:57.690Z"
+    "updatedAt": "2026-09-29T21:52:22.765Z"
   },
   "kyabakura-richard": {
     "rating": 5,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:58.031Z"
+    "updatedAt": "2026-09-29T21:52:23.077Z"
   },
   "kyabakura-swarovski": {
     "rating": 4,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:58.341Z"
+    "updatedAt": "2026-09-29T21:52:23.386Z"
   },
   "lounge-aoi": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:58.655Z"
+    "updatedAt": "2026-09-29T21:52:23.706Z"
   },
   "lounge-athena": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:58.966Z"
+    "updatedAt": "2026-09-29T21:52:24.011Z"
   },
   "lounge-carat": {
     "rating": 4.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-20T20:19:59.284Z"
+    "updatedAt": "2026-09-29T21:52:24.305Z"
   },
   "lounge-chester": {
     "rating": 2,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:00.101Z"
+    "updatedAt": "2026-09-29T21:52:24.604Z"
   },
   "lounge-endless": {
     "rating": 4.1,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:00.447Z"
+    "updatedAt": "2026-09-29T21:52:24.912Z"
   },
   "lounge-kanade": {
     "rating": 5,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:00.812Z"
+    "updatedAt": "2026-09-29T21:52:25.199Z"
   },
   "lounge-lepin": {
     "rating": 4.1,
     "userRatingCount": 18,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:01.259Z"
+    "updatedAt": "2026-09-29T21:52:25.487Z"
   },
   "lounge-megami": {
     "rating": 3.8,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:01.608Z"
+    "updatedAt": "2026-09-29T21:52:25.770Z"
   },
   "lounge-new-impact": {
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-09-21T21:42:02.152Z"
+    "updatedAt": "2026-09-29T21:52:26.057Z"
   },
   "lounge-papico": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:02.504Z"
+    "updatedAt": "2026-09-29T21:52:26.357Z"
   },
   "lounge-ryusei": {
     "rating": 4.9,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-09-21T21:42:02.855Z"
+    "updatedAt": "2026-09-29T21:52:26.644Z"
   },
   "lounge-st-christopher": {
     "rating": 2.9,
