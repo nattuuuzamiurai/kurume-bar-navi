@@ -34,7 +34,7 @@ const SITE_HOSTNAME = "nattuuuzamiurai.github.io";
 // GA4プロパティ作成にはGoogle Analyticsアカウントでの操作(Admin側の書き込み権限)が必要で、
 // このビルドスクリプトからは自動生成できない。プロパティ作成後、発行された測定ID(G-で始まる文字列)を
 // ここに設定するだけで導入完了する(空文字のままなら計測タグそのものを出さない=安全な既定値)。
-const GA_MEASUREMENT_ID = "";
+const GA_MEASUREMENT_ID = "G-1QS75CEJTH";
 
 // Google AdSenseのパブリッシャーID。他サイトと
 // 同一のAdSenseアカウント(ca-pub-6349478743429747)に相乗りする形で、審査前から
@@ -183,6 +183,14 @@ function absoluteUrl(p) {
 // 表示上のタグ名(日本語)はそのまま保持し、パスにのみ使う。
 function tagSlug(tag) {
   return tag.replace(/[\/\\:*?"<>|]/g, "-");
+}
+
+// エリア名の表示用に「久留米」を補う(AIO/ロングテール対策、2026-10-08)。
+// 「一番街」「二番街」「文化街」単独だと他都市にも同名の商店街・歓楽街があり得るため、
+// タイトル・見出しに「久留米」を明示して「久留米 一番街 居酒屋」のような実際の検索クエリに
+// 近づける。「西鉄久留米駅周辺」は既に「久留米」を含むため重複させない。
+function areaDisplayName(area) {
+  return area.name.includes("久留米") ? area.name : `久留米${area.name}`;
 }
 
 // ============================================================
@@ -2592,9 +2600,14 @@ ${tabs
 function layout({ title, description, pathname, bodyHtml, jsonLd, robotsNoindex, extraScript, activeTab, footerNote }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
   const canonical = absoluteUrl(pathname);
-  const jsonLdScript = jsonLd
-    ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>`
-    : "";
+  // jsonLd は単一オブジェクトのほか、配列(複数の構造化データブロックを同一ページに
+  // 出力したい場合。例: LocalBusiness系 + FAQPage)も受け付ける。配列の場合はそれぞれを
+  // 別々の<script>タグとして出力する(1つの@graphにまとめるより、既存の単一オブジェクト
+  // 呼び出し元への影響がなく安全)。
+  const jsonLdList = Array.isArray(jsonLd) ? jsonLd.filter(Boolean) : jsonLd ? [jsonLd] : [];
+  const jsonLdScript = jsonLdList
+    .map((d) => `<script type="application/ld+json">${JSON.stringify(d).replace(/</g, "\\u003c")}</script>`)
+    .join("\n");
   const gaScript = GA_MEASUREMENT_ID
     ? `<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
@@ -3060,9 +3073,10 @@ function renderAreaPage(area, venues, categories, areas, guides) {
   const areaVenues = venues.filter((v) => v.area === area.id);
   const list = areaVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
   const listId = "venue-list-area";
+  const displayName = areaDisplayName(area);
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/areas/")}">エリア</a> &gt; ${escapeHtml(area.name)}</nav>
-<h1>${escapeHtml(area.name)}の飲み屋一覧</h1>
+<h1>${escapeHtml(displayName)}の飲み屋一覧</h1>
 <p>${escapeHtml(area.summary)}</p>
 ${guideLinkForArea(guides || [], area.id)}
 ${filterWidgetHtml(areaVenues, listId, areas, categories)}
@@ -3071,7 +3085,7 @@ ${list || "<li>準備中です。</li>"}
 </ul>
 `;
   return layout({
-    title: `${area.name}の飲み屋一覧`,
+    title: `${displayName}の飲み屋一覧`,
     description: `福岡県久留米市${area.name}エリアのバー・居酒屋・コンカフェ等の飲み屋一覧。${area.summary}`,
     pathname: `/areas/${area.id}/`,
     bodyHtml: body,
@@ -3095,7 +3109,7 @@ ${list || "<li>準備中です。</li>"}
 </ul>
 `;
   return layout({
-    title: `${category.name}一覧`,
+    title: `久留米の${category.name}一覧`,
     description: `福岡県久留米市・西鉄久留米駅周辺の${category.name}一覧。${category.summary}`,
     pathname: `/categories/${category.id}/`,
     bodyHtml: body,
@@ -3132,18 +3146,24 @@ function renderTagPage(tag, venues, areas, categories) {
   const tagVenues = venues.filter((v) => (v.tags || []).includes(tag));
   const list = tagVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
   const listId = "venue-list-tag";
+  // タイトル・見出しは「久留米で「XX」の店を探す」の形に統一する(2026-10-08)。
+  // 従来の「「XX」の店舗一覧」は「久留米」を一切含まず、ブランド名(サイト名)にしか
+  // 久留米が出てこなかった。「久留米 シーシャ 深夜営業」のような実際の検索クエリに近づけるため、
+  // タイトル・h1に「久留米」を明示する。
+  const tagHeading = `久留米で「${tag}」の店を探す`;
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/tags/")}">タグ</a> &gt; ${escapeHtml(tag)}</nav>
-<h1>「${escapeHtml(tag)}」の店舗一覧</h1>
+<h1>${escapeHtml(tagHeading)}</h1>
 <p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの店舗 ${tagVenues.length}件です。</p>
 ${filterWidgetHtml(tagVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>該当する店舗がありません。</li>"}
 </ul>
+<p><a href="${url("/search/")}">エリア・業態・予算など他の条件も組み合わせて絞り込む →</a></p>
 `;
   return layout({
-    title: `「${tag}」の店舗一覧`,
-    description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている店舗の一覧。`,
+    title: tagHeading,
+    description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている店舗の一覧。エリア・業態・予算・喫煙可否なども組み合わせて絞り込めます。`,
     pathname: `/tags/${tagSlug(tag)}/`,
     bodyHtml: body,
     extraScript: FILTER_SCRIPT,
@@ -3209,12 +3229,25 @@ function openingHoursSpec(v) {
   }));
 }
 
+// この店舗の sameAs に使えるURL(公式サイト・公式SNS・Googleマップリンク)を返す。
+// いずれも店舗ページに既に表示済みのリンクをそのまま再利用するだけで、新規のリンク収集はしない。
+function sameAsFor(v) {
+  const urls = officialLinksFor(v).map((l) => l.url);
+  // mapSearchLink は全店舗で必ず生成される「Googleマップで開く」リンク(mapSectionHtml既出)。
+  urls.push(mapSearchLink(v));
+  return [...new Set(urls)];
+}
+
 function buildJsonLd(v, area, category) {
+  const pageUrl = absoluteUrl(`/venues/${v.id}/`);
   const data = {
     "@context": "https://schema.org",
     "@type": category ? category.schemaType : "LocalBusiness",
+    // @id でエンティティを一意に識別する(AIO/ナレッジグラフがsameAsと合わせて
+    // 同一店舗の別ソース表記を束ねやすくするため)。ページの正規URLをそのまま使う。
+    "@id": pageUrl,
     name: v.name,
-    url: absoluteUrl(`/venues/${v.id}/`),
+    url: pageUrl,
     address: {
       "@type": "PostalAddress",
       streetAddress: v.address || undefined,
@@ -3232,7 +3265,58 @@ function buildJsonLd(v, area, category) {
   }
   const spec = openingHoursSpec(v);
   if (spec) data.openingHoursSpecification = spec;
+  const sameAs = sameAsFor(v);
+  if (sameAs.length > 0) data.sameAs = sameAs;
   return data;
+}
+
+// ============================================================
+// FAQPage構造化データ(AIO対策)
+//
+// 【方針(2026-10-08)】既存データ(営業時間・予算・定休日・喫煙可否・予約可否・チャージ)の
+// うち、実際に値がある項目だけをもとにQ&Aを機械生成する。捏造・推測は一切しない
+// (値が無い項目のFAQは生成しない)。3問未満しか作れない店舗はFAQPage自体を出力しない
+// (情報量の薄いFAQPageはAIO上も評価されにくく、品質基準として避ける)。
+// ============================================================
+function faqAnswerForBudget(v) {
+  if (v.budgetDinner && v.budgetLunch) return `昼の予算は${v.budgetLunch}、夜の予算は${v.budgetDinner}が目安です。`;
+  if (v.budgetDinner) return `夜の予算は${v.budgetDinner}が目安です。`;
+  if (v.budgetLunch) return `昼の予算は${v.budgetLunch}が目安です。`;
+  if (v.priceRange) return `予算の目安は${v.priceRange}です。`;
+  return null;
+}
+
+function faqAnswerForCharge(v) {
+  if (!v.charge) return null;
+  return isChargeFree(v.charge) ? "チャージ・お通し代はありません。" : `チャージ・お通しは${v.charge}です。`;
+}
+
+// isUnverified(営業状況を確認できていない店舗)の場合、営業時間・定休日の回答に
+// 注意書きを付す(当サイトの営業状況未確認バナーと同じ趣旨をFAQ本文にも自己完結させる)。
+function unverifiedSuffix(isUnverified) {
+  return isUnverified ? " ただし当サイトでは現在営業状況を確認できていないため、ご来店前に店舗の公式情報で最新状況をご確認ください。" : "";
+}
+
+function buildFaqJsonLd(v, isUnverified) {
+  const candidates = [
+    v.hours && { q: `${v.name}の営業時間は?`, a: `${v.hours}です。${unverifiedSuffix(isUnverified)}` },
+    faqAnswerForBudget(v) && { q: `${v.name}の予算の目安は?`, a: faqAnswerForBudget(v) },
+    v.closedDays && { q: `${v.name}の定休日は?`, a: `定休日は${v.closedDays}です。${unverifiedSuffix(isUnverified)}` },
+    v.smoking && { q: `${v.name}は喫煙できますか?`, a: `${v.smoking}です。` },
+    v.reservation && { q: `${v.name}は予約できますか?`, a: `${v.reservation}です。` },
+    faqAnswerForCharge(v) && { q: `${v.name}にチャージ・お通し代はありますか?`, a: faqAnswerForCharge(v) },
+  ].filter(Boolean);
+  if (candidates.length < 3) return null;
+  const entries = candidates.slice(0, 5);
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: entries.map((e) => ({
+      "@type": "Question",
+      name: e.q,
+      acceptedAnswer: { "@type": "Answer", text: e.a },
+    })),
+  };
 }
 
 // 店舗ページの「チャージ・お通し」ハイライト。
@@ -3428,7 +3512,7 @@ ${relatedInArea}
     description,
     pathname: `/venues/${v.id}/`,
     bodyHtml: body,
-    jsonLd: buildJsonLd(v, area, category),
+    jsonLd: [buildJsonLd(v, area, category), buildFaqJsonLd(v, isUnverified)],
     extraScript: (igEmbed ? INSTAGRAM_EMBED_SCRIPT : "") + (sched.parsed ? OPEN_NOW_BADGE_SCRIPT : ""),
   });
 }
