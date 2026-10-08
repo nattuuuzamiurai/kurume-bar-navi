@@ -3460,21 +3460,24 @@ function buildFaqJsonLd(v, isUnverified) {
 function comboFactsHtml(venues) {
   const facts = [];
 
-  // 予算(夜)の傾向: バケットごとの件数を集計し、最多のバケットを示す。
+  // 予算(夜)の傾向: バケットごとの件数をそのまま列挙する(中立的な表示)。
+  // budgetBucketsFor() は絞り込みウィジェット用途のため、1軒の予算レンジが隣接する
+  // 複数のバケットにまたがって重複カウントされる仕様。そのため「最も多いのは◯◯で約X%」
+  // のような排他性を前提にした断定文は作らない(合計が対象店舗数と一致しないことがあるため)。
   const budgetKnown = venues.filter((v) => parseBudget(v.budgetDinner));
   if (budgetKnown.length >= 2) {
     const bucketCounts = new Map();
     for (const v of budgetKnown) {
       for (const b of budgetBucketsFor(v)) bucketCounts.set(b, (bucketCounts.get(b) || 0) + 1);
     }
-    const top = [...bucketCounts.entries()].sort((a, b) => b[1] - a[1])[0];
-    if (top) {
-      const label = BUDGET_BUCKETS.find((b) => b.value === top[0]).label;
-      const pct = Math.round((top[1] / budgetKnown.length) * 100);
+    const breakdown = BUDGET_BUCKETS.filter((b) => bucketCounts.get(b.value) > 0)
+      .map((b) => `${b.label} ${bucketCounts.get(b.value)}軒`)
+      .join(" ・ ");
+    if (breakdown) {
       facts.push({
         icon: "yen",
-        k: "予算(夜)の傾向",
-        v: `価格帯が分かる${budgetKnown.length}軒中、最も多いのは「${label}」で${top[1]}軒(約${pct}%)です`,
+        k: "予算(夜)の内訳",
+        v: `価格帯が分かる${budgetKnown.length}軒の内訳: ${breakdown}(1軒が複数の価格帯にまたがる場合があり、合計は軒数と一致しないことがあります)`,
       });
     }
   }
