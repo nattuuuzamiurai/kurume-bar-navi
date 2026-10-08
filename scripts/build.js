@@ -2104,6 +2104,23 @@ function officialLinksFor(v) {
   return links;
 }
 
+// 他サイト(ふくおかポーカーナビ)の同一店舗ページへの相互リンク。
+// マーケティング部調査(2026-10-08)で、久留米市内のポーカーバー2店が当サイトと
+// ふくおかポーカーナビの両方に掲載されていると判明した。トーナメント日程・参加費は
+// ふくおかポーカーナビ側にのみ情報があり読者にとって実利があるため、「公式SNS・
+// ホームページ」セクション直下に1行で案内する(当サイトの運営・掲載方針とは別物)。
+const POKER_SCHEDULE_CROSS_LINKS = {
+  "poker-ken": "https://fukuokapoker.com/venues/ken-poker-kurume/",
+  "poker-ace-and-king": "https://fukuokapoker.com/venues/ace-and-king-kurume/",
+};
+
+function pokerScheduleCrossLinkHtml(v) {
+  const href = POKER_SCHEDULE_CROSS_LINKS[v.id];
+  if (!href) return "";
+  return `
+    <p class="small">本日のトーナメント日程・参加費は<a href="${escapeHtml(href)}" rel="nofollow noopener" target="_blank">ふくおかポーカーナビ</a>で確認できます。</p>`;
+}
+
 function officialLinksSectionHtml(v) {
   const links = officialLinksFor(v);
   if (links.length === 0) return "";
@@ -2124,6 +2141,7 @@ function officialLinksSectionHtml(v) {
     <div class="official-links">
 ${items}
     </div>
+    ${pokerScheduleCrossLinkHtml(v)}
   </section>`;
 }
 
