@@ -137,10 +137,13 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
 .tab.on { color: var(--lantern); }
 
 /* ============================================================
-   ホーム
+   ホーム(2026-10-08 デザイン刷新「案A: 迷わせない一本道型」)
+   「次にすべきことを1つだけに絞る」方針。ヒーロー→単一の主CTA→今夜のひとこと(1店ピック)→
+   業態チップ→エリアリストの順に一本道で見せ、業態10枚・予算・こだわりタグは廃止せず
+   下部に縮小して残す(表示の優先順位だけを変える)。
    ============================================================ */
 
-.home-hero { margin-bottom: 24px; }
+.home-hero { margin-bottom: 28px; }
 .home-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -153,8 +156,7 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
   padding: 5px 11px;
   margin: 0 0 12px;
 }
-.home-hero h1 { font-size: 1.75rem; margin: 0 0 4px; }
-.home-sub { color: var(--muted); font-size: .92rem; margin: 0 0 16px; }
+.home-hero h1 { font-size: 2rem; font-weight: 900; margin: 0 0 16px; letter-spacing: .01em; }
 
 /* ============================================================
    about ページ(トップの砕けたトーンに寄せるリード文)
@@ -167,50 +169,37 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
   border-bottom: 1px solid var(--line);
 }
 
-/* いま開いてる = 主役ボタン */
+/* 「いま開いてる店を見る」= ホームで唯一の主役ボタン。サイトのアクセントカラー(--lantern)で
+   塗りつぶし、迷わず押せる単一の導線にする。 */
 .open-cta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: block;
   width: 100%;
-  background: linear-gradient(135deg, rgba(55, 196, 106, .22), rgba(55, 196, 106, .06));
-  border: 1px solid rgba(55, 196, 106, .55);
-  border-radius: var(--r);
-  padding: 15px 16px;
-  margin-bottom: 12px;
-  color: var(--ink);
+  background: var(--lantern);
+  border: none;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 10px;
+  color: #201405;
+  box-shadow: 0 10px 26px -14px rgba(255, 184, 77, .7);
 }
-.open-cta:hover { text-decoration: none; filter: brightness(1.06); }
-.open-cta-live {
-  position: relative;
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  background: var(--open);
-  flex: none;
-  box-shadow: 0 0 0 0 rgba(55, 196, 106, .6);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(55, 196, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(55, 196, 106, 0); } }
-@media (prefers-reduced-motion: reduce) { .open-cta-live { animation: none; } }
-.open-cta-text { display: flex; flex-direction: column; }
-.open-cta-text b { font-size: 1.02rem; font-weight: 800; }
-.open-cta-text span { font-size: .78rem; color: var(--muted); }
-.open-cta-arrow { margin-left: auto; color: var(--open); font-size: 1.2rem; font-weight: 700; }
+.open-cta:hover { text-decoration: none; filter: brightness(1.04); }
+.open-cta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.open-cta-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.open-cta-text b { font-size: 1.18rem; font-weight: 900; }
+.open-cta-text span { font-size: .8rem; font-weight: 600; opacity: .82; }
+.open-cta-arrow { flex: none; font-size: 1.4rem; font-weight: 700; }
 
-.home-searchbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 12px 16px;
+/* 副導線(全部指定して探す)。主ボタンの下に小さく添えるだけに留める。 */
+.home-secondary-link {
+  display: block;
+  text-align: right;
+  font-size: .8rem;
   color: var(--muted);
-  font-size: .88rem;
+  padding: 2px 4px 0;
 }
-.home-searchbar:hover { border-color: var(--lantern); text-decoration: none; }
+.home-secondary-link:hover { color: var(--lantern); text-decoration: none; }
 
-.home-sec { margin-bottom: 24px; }
+.home-sec { margin-bottom: 26px; }
 .sec-title {
   display: flex;
   align-items: baseline;
@@ -220,46 +209,130 @@ h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; }
 .sec-title h2 { margin: 0; font-size: .98rem; font-weight: 800; }
 .sec-title a { font-size: .76rem; color: var(--lantern); }
 
-/* 業態タイル */
-.cat-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-.cat-tile {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--r);
-  padding: 15px 14px;
-  color: var(--ink);
+/* ---------- 今夜のひとこと(1店ピック) ---------- */
+.pick-card {
   display: block;
-  background:
-    radial-gradient(120% 100% at 100% 0%, color-mix(in srgb, var(--cc) 34%, transparent), transparent 62%),
-    linear-gradient(155deg, color-mix(in srgb, var(--cc) 20%, var(--panel)), var(--panel));
-  border: 1px solid color-mix(in srgb, var(--cc) 34%, var(--line));
-  box-shadow: 0 6px 18px -12px color-mix(in srgb, var(--cc) 80%, black);
+  overflow: hidden;
+  padding: 0;
 }
-.cat-tile:hover { text-decoration: none; filter: brightness(1.05); }
-.cat-tile-ic { color: var(--cc); display: block; margin-bottom: 18px; }
-.cat-tile-ic svg { width: 32px; height: 32px; }
-.cat-tile-nm { font-weight: 800; font-size: 1rem; display: block; }
-.cat-tile-ct { font-size: .76rem; color: var(--muted); }
-.cat-tile-ct b { color: color-mix(in srgb, var(--cc) 55%, var(--ink)); font-size: .95rem; font-weight: 800; }
-
-/* エリアタイル */
-.area-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.area-tile {
+.pick-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--panel-2);
+  overflow: hidden;
+}
+.pick-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pick-photo-logo img { object-fit: contain; padding: 14%; background: #fff; }
+.pick-photo-logo.pick-photo-logo-dark img { background: #1c2030; }
+/* プレースホルダーの見た目(中央寄せの📷ラベル)。
+   - pick-photo-placeholder-inner: .pick-photo(position:relative済み)の内側に重ねるonerror用の
+     フォールバックspanなので、absolute+inset:0 でそのまま親いっぱいに広げる。
+   - pick-photo-placeholder: 写真が最初から無い店で .pick-photo 自体に付くクラス。この要素
+     自身が既にサイズを持つ箱(aspect-ratio/position:relative)なので、position は変更せず
+     中身の中央寄せだけ行う(absoluteにすると配置の基準が祖先の .pick-card 側にずれて
+     カード外に飛び出すため、2つは分けて定義する)。 */
+.pick-photo-placeholder-inner {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(165deg, #171d24, #0f141a);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 700;
+}
+.pick-photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(165deg, #171d24, #0f141a);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 700;
+}
+.pick-photo-credit {
+  margin: 0;
+  padding: 6px 15px 0;
+  font-size: .68rem;
+  color: var(--muted);
+}
+.pick-body { padding: 13px 15px 15px; }
+.pick-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-size: .74rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--cat-color, var(--lantern)) 55%, var(--ink));
+  margin-bottom: 4px;
+}
+.pick-meta-sep { color: var(--muted); font-weight: 400; }
+.pick-name { font-size: 1.15rem; font-weight: 900; margin: 0 0 6px; color: var(--ink); }
+.pick-desc { font-size: .86rem; color: var(--muted); margin: 0 0 12px; }
+.pick-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .84rem;
+  font-weight: 800;
+  color: var(--lantern);
+}
+
+/* ---------- 業態からサッと絞る(横スクロールの小さめチップ。視覚的な主役にしない) ---------- */
+.cat-chip-row {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  padding-bottom: 3px;
+}
+.cat-chip-row::-webkit-scrollbar { height: 6px; }
+.cat-chip-row::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+.cat-chip-row:focus-visible { outline: 2px solid var(--lantern); outline-offset: 2px; border-radius: 12px; }
+.cat-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--cc) 30%, var(--line));
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: .82rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.cat-chip:hover { border-color: var(--cc); text-decoration: none; }
+.cat-chip-ic { color: var(--cc); display: flex; flex: none; }
+.cat-chip-ic svg { width: 16px; height: 16px; }
+.cat-chip-ct { color: var(--muted); font-size: .8em; }
+
+/* ---------- エリアで探す(縦リスト) ---------- */
+.area-rows { display: flex; flex-direction: column; gap: 8px; }
+.area-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 13px 14px;
   color: var(--ink);
 }
-.area-tile:hover { border-color: var(--lantern); text-decoration: none; }
-.area-tile-ic svg { width: 18px; height: 18px; color: var(--lantern); }
-.area-tile-nm { font-weight: 700; font-size: .92rem; }
-.area-tile .count { margin-left: auto; }
+.area-row:hover { border-color: var(--lantern); text-decoration: none; }
+.area-row-ic svg { width: 18px; height: 18px; color: var(--lantern); }
+.area-row-nm { font-weight: 700; font-size: .92rem; }
+.area-row .count { margin-left: auto; }
+.area-row-chevron { color: var(--muted); font-size: 1rem; }
 
-/* チップ(こだわり・予算) */
+/* チップ(こだわり・予算。廃止はせず下部に縮小して残す) */
 .home-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .home-chip {
   display: inline-flex;
@@ -1004,14 +1077,20 @@ details.facet-accordion[open] > .tag-filter-list {
 @media (min-width: 600px) {
   main { padding: 24px 20px calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 30px); }
   h1 { font-size: 1.75rem; }
-  .home-hero h1 { font-size: 2rem; }
+  .home-hero h1 { font-size: 2.25rem; }
   .venue-hero h1 { font-size: 1.55rem; }
   .venue-list { grid-template-columns: 1fr 1fr; }
-  .cat-tiles { grid-template-columns: repeat(4, 1fr); }
-  .area-tiles { grid-template-columns: repeat(4, 1fr); }
   .facts-grid { grid-template-columns: repeat(3, 1fr); }
   .venue-hero-icon { width: 68px; height: 68px; }
   .venue-hero-icon svg { width: 36px; height: 36px; }
+
+  /* 今夜のひとこと: 写真を左、テキストを右に並べる(幅が増える分を横に活かす) */
+  .pick-card { display: flex; align-items: stretch; }
+  .pick-photo { flex: none; width: 300px; aspect-ratio: auto; min-height: 210px; }
+  .pick-right { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+
+  /* エリアで探す: 4件を2列で(縦に長くなり過ぎないようにする) */
+  .area-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 }
 
 @media (min-width: 900px) {

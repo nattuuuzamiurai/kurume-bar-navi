@@ -2794,27 +2794,152 @@ const CARD_OPEN_SCRIPT = `<script>
 })();
 </script>`;
 
+// ============================================================
+// ホーム「今夜のひとこと」(2026-10-08 ホームデザイン刷新「案A」)
+//
+// 1店だけをカード形式で紹介する。紹介文は捏造禁止、既存データ(tags/seats/budgetDinner)のみから
+// 機械的に生成する(FAQPage生成=buildFaqJsonLdと同じ方針)。接待を伴う業態(年齢制限の注記が
+// 必要になり、ホームのトーンにも合わないため対象外)・営業状況未確認の店は選ばない。さらに
+// 「タグ2個未満」「予算 or 席数が無い」「営業時間がパースできない」店も外し、紹介文として
+// 十分な情報量がある店だけに絞る。選出は日付(BUILD_DATE)から一意に決まる決定的なローテーション
+// (= 乱数は使わない。本番は1日1回ビルドされるため毎日自動で入れ替わる)。
+// ============================================================
+function pickOfTheDayCandidates(venues) {
+  return venues
+    .filter((v) => !NIGHTLIFE_CATEGORIES.has(v.category))
+    .filter((v) => !UNVERIFIED_VENUE_IDS.has(v.id))
+    .filter((v) => (v.tags || []).length >= 2)
+    .filter((v) => v.budgetDinner && v.seats)
+    .filter((v) => parseSchedule(v.hours, v.closedDays).parsed)
+    .slice()
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+// 本日分のインデックス。日付(JST、YYYY-MM-DD)からの経過日数 mod 候補数で決める決定的な値。
+function pickOfTheDayIndex(n, dateStr) {
+  if (n <= 0) return -1;
+  const dayNumber = Math.floor(new Date(`${dateStr}T00:00:00+09:00`).getTime() / 86400000);
+  return ((dayNumber % n) + n) % n;
+}
+
+// 紹介文(一言説明)を機械生成する。タグ上位2個・席数・業態・予算のみを使い、それ以外の
+// 装飾的な形容(「落ち着いた」「隠れ家的な」等の捏造ニュアンス)は加えない。
+function pickOfTheDaySummary(v, categoryName) {
+  const tags = (v.tags || []).slice(0, 2);
+  const tagsPhrase =
+    tags.length === 2 ? `${tags[0]}と${tags[1]}が揃う` : tags.length === 1 ? `${tags[0]}が自慢の` : "";
+  const seatsPhrase = v.seats ? `${v.seats}の` : "";
+  const label = categoryLabel(v, categoryName);
+  const bShort = budgetShort(v);
+  const budgetPhrase = bShort ? `予算の目安は${bShort}。` : "";
+  const summary = `${tagsPhrase}${seatsPhrase}${label}です。${budgetPhrase}`;
+  // カード枠に収まるかの検証(目視確認だけに頼らない)。短い一言説明文という前提を大きく超える
+  // 長さになった場合は、データ側の想定外(タグ名が極端に長い等)の可能性が高いためビルドを止める。
+  if (summary.length > 140) {
+    throw new Error(`[pickOfTheDaySummary] 想定より長い紹介文になりました(${summary.length}文字・${v.id}): ${summary}`);
+  }
+  return summary;
+}
+
+// 写真枠。この店のページに既に表示できている画像(新規取得・新規保存は一切しない)のうち、
+// 優先順位の最も高いものを1枚だけ使う。優先順位: ホットペッパー写真 → 公式サイト写真 →
+// 公式ロゴ/公式Instagramプロフィール画像 → プレースホルダー。
+// 【Instagram投稿埋め込み(iframe)をここで使わない理由】店舗ページでは表示しているが、
+// Instagram側のJSが描画後に高さを動的に決めるため、固定枠に収まることをビルド時に検証できない。
+// この1枚だけの定型カードでは、サイズを自分たちで制御できる画像だけを使う。
+function pickPhotoBlockHtml(v) {
+  const placeholderInner = `<span class="pick-photo-placeholder-inner" hidden>📷 店内写真(準備中)</span>`;
+  const onerror = "this.hidden=true;this.nextElementSibling.hidden=false;";
+
+  const hp = VENUE_PHOTOS[v.id];
+  const hpPhoto = hp && (Array.isArray(hp.photos) ? hp.photos[0] : hp.photo);
+  if (hpPhoto) {
+    return {
+      mediaHtml: `<div class="pick-photo">
+      <img src="${escapeHtml(hpPhoto)}" alt="${escapeHtml(v.name)}の写真(ホットペッパー グルメ)" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}">
+      ${placeholderInner}
+    </div>`,
+      creditHtml: `<p class="pick-photo-credit">【画像提供：ホットペッパー グルメ】</p>`,
+    };
+  }
+
+  const official = (OFFICIAL_PHOTOS[v.id] || [])[0];
+  if (official) {
+    return {
+      mediaHtml: `<div class="pick-photo">
+      <img src="${escapeHtml(official.imageUrl)}" alt="${escapeHtml(official.sourceLabel)}の写真" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}">
+      ${placeholderInner}
+    </div>`,
+      creditHtml: `<p class="pick-photo-credit">提供: <a href="${escapeHtml(official.sourceUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(official.sourceLabel)}</a>(当サイトには保存していません)。掲載を希望されない店舗様は${contactFormLink("こちらのお問い合わせフォーム")}からご連絡ください。</p>`,
+    };
+  }
+
+  const logo = resolveVenueLogo(v);
+  if (logo) {
+    return {
+      mediaHtml: `<div class="pick-photo pick-photo-logo${logo.bg === "dark" ? " pick-photo-logo-dark" : ""}">
+      <img src="${escapeHtml(logo.imageUrl)}" alt="${escapeHtml(v.name)}のロゴ" loading="lazy" decoding="async" referrerpolicy="no-referrer-when-downgrade" onerror="${onerror}">
+      ${placeholderInner}
+    </div>`,
+      creditHtml: "",
+    };
+  }
+
+  return {
+    mediaHtml: `<div class="pick-photo pick-photo-placeholder"><span>📷 店内写真(準備中)</span></div>`,
+    creditHtml: "",
+  };
+}
+
+// 「今夜のひとこと」カード全体。候補が1件も無い場合(データ整備が進んでいない時点)は空文字を
+// 返し、ホーム側はこのセクション自体を出さない(崩れた見た目にしない)。
+function pickOfTheDayHtml(venues, categories, areas) {
+  const candidates = pickOfTheDayCandidates(venues);
+  const idx = pickOfTheDayIndex(candidates.length, BUILD_DATE);
+  if (idx < 0) return "";
+  const v = candidates[idx];
+  const cat = categories.find((c) => c.id === v.category);
+  const area = areas.find((a) => a.id === v.area);
+  const color = CATEGORY_COLORS[v.category] || "#9d8dff";
+  const photo = pickPhotoBlockHtml(v);
+  const summary = pickOfTheDaySummary(v, cat ? cat.name : v.category);
+
+  return `<div class="pick-card venue-card" style="--cat-color:${color}" data-area="${escapeHtml(v.area)}" data-category="${escapeHtml(v.category)}"${venueFacetAttrs(v)}>
+  ${photo.mediaHtml}
+  <div class="pick-right">
+    ${photo.creditHtml}
+    <div class="pick-body">
+      <p class="pick-meta">
+        <span>${escapeHtml(categoryLabel(v, cat ? cat.name : v.category))}</span><span class="pick-meta-sep">・</span><span>${escapeHtml(area ? area.name : v.area)}</span>
+        ${cardOpenPillHtml(v)}
+      </p>
+      <p class="pick-name">${escapeHtml(v.name)}</p>
+      <p class="pick-desc">${escapeHtml(summary)}</p>
+      <a class="pick-cta" href="${url(`/venues/${v.id}/`)}">くわしく見る →</a>
+    </div>
+  </div>
+</div>`;
+}
+
 function renderTop(venues, areas, categories, guides) {
   const countBy = (fn) => venues.filter(fn).length;
 
-  // 業態タイル(色・アイコン・件数の大きなタップ領域)。
-  const catTiles = categories
+  // 業態チップ(横スクロールの小さめチップ。2026-10-08 デザイン刷新で大きなタイルグリッドから
+  // 縮小した。業態一覧・絞り込み自体は従来どおり/categories/{id}/に残っている)。
+  const catChips = categories
     .map((c) => {
       const n = countBy((v) => v.category === c.id);
-      const note = c.id === "izakaya" ? " ・ 焼肉/焼鳥も" : "";
-      return `<a class="cat-tile" style="--cc:${CATEGORY_COLORS[c.id] || "#9d8dff"}" href="${url(`/categories/${c.id}/`)}">
-    <span class="cat-tile-ic">${CATEGORY_ICONS[c.id] || ""}</span>
-    <span class="cat-tile-nm">${escapeHtml(c.name)}</span>
-    <span class="cat-tile-ct"><b>${n}</b> 軒${note}</span>
+      return `<a class="cat-chip" style="--cc:${CATEGORY_COLORS[c.id] || "#9d8dff"}" href="${url(`/categories/${c.id}/`)}">
+    <span class="cat-chip-ic">${CATEGORY_ICONS[c.id] || ""}</span>${escapeHtml(c.name)}<span class="cat-chip-ct">${n}</span>
   </a>`;
     })
     .join("\n");
 
-  // エリアタイル。
-  const areaTiles = areas
+  // エリアリスト(縦リスト。2026-10-08 デザイン刷新で2列タイルから縮小した)。
+  const areaRows = areas
     .map(
       (a) =>
-        `<a class="area-tile" href="${url(`/areas/${a.id}/`)}">${uiIcon("pin", "area-tile-ic")}<span class="area-tile-nm">${escapeHtml(a.name)}</span><span class="count">${countBy((v) => v.area === a.id)}軒</span></a>`
+        `<a class="area-row" href="${url(`/areas/${a.id}/`)}">${uiIcon("pin", "area-row-ic")}<span class="area-row-nm">${escapeHtml(a.name)}</span><span class="count">${countBy((v) => v.area === a.id)}軒</span><span class="area-row-chevron" aria-hidden="true">›</span></a>`
     )
     .join("\n");
 
@@ -2843,6 +2968,8 @@ function renderTop(venues, areas, categories, guides) {
       return s.parsed ? s.slots.map((x) => `${x.day},${x.start},${x.end}`).join(";") : "";
     })
     .filter(Boolean);
+  // 「今すぐ入れる◯軒」は端末のいまの時刻でしか判定できないため、JSが実行できた場合に限って
+  // 書き換える(未実行のまま=「いま営業中」を断定しない誠実なSSRフォールバック文言のまま残す)。
   const openCountScript = `<script>
 (function () {
   var data = ${JSON.stringify(schedules)};
@@ -2850,27 +2977,52 @@ function renderTop(venues, areas, categories, guides) {
   function openAt(raw){var a=raw.split(';');for(var i=0;i<a.length;i++){var p=a[i].split(','),d=+p[0],s=+p[1],e=+p[2];if(d===day&&min>=s&&min<e)return true;if(d===(day+6)%7&&min+1440>=s&&min+1440<e)return true;}return false;}
   var n = 0; for (var i = 0; i < data.length; i++) if (openAt(data[i])) n++;
   var el = document.getElementById('open-now-count');
-  if (el) el.textContent = 'この時間に営業中 ・ ' + n + '軒';
+  if (el) el.textContent = '久留米${venues.length}軒のうち、今すぐ入れる' + n + '軒';
 })();
 </script>`;
+
+  // 「次にすべきことを1つだけに絞る」(2026-10-08 ホームデザイン刷新「案A」)。
+  // トップバー → ヒーロー(単一の主CTA)→ 今夜のひとこと(1店ピック)→ 業態チップ →
+  // エリアリストの順に一本道で見せる。業態10枚・予算・こだわりタグは削除せず、下部に
+  // 縮小した形(チップ)で残す(表示の優先順位だけを変える。機能自体は維持)。
+  const pickHtml = pickOfTheDayHtml(venues, categories, areas);
 
   const body = `
 <section class="home-hero">
   <p class="home-eyebrow">📍 西鉄久留米・一番街 / 二番街 / 文化街</p>
-  <h1>今夜、どこ飲む？</h1>
-  <p class="home-sub">久留米の飲み屋 <strong>${venues.length}軒</strong> から、いま開いてる店・予算・こだわりで選ぶ。</p>
+  <h1>今夜、<br>どこで飲む？</h1>
   <a class="open-cta" href="${url("/search/?open=now")}">
-    <span class="open-cta-live"></span>
-    <span class="open-cta-text"><b>いま開いてる店</b><span id="open-now-count">営業時間が分かる${openCount}軒から探す</span></span>
-    <span class="open-cta-arrow">→</span>
+    <span class="open-cta-row">
+      <span class="open-cta-text">
+        <b>いま開いてる店を見る</b>
+        <span id="open-now-count">久留米${venues.length}軒のうち、営業時間が分かる${openCount}軒から探せます</span>
+      </span>
+      <span class="open-cta-arrow" aria-hidden="true">→</span>
+    </span>
   </a>
-  <a class="home-searchbar" href="${url("/search/")}">🔍 エリア・業態・こだわりで探す</a>
+  <a class="home-secondary-link" href="${url("/search/")}">条件を全部指定して探す</a>
+</section>
+
+${
+  pickHtml
+    ? `<section class="home-sec">
+  <div class="sec-title"><h2>今夜のひとこと</h2></div>
+  ${pickHtml}
+</section>`
+    : ""
+}
+
+<section class="home-sec">
+  <div class="sec-title"><h2>業態からサッと絞る</h2><a href="${url("/categories/")}">一覧 →</a></div>
+  <div class="cat-chip-row" tabindex="0" role="group" aria-label="業態一覧(横にスクロールできます)">
+${catChips}
+  </div>
 </section>
 
 <section class="home-sec">
-  <div class="sec-title"><h2>業態から選ぶ</h2></div>
-  <div class="cat-tiles">
-${catTiles}
+  <div class="sec-title"><h2>エリアで探す</h2>${(guides || []).some((g) => !g.areaId) ? `<a href="${url("/guides/")}">エリアガイドを読む →</a>` : ""}</div>
+  <div class="area-rows">
+${areaRows}
   </div>
 </section>
 
@@ -2885,13 +3037,6 @@ ${budgetChips}
   <div class="sec-title"><h2>こだわりでサッと</h2><a href="${url("/search/")}">すべての条件 →</a></div>
   <div class="home-chips">
 ${chips}
-  </div>
-</section>
-
-<section class="home-sec">
-  <div class="sec-title"><h2>エリアから選ぶ</h2>${(guides || []).some((g) => !g.areaId) ? `<a href="${url("/guides/")}">エリアガイドを読む →</a>` : ""}</div>
-  <div class="area-tiles">
-${areaTiles}
   </div>
 </section>
 
