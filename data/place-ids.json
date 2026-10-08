@@ -2229,6 +2229,20 @@
     "query": "アミューズメントポーカー A&K 福岡県久留米市東町38-19 富田屋ビル3F",
     "fetchedAt": "2026-07-27T08:01:19.694Z"
   },
+  "poker-dream-casino-bar": {
+    "placeId": "",
+    "needsReview": true,
+    "reviewReasons": [
+      "店名が一致する候補なし(元「DreaM CASINO BAR」/ 先頭解決「Remember」)"
+    ],
+    "candidate": {
+      "placeId": "ChIJk7V1ElGkQTUR-md3aqPqHtw",
+      "name": "Remember",
+      "address": "〒830-0032 福岡県久留米市東町39−１１ 灘小ビル 一番街 2F"
+    },
+    "query": "DreaM CASINO BAR 福岡県久留米市東町38-24",
+    "fetchedAt": "2026-10-08T22:53:57.987Z"
+  },
   "poker-ken": {
     "placeId": "",
     "needsReview": true,
