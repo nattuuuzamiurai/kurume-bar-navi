@@ -45,6 +45,11 @@ jobs:
         env:
           GOOGLE_MAPS_EMBED_KEY: ${{ secrets.GOOGLE_MAPS_EMBED_KEY }}
 
+      # 公開配信ファイル(dist/)に社内プロセスの詳細(誰が・どの部署がどう判断したか等)が
+      # 混入していないかを検知する。見つかった場合はデプロイを止める。
+      - name: Check for internal process leaks in dist/
+        run: node scripts/check-no-internal-leaks.js
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
