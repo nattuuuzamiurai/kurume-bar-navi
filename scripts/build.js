@@ -2394,10 +2394,12 @@ function categoriesWithTagCombo(tag, venues, categories) {
 
 // facetGroupHtml: エリア/業態/タグそれぞれのチェックボックス群を生成する。
 // idToLabel: {id: 表示名} のマップ(エリア名・業態名を出すため)。省略時はidをそのまま表示。
-// collapsedIfLarge: 選択肢が多い軸を <details> アコーディオンにまとめる。
+// collapsedIfLarge: 選択肢が多い軸を <details> アコーディオンにまとめる(選択肢数が8件超の場合のみ)。
 // openByDefault: そのアコーディオンを既定で開いた状態で出す(タグのように「押せると気づきにくい」
 //                主要な軸は、中身が一目で見えるよう開いておく)。
-function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge, openByDefault = false) {
+// forceAccordion: 選択肢数に関わらず常に <details> アコーディオンにする(/search/ シートで
+//                 エリア(4件)のように選択肢が少なくても他セクションと見た目を揃えたい場合に使う)。
+function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge, openByDefault = false, forceAccordion = false) {
   if (counts.size === 0) return "";
   const entries = [...counts.entries()].sort((a, b) => {
     if (idToLabel) return 0; // エリア/業態は元の並び順を維持
@@ -2412,7 +2414,7 @@ function facetGroupHtml(facetKey, title, counts, idToLabel, collapsedIfLarge, op
   const inner = `<div class="tag-filter-list">
 ${items}
   </div>`;
-  if (collapsedIfLarge && entries.length > 8) {
+  if (forceAccordion || (collapsedIfLarge && entries.length > 8)) {
     // summary を「押せると一目で分かる」ピル型ボタン + シェブロンにする(見た目は assets/style.css)。
     // 既定のマーカー(三角)は list-style:none / ::marker で消し、自前のシェブロンを回転させる。
     const openAttr = openByDefault ? " open" : "";
@@ -2585,8 +2587,11 @@ function searchFilterSheetWidgetHtml(venues, venueListId, areas, categories) {
   const groups = [];
   const openHtml = openNowFacetHtml(venues);
   if (openHtml) groups.push(openHtml);
-  if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false));
-  if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false));
+  // エリア・業態もタグ・詳細条件と同じ <details> アコーディオンにする(2026-10 社長指示)。
+  // エリアは4択のみで場所を取らず最も使われる軸と想定されるため既定で開く。業態は10択あり
+  // タグカテゴリと同様に既定で畳んでおく。
+  if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false, true, true));
+  if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false, false, true));
   groups.push(categorizedTagFacetHtml(tagCounts));
 
   // 予算・支払い・喫煙・チャージは使う頻度が低いため、1つのアコーディオンにまとめて初期は閉じておく。
