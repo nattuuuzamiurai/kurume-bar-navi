@@ -5,6 +5,7 @@
   "description": "久留米飲み屋ナビ: 福岡県久留米市・西鉄久留米駅周辺の飲み屋紹介サイト(静的サイトジェネレーター)",
   "scripts": {
     "build": "node scripts/build.js",
+    "check-no-internal-leaks": "node scripts/check-no-internal-leaks.js",
     "serve": "node scripts/build.js && python3 -m http.server 8080 --directory dist"
   },
   "license": "UNLICENSED"

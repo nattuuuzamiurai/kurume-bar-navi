@@ -1,0 +1,29 @@
+name: Check for internal process leaks
+
+# PR の時点でビルドし、公開配信ファイル(dist/)に社内プロセスの詳細
+# (誰が・どの部署がどう判断したか等)が混入していないかを検知する。
+# deploy.yml 側にも同じチェックを入れているが、マージ前に気づけるよう PR でも実行する。
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build static site
+        run: node scripts/build.js
+
+      - name: Check for internal process leaks in dist/
+        run: node scripts/check-no-internal-leaks.js
