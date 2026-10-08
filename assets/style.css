@@ -715,7 +715,7 @@ details.facet-accordion[open] > .tag-filter-list {
   padding: 0 5px;
   border-radius: 999px;
   background: var(--neon);
-  color: #fff;
+  color: var(--ground);
   font-size: .72rem;
   font-weight: 800;
   display: flex;
