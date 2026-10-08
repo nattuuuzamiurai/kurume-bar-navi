@@ -2366,6 +2366,32 @@ function collectTagCounts(venues) {
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"));
 }
 
+// ============================================================
+// 業態×タグ 組み合わせページ(ロングテールSEO、2026-10-08)の対象タグ選定ルール。
+//
+// 「該当店舗が一定数(目安3店舗)以上ある人気タグ」に限定する(無価値なページを量産しないため)。
+// ページ生成(build() 内)と内部リンク表示(renderCategoryPage/renderTagPage)の両方からこの
+// 関数を呼び出すことで、「リンクはあるがページが無い/ページはあるがリンクが無い」という
+// 不整合が起きないようにしている(単一の真実の源)。
+// ============================================================
+const CATEGORY_TAG_MIN_COUNT = 3;
+const CATEGORY_TAG_MAX_PER_CATEGORY = 8;
+
+function topTagsForCategory(catVenues) {
+  return collectTagCounts(catVenues)
+    .filter(([, count]) => count >= CATEGORY_TAG_MIN_COUNT)
+    .slice(0, CATEGORY_TAG_MAX_PER_CATEGORY);
+}
+
+// 与えられたタグが「人気タグ」として業態×タグ組み合わせページを持つ業態の一覧を返す
+// (タグ個別ページ /tags/{タグ}/ から業態別の組み合わせページへリンクするために使う)。
+function categoriesWithTagCombo(tag, venues, categories) {
+  return categories.filter((c) => {
+    const catVenues = venues.filter((v) => v.category === c.id);
+    return topTagsForCategory(catVenues).some(([t]) => t === tag);
+  });
+}
+
 // facetGroupHtml: エリア/業態/タグそれぞれのチェックボックス群を生成する。
 // idToLabel: {id: 表示名} のマップ(エリア名・業態名を出すため)。省略時はidをそのまま表示。
 // collapsedIfLarge: 選択肢が多い軸を <details> アコーディオンにまとめる。
@@ -3237,11 +3263,19 @@ function renderAreaPage(area, venues, categories, areas, guides) {
   const list = areaVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
   const listId = "venue-list-area";
   const displayName = areaDisplayName(area);
+  // エリア×業態 組み合わせページ(2026-10-08新設)への回遊導線。
+  // 「このエリアに実在する業態」=「組み合わせページが生成されている業態」と常に一致する
+  // (build() 側も同じ条件=件数>0でページを生成しているため)。
+  const categoryComboItems = categories
+    .map((c) => ({ c, count: areaVenues.filter((v) => v.category === c.id).length }))
+    .filter((x) => x.count > 0)
+    .map((x) => ({ href: url(`/areas/${area.id}/category/${x.c.id}/`), label: x.c.name, count: x.count }));
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/areas/")}">エリア</a> &gt; ${escapeHtml(area.name)}</nav>
 <h1>${escapeHtml(displayName)}の飲み屋一覧</h1>
 <p>${escapeHtml(area.summary)}</p>
 ${guideLinkForArea(guides || [], area.id)}
+${comboLinksHtml(`${displayName}を業態で絞り込んで見る`, "🔎", categoryComboItems)}
 ${filterWidgetHtml(areaVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
@@ -3261,11 +3295,26 @@ function renderCategoryPage(category, venues, areas, categories) {
   const catVenues = venues.filter((v) => v.category === category.id);
   const list = catVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
   const listId = "venue-list-category";
+  // エリア×業態 組み合わせページへの回遊導線(「このエリアに実在するか」=「件数>0」で
+  // renderAreaPage 側と判定を揃えている)。
+  const areaComboItems = areas
+    .map((a) => ({ a, count: catVenues.filter((v) => v.area === a.id).length }))
+    .filter((x) => x.count > 0)
+    .map((x) => ({ href: url(`/areas/${x.a.id}/category/${category.id}/`), label: areaDisplayName(x.a), count: x.count }));
+  // 業態×タグ 組み合わせページへの回遊導線。topTagsForCategory が実際のページ生成(build())と
+  // 同じ関数なので、ここに出すリンクは必ず実在するページを指す。
+  const tagComboItems = topTagsForCategory(catVenues).map(([tag, count]) => ({
+    href: url(`/categories/${category.id}/tag/${tagSlug(tag)}/`),
+    label: tag,
+    count,
+  }));
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/categories/")}">業態</a> &gt; ${escapeHtml(category.name)}</nav>
 <h1>久留米・西鉄久留米駅周辺の${escapeHtml(category.name)}一覧</h1>
 <p>${escapeHtml(category.summary)}</p>
 ${ageRestrictionNoticeHtml(category.id)}
+${comboLinksHtml(`${category.name}をエリアで絞り込んで見る`, "📍", areaComboItems)}
+${comboLinksHtml(`${category.name}を人気のタグで絞り込んで見る`, "🏷", tagComboItems)}
 ${filterWidgetHtml(catVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
@@ -3314,10 +3363,18 @@ function renderTagPage(tag, venues, areas, categories) {
   // 久留米が出てこなかった。「久留米 シーシャ 深夜営業」のような実際の検索クエリに近づけるため、
   // タイトル・h1に「久留米」を明示する。
   const tagHeading = `久留米で「${tag}」の店を探す`;
+  // 業態×タグ 組み合わせページへの回遊導線(このタグが「人気タグ」として組み合わせページを
+  // 持つ業態のみ。categoriesWithTagCombo は build() のページ生成と同じ判定関数を使う)。
+  const categoryComboItems = categoriesWithTagCombo(tag, venues, categories).map((c) => ({
+    href: url(`/categories/${c.id}/tag/${tagSlug(tag)}/`),
+    label: c.name,
+    count: tagVenues.filter((v) => v.category === c.id).length,
+  }));
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/tags/")}">タグ</a> &gt; ${escapeHtml(tag)}</nav>
 <h1>${escapeHtml(tagHeading)}</h1>
 <p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの店舗 ${tagVenues.length}件です。</p>
+${comboLinksHtml(`「${tag}」を業態で絞り込んで見る`, "🏢", categoryComboItems)}
 ${filterWidgetHtml(tagVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>該当する店舗がありません。</li>"}
@@ -3330,6 +3387,80 @@ ${list || "<li>該当する店舗がありません。</li>"}
     pathname: `/tags/${tagSlug(tag)}/`,
     bodyHtml: body,
     extraScript: FILTER_SCRIPT,
+  });
+}
+
+// ============================================================
+// エリア×業態 組み合わせページ(ロングテールSEO、2026-10-08新設)
+//
+// 「一番街 居酒屋」「文化街 シーシャ」のような2軸の組み合わせで検索するユーザー向けに
+// /areas/{エリアID}/category/{業態ID}/ を静的生成する。該当店舗が0件の組み合わせは
+// build() 側で生成自体をスキップする(このページは必ず1件以上の店舗がある前提)。
+// ============================================================
+function renderAreaCategoryPage(area, category, venues, areas, categories, guides) {
+  const comboVenues = venues.filter((v) => v.area === area.id && v.category === category.id);
+  const list = comboVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const listId = "venue-list-combo-ac";
+  const displayName = areaDisplayName(area);
+  const body = `
+<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/areas/")}">エリア</a> &gt; <a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}</a> &gt; ${escapeHtml(category.name)}</nav>
+<h1>${escapeHtml(displayName)}の${escapeHtml(category.name)}一覧</h1>
+<p>${escapeHtml(area.name)}エリアにある${escapeHtml(category.name)}、${comboVenues.length}件です。${escapeHtml(area.summary)}</p>
+${guideLinkForArea(guides || [], area.id)}
+${ageRestrictionNoticeHtml(category.id)}
+${comboFactsHtml(comboVenues)}
+${filterWidgetHtml(comboVenues, listId, areas, categories)}
+<ul class="venue-list" id="${listId}">
+${list}
+</ul>
+<p class="related-links">
+  <a href="${url(`/areas/${area.id}/`)}">${escapeHtml(area.name)}の飲み屋をすべて見る →</a><br>
+  <a href="${url(`/categories/${category.id}/`)}">久留米の${escapeHtml(category.name)}をすべて見る →</a>
+</p>
+`;
+  return layout({
+    title: `${displayName}の${category.name}一覧`,
+    description: `福岡県久留米市${area.name}エリアの${category.name}一覧(${comboVenues.length}件)。${category.summary}`,
+    pathname: `/areas/${area.id}/category/${category.id}/`,
+    bodyHtml: body,
+    extraScript: FILTER_SCRIPT,
+    activeTab: "area",
+  });
+}
+
+// ============================================================
+// 業態×タグ 組み合わせページ(ロングテールSEO、2026-10-08新設)
+//
+// 業態ごとの人気タグ(topTagsForCategory、目安3店舗以上・最大8個)を対象に
+// /categories/{業態ID}/tag/{タグslug}/ を静的生成する。
+// ============================================================
+function renderCategoryTagPage(category, tag, venues, areas, categories) {
+  const comboVenues = venues.filter((v) => v.category === category.id && (v.tags || []).includes(tag));
+  const list = comboVenues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const listId = "venue-list-combo-ct";
+  const heading = `久留米の${category.name}で「${tag}」の店を探す`;
+  const body = `
+<nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; <a href="${url("/categories/")}">業態</a> &gt; <a href="${url(`/categories/${category.id}/`)}">${escapeHtml(category.name)}</a> &gt; ${escapeHtml(tag)}</nav>
+<h1>${escapeHtml(heading)}</h1>
+<p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの${escapeHtml(category.name)} ${comboVenues.length}件です。</p>
+${ageRestrictionNoticeHtml(category.id)}
+${comboFactsHtml(comboVenues)}
+${filterWidgetHtml(comboVenues, listId, areas, categories)}
+<ul class="venue-list" id="${listId}">
+${list}
+</ul>
+<p class="related-links">
+  <a href="${url(`/categories/${category.id}/`)}">久留米の${escapeHtml(category.name)}をすべて見る →</a><br>
+  <a href="${url(`/tags/${tagSlug(tag)}/`)}">「${escapeHtml(tag)}」の店をすべて見る(他の業態も含む) →</a>
+</p>
+`;
+  return layout({
+    title: heading,
+    description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている${category.name}の一覧(${comboVenues.length}件)。`,
+    pathname: `/categories/${category.id}/tag/${tagSlug(tag)}/`,
+    bodyHtml: body,
+    extraScript: FILTER_SCRIPT,
+    activeTab: "category",
   });
 }
 
@@ -3480,6 +3611,106 @@ function buildFaqJsonLd(v, isUnverified) {
       acceptedAnswer: { "@type": "Answer", text: e.a },
     })),
   };
+}
+
+// ============================================================
+// 組み合わせページ(エリア×業態、業態×タグ)の特集要約パネル(2026-10-08)
+//
+// 【方針】既存データ(予算・営業時間・チャージ・Google評価)のうち、実際に値がある項目だけから
+// 機械的に集計できる事実のみを表示する。捏造・推測は一切しない(buildFaqJsonLd と同じ方針)。
+// サンプル数が少なく「傾向」と呼べない項目(2軒未満)は表示しない。
+// ============================================================
+function comboFactsHtml(venues) {
+  const facts = [];
+
+  // 予算(夜)の傾向: バケットごとの件数をそのまま列挙する(中立的な表示)。
+  // budgetBucketsFor() は絞り込みウィジェット用途のため、1軒の予算レンジが隣接する
+  // 複数のバケットにまたがって重複カウントされる仕様。そのため「最も多いのは◯◯で約X%」
+  // のような排他性を前提にした断定文は作らない(合計が対象店舗数と一致しないことがあるため)。
+  const budgetKnown = venues.filter((v) => parseBudget(v.budgetDinner));
+  if (budgetKnown.length >= 2) {
+    const bucketCounts = new Map();
+    for (const v of budgetKnown) {
+      for (const b of budgetBucketsFor(v)) bucketCounts.set(b, (bucketCounts.get(b) || 0) + 1);
+    }
+    const breakdown = BUDGET_BUCKETS.filter((b) => bucketCounts.get(b.value) > 0)
+      .map((b) => `${b.label} ${bucketCounts.get(b.value)}軒`)
+      .join(" ・ ");
+    if (breakdown) {
+      facts.push({
+        icon: "yen",
+        k: "予算(夜)の内訳",
+        v: `価格帯が分かる${budgetKnown.length}軒の内訳: ${breakdown}(1軒が複数の価格帯にまたがる場合があり、合計は軒数と一致しないことがあります)`,
+      });
+    }
+  }
+
+  // 営業時間帯の傾向: 日付をまたいで営業する(深夜営業)店の割合。
+  const hoursKnown = venues.filter((v) => parseSchedule(v.hours, v.closedDays).parsed);
+  if (hoursKnown.length >= 2) {
+    const lateNight = hoursKnown.filter((v) =>
+      parseSchedule(v.hours, v.closedDays).slots.some((s) => s.end > 1440)
+    ).length;
+    facts.push({
+      icon: "clock",
+      k: "営業時間帯の傾向",
+      v:
+        lateNight > 0
+          ? `営業時間が分かる${hoursKnown.length}軒中、${lateNight}軒は日付が変わってからも営業しています(深夜営業)`
+          : `営業時間が分かる${hoursKnown.length}軒は、いずれも日付が変わる前に閉店します`,
+    });
+  }
+
+  // チャージ・お通しの傾向。
+  const chargeKnown = venues.filter((v) => v.charge);
+  if (chargeKnown.length >= 2) {
+    const free = chargeKnown.filter((v) => isChargeFree(v.charge)).length;
+    facts.push({
+      icon: "check",
+      k: "チャージ・お通しの傾向",
+      v: `情報がある${chargeKnown.length}軒中、${free}軒はチャージ・お通しなしです`,
+    });
+  }
+
+  // Googleのクチコミ評価(店舗ページと同じ data/ratings.json を参照。新規のAPI取得はしない)。
+  const rated = venues.map((v) => venueRating(v)).filter(Boolean);
+  if (rated.length > 0) {
+    const avg = rated.reduce((sum, r) => sum + r.rating, 0) / rated.length;
+    facts.push({
+      icon: "card",
+      k: "Googleのクチコミ評価",
+      v:
+        rated.length === 1
+          ? `Googleのクチコミ評価がある店は1軒です(★${rated[0].rating.toFixed(1)})`
+          : `Googleのクチコミ評価がある${rated.length}軒の平均は★${avg.toFixed(1)}です`,
+    });
+  }
+
+  if (facts.length === 0) return "";
+  return `<section class="info-section combo-facts">
+  <h2 class="section-heading"><span class="section-heading-icon">📊</span>${venues.length}軒のデータから分かること</h2>
+  <div class="facts-grid">
+${facts
+  .map(
+    (f) =>
+      `    <div class="fact"><span class="fact-ic">${UI_ICONS[f.icon] || ""}</span><span class="fact-body"><span class="fact-k">${escapeHtml(f.k)}</span><span class="fact-v">${escapeHtml(f.v)}</span></span></div>`
+  )
+  .join("\n")}
+  </div>
+  <p class="small">集計は当サイトが把握している情報の範囲によるものです。個々の店舗の最新情報は各店舗ページでご確認ください。</p>
+</section>`;
+}
+
+// 一覧ページ(エリア/業態/タグ)から、関連する組み合わせページへのリンク集(回遊導線)。
+// label: リンクの行き先種別を示す短い語(「の○○一覧」の○○部分)。items: { href, label, count } の配列。
+function comboLinksHtml(heading, icon, items) {
+  if (items.length === 0) return "";
+  return `<section class="info-section combo-links">
+  <h2 class="section-heading"><span class="section-heading-icon">${icon}</span>${escapeHtml(heading)}</h2>
+  <ul class="link-list">
+${items.map((it) => `    <li><a href="${it.href}">${escapeHtml(it.label)}<span class="count">(${it.count}件)</span></a></li>`).join("\n")}
+  </ul>
+</section>`;
 }
 
 // 店舗ページの「チャージ・お通し」ハイライト。
@@ -3964,6 +4195,50 @@ function build() {
       urls.push(`/tags/${tagSlug(tag)}/`);
     }
   }
+
+  // ============================================================
+  // エリア×業態 組み合わせページ(ロングテールSEO、2026-10-08新設)
+  //
+  // 「一番街 居酒屋」「文化街 シーシャ」のような2軸の組み合わせ検索に対応する静的ページを
+  // /areas/{エリアID}/category/{業態ID}/ に生成する。4エリア×10業態=最大40通りのうち、
+  // 該当店舗が0件の組み合わせは生成しない(無価値なページを量産しない)。
+  // renderAreaPage/renderCategoryPage の回遊導線リンクも同じ「件数>0」判定を使っており、
+  // ここで生成するページと常に1対1で対応する。
+  // ============================================================
+  let areaCategoryComboCount = 0;
+  for (const area of areas) {
+    for (const category of categories) {
+      const comboCount = venues.filter((v) => v.area === area.id && v.category === category.id).length;
+      if (comboCount === 0) continue;
+      writeFile(
+        `areas/${area.id}/category/${category.id}/index.html`,
+        renderAreaCategoryPage(area, category, venues, areas, categories, guides)
+      );
+      urls.push(`/areas/${area.id}/category/${category.id}/`);
+      areaCategoryComboCount++;
+    }
+  }
+  console.log(`エリア×業態 組み合わせページ: ${areaCategoryComboCount}件(最大${areas.length * categories.length}通り中、該当店舗0件を除く)`);
+
+  // ============================================================
+  // 業態×タグ 組み合わせページ(ロングテールSEO、2026-10-08新設)
+  //
+  // 業態ごとに該当店舗数が多い人気タグ(topTagsForCategory、目安3店舗以上・最大8個)を対象に、
+  // /categories/{業態ID}/tag/{タグslug}/ に生成する。
+  // ============================================================
+  let categoryTagComboCount = 0;
+  for (const category of categories) {
+    const catVenues = venues.filter((v) => v.category === category.id);
+    for (const [tag] of topTagsForCategory(catVenues)) {
+      writeFile(
+        `categories/${category.id}/tag/${tagSlug(tag)}/index.html`,
+        renderCategoryTagPage(category, tag, venues, areas, categories)
+      );
+      urls.push(`/categories/${category.id}/tag/${tagSlug(tag)}/`);
+      categoryTagComboCount++;
+    }
+  }
+  console.log(`業態×タグ 組み合わせページ: ${categoryTagComboCount}件(業態ごとに目安3店舗以上・最大8個の人気タグが対象)`);
 
   // sitemap.xml
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
