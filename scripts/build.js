@@ -2438,8 +2438,8 @@ ${items}
 //
 // 90種のタグがフラットな1リストだと選びにくいという指摘を受け、意味の近いタグ同士を
 // 4カテゴリ(シーン・人数/設備・遊べる/料理ジャンル/お酒・ドリンク)にグルーピングする。
-// この分類は /search/ ページのタグセクションだけに適用し、エリア/業態/タグ別ページ等
-// (filterWidgetHtml側)のフラットなタグ一覧は変更しない。
+// この分類は絞り込みシートウィジェット(filterSheetWidgetHtml、/search/ とエリア/業態/タグ/
+// 組み合わせページ全てで共通利用)のタグセクションに適用する。
 // TAG_FILTER_GROUPS に無いタグは「その他」に自動で入る(新しいタグが増えても
 // 絞り込みの選択肢から漏れて消えることがないようにするフォールバック)。
 // TAG_FILTER_EXCLUDED は、日付・新規開店など絞り込み条件としての実用性が低いメタ情報タグを
@@ -2532,51 +2532,25 @@ ${items}
     .join("\n");
 }
 
-// filterWidgetHtml: 与えられた店舗一覧を対象に、area/category/tags の
-// 3軸を組み合わせて絞り込めるUIを生成する。各軸は「このリストに実在する値」だけを
-// 選択肢にし、選択肢が1種類以下の軸(常に同じ値になる=絞り込む意味がない)は表示しない
-// (例: エリア別ページではエリア軸を出さない、業態別ページでは業態軸を出さない)。
-function filterWidgetHtml(venues, venueListId, areas, categories) {
-  const areaIdToLabel = Object.fromEntries(areas.map((a) => [a.id, a.name]));
-  const categoryIdToLabel = Object.fromEntries(categories.map((c) => [c.id, c.name]));
-
-  const areaCounts = collectFacetCounts(venues, "area");
-  const categoryCounts = collectFacetCounts(venues, "category");
-  const tagCounts = new Map(collectTagCounts(venues));
-
-  const groups = [];
-  const openHtml = openNowFacetHtml(venues);
-  if (openHtml) groups.push(openHtml);
-  if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false));
-  if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false));
-  for (const facet of EXTRA_FACETS) {
-    const html = extraFacetHtml(venues, facet);
-    if (html) groups.push(html);
-  }
-  // タグは「押せると気づきにくい」という指摘を受け、既定で開いた状態(open)にして中身を見せる。
-  if (tagCounts.size > 0) groups.push(facetGroupHtml("tags", "タグ", tagCounts, null, true, true));
-
-  if (groups.length === 0) return "";
-
-  return `<div class="tag-filter" data-target="${venueListId}">
-  <p class="tag-filter-title">条件で絞り込む <button type="button" class="tag-filter-reset">条件をクリア</button></p>
-${groups.join("\n")}
-  <p class="filter-result-count small"></p>
-  <p class="filter-note small">営業時間・予算・支払い・喫煙の条件は、その項目の情報を確認できた店舗のみが対象です(情報が未取得の店舗は絞り込むと表示されません)。掲載内容は最新でない場合があります。</p>
-</div>`;
-}
-
 // ============================================================
-// /search/ 専用の絞り込みウィジェット(2026-10 絞り込みUI刷新)。
+// 絞り込みシートウィジェット(2026-10 絞り込みUI刷新 → 2026-10-09 全リスト系ページに展開)。
 //
-// filterWidgetHtml() とは別関数にしている。他ページ(エリア/業態/タグ/組み合わせページ)は
-// 従来どおり filterWidgetHtml() のインライン表示のままで変更しない。/search/ だけ、絞り込み条件
-// 一式をボトムシート(モーダル)に収める構成にするため、サマリー行・リセット/適用ボタンの
-// マークアップが異なる。集計ロジック自体(facetGroupHtml・openNowFacetHtml・extraFacetHtml・
-// EXTRA_FACETS・categorizedTagFacetHtml)はいずれも既存のものをそのまま再利用する。
+// 当初は /search/ 専用だったが、「条件のチェックボックスが店舗一覧より先に出てきて邪魔」という
+// 指摘を受け、エリア/業態/タグ別ページ・組み合わせページ(/areas/{id}/・/categories/{id}/・
+// /tags/{tag}/・/areas/{id}/category/{id}/・/categories/{id}/tag/{tag}/)にも同じ
+// 「絞り込む」ボタン+ボトムシート(モーダル)の形で展開する。絞り込み条件一式をシートに収める
+// ことで、各ページ共通で「見出し・リード文の直後に店舗一覧が見える」構成にする。
+// 各軸は「このリストに実在する値」だけを選択肢にし、選択肢が1種類以下の軸(常に同じ値になる=
+// 絞り込む意味がない)は表示しない(例: エリア別ページではエリア軸を出さない、業態別ページでは
+// 業態軸を出さない)。集計ロジック自体(facetGroupHtml・openNowFacetHtml・extraFacetHtml・
+// EXTRA_FACETS・categorizedTagFacetHtml)はいずれも既存のものをそのまま再利用し、変更しない。
 // data-target の対象リストに対する実際の絞り込み判定は共通の FILTER_SCRIPT が担う
 // (このウィジェットが生成する .tag-filter / data-facet 属性の構造は変えていない)。
-function searchFilterSheetWidgetHtml(venues, venueListId, areas, categories) {
+//
+// .tag-filter-reset と .filter-result-count は FILTER_SCRIPT が参照する要素だが、見せ方は
+// シート下部の専用ボタン(filterLaunchBarAndSheetHtml側)・ボタンのバッジで代替するため、
+// ここでは画面には出さず(hidden)ロジックの受け口としてだけ残す。
+function filterSheetWidgetHtml(venues, venueListId, areas, categories) {
   const areaIdToLabel = Object.fromEntries(areas.map((a) => [a.id, a.name]));
   const categoryIdToLabel = Object.fromEntries(categories.map((c) => [c.id, c.name]));
 
@@ -2592,7 +2566,8 @@ function searchFilterSheetWidgetHtml(venues, venueListId, areas, categories) {
   // タグカテゴリと同様に既定で畳んでおく。
   if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false, true, true));
   if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false, false, true));
-  groups.push(categorizedTagFacetHtml(tagCounts));
+  const tagHtml = categorizedTagFacetHtml(tagCounts);
+  if (tagHtml) groups.push(tagHtml);
 
   // 予算・支払い・喫煙・チャージは使う頻度が低いため、1つのアコーディオンにまとめて初期は閉じておく。
   const extraGroups = EXTRA_FACETS.map((facet) => extraFacetHtml(venues, facet)).filter(Boolean);
@@ -2606,13 +2581,46 @@ ${extraGroups.join("\n")}
 </details>`);
   }
 
-  // .tag-filter-reset と .filter-result-count は FILTER_SCRIPT が参照する要素だが、
-  // /search/ 側はシート下部の専用ボタン・サマリー行(SEARCH_PAGE_SCRIPT側)で見せるため、
-  // ここでは画面には出さず(hidden)ロジックの受け口としてだけ残す。
+  // どの軸も出せる選択肢が無い(=絞り込む意味がない)場合は空文字を返す。呼び出し側
+  // (filterLaunchBarAndSheetHtml)はこれを見て「絞り込む」ボタン自体を出さない。
+  if (groups.filter(Boolean).length === 0) return "";
+
   return `<div class="tag-filter search-filter-widget" data-target="${venueListId}">
 ${groups.filter(Boolean).join("\n")}
   <button type="button" class="tag-filter-reset" hidden>条件をクリア</button>
   <p class="filter-result-count small" hidden></p>
+</div>`;
+}
+
+// 「絞り込む」ボタン(選択中条件数バッジ付き)+ 絞り込みシート(ボトムシート/モーダル)一式。
+// filterWidgetHtml() のインライン表示(見出し+チェックボックス羅列が店舗一覧より先に出る)を
+// 置き換える共通コンポーネント。シートが空(filterSheetWidgetHtmlが ""を返す=絞り込む意味の
+// ある軸が無い)場合は何も出さない。シートの開閉・バッジ更新は FILTER_SHEET_SCRIPT が担う。
+function filterLaunchBarAndSheetHtml(venues, venueListId, areas, categories) {
+  const widgetHtml = filterSheetWidgetHtml(venues, venueListId, areas, categories);
+  if (!widgetHtml) return "";
+  const total = venues.length;
+  return `<div class="search-launch-bar">
+  <button type="button" class="search-launch-btn" id="openFilterSheetBtn" aria-haspopup="dialog" aria-controls="filterSheet">
+    <span class="search-launch-ic" aria-hidden="true">⚙️</span>絞り込む
+    <span class="search-launch-badge" id="filterBadge" hidden>0</span>
+  </button>
+</div>
+<div class="filter-sheet-overlay" id="filterSheetOverlay" hidden>
+  <div class="filter-sheet" id="filterSheet" role="dialog" aria-modal="true" aria-labelledby="filterSheetTitle">
+    <div class="filter-sheet-head">
+      <h2 id="filterSheetTitle">絞り込む</h2>
+      <button type="button" class="filter-sheet-close" id="closeFilterSheetBtn" aria-label="閉じる">×</button>
+    </div>
+    <div class="filter-sheet-body">
+      ${widgetHtml}
+      <p class="filter-note small">営業時間・予算・支払い・喫煙の条件は、その項目の情報を確認できた店舗のみが対象です(情報が未取得の店舗は絞り込むと表示されません)。掲載内容は最新でない場合があります。</p>
+    </div>
+    <div class="filter-sheet-foot">
+      <button type="button" class="filter-sheet-reset" id="sheetResetBtn">条件をクリア</button>
+      <button type="button" class="filter-sheet-apply" id="applyFilterBtn">${total}件を見る</button>
+    </div>
+  </div>
 </div>`;
 }
 
@@ -2728,6 +2736,71 @@ const FILTER_SCRIPT = `<script>
     });
     if (applied) apply();
   });
+})();
+</script>`;
+
+// ============================================================
+// 絞り込みシート(ボトムシート/モーダル)共通の開閉・バッジ表示スクリプト(2026-10-09)。
+//
+// filterLaunchBarAndSheetHtml が出すボタン・シートを動かす。/search/ ページは段階表示・
+// 結果サマリー行(SEARCH_PAGE_SCRIPT)が開閉・バッジ更新も含めて担うため、このスクリプトは
+// /search/ 以外(エリア/業態/タグ別ページ・組み合わせページ)のみで使う。
+// 絞り込みの判定自体は変更せず、FILTER_SCRIPT が widget に発火する 'filter:apply' イベント
+// (detail: {visible, total})を見て、ボタンのバッジ・シート下部の件数表示だけを更新する。
+const FILTER_SHEET_SCRIPT = `<script>
+(function () {
+  var widget = document.querySelector('.search-filter-widget');
+  var overlay = document.getElementById('filterSheetOverlay');
+  if (!widget || !overlay) return;
+  var openBtn = document.getElementById('openFilterSheetBtn');
+  var closeBtn = document.getElementById('closeFilterSheetBtn');
+  var sheetResetBtn = document.getElementById('sheetResetBtn');
+  var applyBtn = document.getElementById('applyFilterBtn');
+  var badge = document.getElementById('filterBadge');
+  var realResetBtn = widget.querySelector('.tag-filter-reset');
+
+  function openSheet() {
+    overlay.hidden = false;
+    requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSheet() {
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(function () { overlay.hidden = true; }, 220);
+  }
+  if (openBtn) openBtn.addEventListener('click', openSheet);
+  if (closeBtn) closeBtn.addEventListener('click', closeSheet);
+  if (applyBtn) applyBtn.addEventListener('click', closeSheet);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeSheet(); });
+  if (sheetResetBtn && realResetBtn) {
+    // 「条件をクリア」は既存の .tag-filter-reset(非表示)をクリックして既存ロジックに委ねる。
+    sheetResetBtn.addEventListener('click', function () { realResetBtn.click(); });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !overlay.hidden) closeSheet();
+  });
+
+  function updateBadge() {
+    var checked = widget.querySelectorAll('input[type=checkbox]:checked').length;
+    if (!badge) return;
+    if (checked > 0) { badge.hidden = false; badge.textContent = String(checked); }
+    else badge.hidden = true;
+  }
+  widget.addEventListener('filter:apply', function (e) {
+    updateBadge();
+    if (applyBtn && e.detail) applyBtn.textContent = e.detail.visible + '件を見る';
+  });
+
+  // ヘッダーの実測高さに絞り込みバーのsticky位置を揃える(/search/ の SEARCH_PAGE_SCRIPT と同じ対応)。
+  var header = document.querySelector('.site-header');
+  var launchBar = document.querySelector('.search-launch-bar');
+  function syncHeaderOffset() {
+    if (!header || !launchBar) return;
+    document.documentElement.style.setProperty('--search-bar-top', header.getBoundingClientRect().height + 'px');
+  }
+  syncHeaderOffset();
+  window.addEventListener('resize', syncHeaderOffset);
 })();
 </script>`;
 
@@ -3581,7 +3654,7 @@ function renderAreaPage(area, venues, categories, areas, guides) {
 <p>${escapeHtml(area.summary)}</p>
 ${guideLinkForArea(guides || [], area.id)}
 ${comboLinksHtml(`${displayName}を業態で絞り込んで見る`, "🔎", categoryComboItems)}
-${filterWidgetHtml(areaVenues, listId, areas, categories)}
+${filterLaunchBarAndSheetHtml(areaVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
 </ul>
@@ -3591,7 +3664,7 @@ ${list || "<li>準備中です。</li>"}
     description: `福岡県久留米市${area.name}エリアのバー・居酒屋・コンカフェ等の飲み屋一覧。${area.summary}`,
     pathname: `/areas/${area.id}/`,
     bodyHtml: body,
-    extraScript: FILTER_SCRIPT,
+    extraScript: FILTER_SCRIPT + FILTER_SHEET_SCRIPT,
     activeTab: "area",
   });
 }
@@ -3620,7 +3693,7 @@ function renderCategoryPage(category, venues, areas, categories) {
 ${ageRestrictionNoticeHtml(category.id)}
 ${comboLinksHtml(`${category.name}をエリアで絞り込んで見る`, "📍", areaComboItems)}
 ${comboLinksHtml(`${category.name}を人気のタグで絞り込んで見る`, "🏷", tagComboItems)}
-${filterWidgetHtml(catVenues, listId, areas, categories)}
+${filterLaunchBarAndSheetHtml(catVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>準備中です。</li>"}
 </ul>
@@ -3630,7 +3703,7 @@ ${list || "<li>準備中です。</li>"}
     description: `福岡県久留米市・西鉄久留米駅周辺の${category.name}一覧。${category.summary}`,
     pathname: `/categories/${category.id}/`,
     bodyHtml: body,
-    extraScript: FILTER_SCRIPT,
+    extraScript: FILTER_SCRIPT + FILTER_SHEET_SCRIPT,
     activeTab: "category",
   });
 }
@@ -3680,7 +3753,7 @@ function renderTagPage(tag, venues, areas, categories) {
 <h1>${escapeHtml(tagHeading)}</h1>
 <p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの店舗 ${tagVenues.length}件です。</p>
 ${comboLinksHtml(`「${tag}」を業態で絞り込んで見る`, "🏢", categoryComboItems)}
-${filterWidgetHtml(tagVenues, listId, areas, categories)}
+${filterLaunchBarAndSheetHtml(tagVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list || "<li>該当する店舗がありません。</li>"}
 </ul>
@@ -3691,7 +3764,7 @@ ${list || "<li>該当する店舗がありません。</li>"}
     description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている店舗の一覧。エリア・業態・予算・喫煙可否なども組み合わせて絞り込めます。`,
     pathname: `/tags/${tagSlug(tag)}/`,
     bodyHtml: body,
-    extraScript: FILTER_SCRIPT,
+    extraScript: FILTER_SCRIPT + FILTER_SHEET_SCRIPT,
   });
 }
 
@@ -3714,7 +3787,7 @@ function renderAreaCategoryPage(area, category, venues, areas, categories, guide
 ${guideLinkForArea(guides || [], area.id)}
 ${ageRestrictionNoticeHtml(category.id)}
 ${comboFactsHtml(comboVenues)}
-${filterWidgetHtml(comboVenues, listId, areas, categories)}
+${filterLaunchBarAndSheetHtml(comboVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list}
 </ul>
@@ -3728,7 +3801,7 @@ ${list}
     description: `福岡県久留米市${area.name}エリアの${category.name}一覧(${comboVenues.length}件)。${category.summary}`,
     pathname: `/areas/${area.id}/category/${category.id}/`,
     bodyHtml: body,
-    extraScript: FILTER_SCRIPT,
+    extraScript: FILTER_SCRIPT + FILTER_SHEET_SCRIPT,
     activeTab: "area",
   });
 }
@@ -3750,7 +3823,7 @@ function renderCategoryTagPage(category, tag, venues, areas, categories) {
 <p>「${escapeHtml(tag)}」のタグが付いている久留米・西鉄久留米駅周辺エリアの${escapeHtml(category.name)} ${comboVenues.length}件です。</p>
 ${ageRestrictionNoticeHtml(category.id)}
 ${comboFactsHtml(comboVenues)}
-${filterWidgetHtml(comboVenues, listId, areas, categories)}
+${filterLaunchBarAndSheetHtml(comboVenues, listId, areas, categories)}
 <ul class="venue-list" id="${listId}">
 ${list}
 </ul>
@@ -3764,7 +3837,7 @@ ${list}
     description: `久留米・西鉄久留米駅周辺エリアで「${tag}」のタグが付いている${category.name}の一覧(${comboVenues.length}件)。`,
     pathname: `/categories/${category.id}/tag/${tagSlug(tag)}/`,
     bodyHtml: body,
-    extraScript: FILTER_SCRIPT,
+    extraScript: FILTER_SCRIPT + FILTER_SHEET_SCRIPT,
     activeTab: "category",
   });
 }
@@ -3809,7 +3882,7 @@ ${list}
       <button type="button" class="filter-sheet-close" id="closeFilterSheetBtn" aria-label="閉じる">×</button>
     </div>
     <div class="filter-sheet-body">
-      ${searchFilterSheetWidgetHtml(venues, listId, areas, categories)}
+      ${filterSheetWidgetHtml(venues, listId, areas, categories)}
       <p class="filter-note small">営業時間・予算・支払い・喫煙の条件は、その項目の情報を確認できた店舗のみが対象です(情報が未取得の店舗は絞り込むと表示されません)。掲載内容は最新でない場合があります。</p>
     </div>
     <div class="filter-sheet-foot">
