@@ -2431,6 +2431,105 @@ ${items}
 </div>`;
 }
 
+// ============================================================
+// /search/ 専用: タグ(90種前後)をカテゴリ分けして見せるアコーディオン(2026-10 絞り込みUI刷新)。
+//
+// 90種のタグがフラットな1リストだと選びにくいという指摘を受け、意味の近いタグ同士を
+// 4カテゴリ(シーン・人数/設備・遊べる/料理ジャンル/お酒・ドリンク)にグルーピングする。
+// この分類は /search/ ページのタグセクションだけに適用し、エリア/業態/タグ別ページ等
+// (filterWidgetHtml側)のフラットなタグ一覧は変更しない。
+// TAG_FILTER_GROUPS に無いタグは「その他」に自動で入る(新しいタグが増えても
+// 絞り込みの選択肢から漏れて消えることがないようにするフォールバック)。
+// TAG_FILTER_EXCLUDED は、日付・新規開店など絞り込み条件としての実用性が低いメタ情報タグを
+// そもそも対象から外すための一覧。
+// ============================================================
+const TAG_FILTER_EXCLUDED = new Set(["新規オープン店", "2025年10月移転リニューアル"]);
+
+const TAG_FILTER_GROUPS = [
+  {
+    key: "scene",
+    title: "シーン・人数で選ぶ",
+    tags: [
+      "大人数対応(宴会向け)", "カウンター席あり", "個室あり", "一人客歓迎", "座敷",
+      "深夜営業", "女性のお客様もOK", "カップルOK", "貸切利用OK", "団体利用OK",
+      "昼飲み", "早い時間から営業", "昼カラオケ", "朝食営業", "誕生日特典",
+    ],
+  },
+  {
+    key: "facility",
+    title: "設備・遊べる",
+    tags: [
+      "カラオケ", "ダーツ", "ビリヤード", "角打ち", "ボードゲーム", "スポーツ観戦",
+      "スポーツ観戦バー", "シーシャあり", "ライブスペース", "生演奏/ライブ", "音楽バー", "DJ",
+      "アミューズメントポーカー", "トーナメント開催あり", "チェキあり", "Wi-Fi対応", "夜景", "メイドカフェ",
+      "初心者講習あり",
+    ],
+  },
+  {
+    key: "cuisine",
+    title: "料理ジャンル",
+    tags: [
+      "餃子", "海鮮/魚介", "焼き鳥", "もつ鍋", "焼肉", "和風居酒屋", "中華", "イタリアン",
+      "天ぷら", "韓国料理", "鍋料理", "おでん", "郷土料理", "馬刺し", "ホルモン", "九州料理",
+      "鶏料理", "しゃぶしゃぶ", "水炊き", "炭火焼き", "串焼き", "唐揚げ", "ラーメン", "串カツ",
+      "ステーキ", "お好み焼き", "カフェ", "ダイニングバー", "デリカテッセン", "手羽先", "ビストロ",
+      "沖縄料理", "つくね", "スペイン料理", "炉端焼き", "ピザ", "屋台", "肉料理", "グリル",
+      "とりかわ", "肉寿司", "久留米焼きとり", "鉄板焼き",
+    ],
+  },
+  {
+    key: "drink",
+    title: "お酒・ドリンク",
+    tags: [
+      "飲み放題あり", "コース料理あり", "カクテル充実", "ワイン充実", "日本酒充実", "ハイボール",
+      "ノンアルコール充実", "クラフトビール", "自家醸造", "焼酎", "ビアホール", "バル",
+    ],
+  },
+];
+
+// tagCounts: collectTagCounts() が返す [タグ, 件数] のMap。各カテゴリを <details> アコーディオンで
+// 返す(先頭の非空カテゴリだけ初期展開)。既存の facetGroupHtml とチェックボックスのマークアップ
+// (data-facet="tags")は揃えてあるので、FILTER_SCRIPT側の絞り込みロジックはそのまま動く。
+function categorizedTagFacetHtml(tagCounts) {
+  if (tagCounts.size === 0) return "";
+  const buckets = new Map(TAG_FILTER_GROUPS.map((g) => [g.key, []]));
+  const other = [];
+  for (const [tag, count] of tagCounts) {
+    if (TAG_FILTER_EXCLUDED.has(tag)) continue;
+    const group = TAG_FILTER_GROUPS.find((g) => g.tags.includes(tag));
+    if (group) buckets.get(group.key).push([tag, count]);
+    else other.push([tag, count]);
+  }
+  if (other.length > 0) {
+    console.log(`[info] タグカテゴリ未分類のため「その他」に入れたタグ: ${other.map(([t]) => t).join(", ")}`);
+  }
+  const sections = [
+    ...TAG_FILTER_GROUPS.map((g) => ({ title: g.title, entries: buckets.get(g.key) })),
+    { title: "その他", entries: other },
+  ].filter((s) => s.entries.length > 0);
+
+  return sections
+    .map((s, i) => {
+      const entries = s.entries.slice().sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"));
+      const items = entries
+        .map(
+          ([tag, count]) =>
+            `<label class="tag-filter-item"><input type="checkbox" data-facet="tags" value="${escapeHtml(tag)}"> ${escapeHtml(tag)}<span class="count">(${count})</span></label>`
+        )
+        .join("\n");
+      return `<details class="facet-group facet-accordion"${i === 0 ? " open" : ""}>
+  <summary class="facet-summary">
+    <span class="facet-summary-label">${escapeHtml(s.title)}<span class="facet-summary-count">${entries.length}</span></span>
+    <span class="facet-chevron" aria-hidden="true">▾</span>
+  </summary>
+  <div class="tag-filter-list">
+${items}
+  </div>
+</details>`;
+    })
+    .join("\n");
+}
+
 // filterWidgetHtml: 与えられた店舗一覧を対象に、area/category/tags の
 // 3軸を組み合わせて絞り込めるUIを生成する。各軸は「このリストに実在する値」だけを
 // 選択肢にし、選択肢が1種類以下の軸(常に同じ値になる=絞り込む意味がない)は表示しない
@@ -2462,6 +2561,53 @@ function filterWidgetHtml(venues, venueListId, areas, categories) {
 ${groups.join("\n")}
   <p class="filter-result-count small"></p>
   <p class="filter-note small">営業時間・予算・支払い・喫煙の条件は、その項目の情報を確認できた店舗のみが対象です(情報が未取得の店舗は絞り込むと表示されません)。掲載内容は最新でない場合があります。</p>
+</div>`;
+}
+
+// ============================================================
+// /search/ 専用の絞り込みウィジェット(2026-10 絞り込みUI刷新)。
+//
+// filterWidgetHtml() とは別関数にしている。他ページ(エリア/業態/タグ/組み合わせページ)は
+// 従来どおり filterWidgetHtml() のインライン表示のままで変更しない。/search/ だけ、絞り込み条件
+// 一式をボトムシート(モーダル)に収める構成にするため、サマリー行・リセット/適用ボタンの
+// マークアップが異なる。集計ロジック自体(facetGroupHtml・openNowFacetHtml・extraFacetHtml・
+// EXTRA_FACETS・categorizedTagFacetHtml)はいずれも既存のものをそのまま再利用する。
+// data-target の対象リストに対する実際の絞り込み判定は共通の FILTER_SCRIPT が担う
+// (このウィジェットが生成する .tag-filter / data-facet 属性の構造は変えていない)。
+function searchFilterSheetWidgetHtml(venues, venueListId, areas, categories) {
+  const areaIdToLabel = Object.fromEntries(areas.map((a) => [a.id, a.name]));
+  const categoryIdToLabel = Object.fromEntries(categories.map((c) => [c.id, c.name]));
+
+  const areaCounts = collectFacetCounts(venues, "area");
+  const categoryCounts = collectFacetCounts(venues, "category");
+  const tagCounts = new Map(collectTagCounts(venues));
+
+  const groups = [];
+  const openHtml = openNowFacetHtml(venues);
+  if (openHtml) groups.push(openHtml);
+  if (areaCounts.size > 1) groups.push(facetGroupHtml("area", "エリア", areaCounts, areaIdToLabel, false));
+  if (categoryCounts.size > 1) groups.push(facetGroupHtml("category", "業態", categoryCounts, categoryIdToLabel, false));
+  groups.push(categorizedTagFacetHtml(tagCounts));
+
+  // 予算・支払い・喫煙・チャージは使う頻度が低いため、1つのアコーディオンにまとめて初期は閉じておく。
+  const extraGroups = EXTRA_FACETS.map((facet) => extraFacetHtml(venues, facet)).filter(Boolean);
+  if (extraGroups.length > 0) {
+    groups.push(`<details class="facet-group facet-accordion facet-more">
+  <summary class="facet-summary">
+    <span class="facet-summary-label">詳細条件を追加(予算・支払い・喫煙・チャージ)</span>
+    <span class="facet-chevron" aria-hidden="true">▾</span>
+  </summary>
+${extraGroups.join("\n")}
+</details>`);
+  }
+
+  // .tag-filter-reset と .filter-result-count は FILTER_SCRIPT が参照する要素だが、
+  // /search/ 側はシート下部の専用ボタン・サマリー行(SEARCH_PAGE_SCRIPT側)で見せるため、
+  // ここでは画面には出さず(hidden)ロジックの受け口としてだけ残す。
+  return `<div class="tag-filter search-filter-widget" data-target="${venueListId}">
+${groups.filter(Boolean).join("\n")}
+  <button type="button" class="tag-filter-reset" hidden>条件をクリア</button>
+  <p class="filter-result-count small" hidden></p>
 </div>`;
 }
 
@@ -2545,6 +2691,9 @@ const FILTER_SCRIPT = `<script>
       });
       var anyChecked = Array.prototype.some.call(allInputs, function (c) { return c.checked; });
       if (countEl) countEl.textContent = anyChecked ? visible + '件該当(全' + cards.length + '件中)' : '';
+      // 他のスクリプト(/search/ 専用のボトムシートUI等)がこのタイミングで追加処理を
+      // したい場合のための拾い穴。既定では誰も聞いていないので挙動に影響しない。
+      widget.dispatchEvent(new CustomEvent('filter:apply', { detail: { visible: visible, total: cards.length } }));
     }
     allInputs.forEach(function (c) { c.addEventListener('change', apply); });
     if (daySel) daySel.addEventListener('change', apply);
@@ -2574,6 +2723,157 @@ const FILTER_SCRIPT = `<script>
     });
     if (applied) apply();
   });
+})();
+</script>`;
+
+// ============================================================
+// /search/ 専用UI(2026-10 絞り込みUI刷新)。
+//
+// 絞り込みの判定(どの店舗が条件に合うか)は共通の FILTER_SCRIPT に任せたまま、
+// このスクリプトは「見せ方」だけを担当する:
+//   - 絞り込みシート(ボトムシート/モーダル)の開閉
+//   - 「絞り込む」ボタンのバッジ(選択中の条件数)
+//   - 結果サマリー行(選択中の条件 × 件数)
+//   - 一覧の段階表示(最初はN件だけ見せ、「もっと見る」で残りを表示)
+// FILTER_SCRIPT 側は widget.dispatchEvent('filter:apply') を追加しているだけで、絞り込み自体の
+// ロジック(data-facet属性の読み取り・AND/OR判定)は変更していない。
+const SEARCH_PAGE_SCRIPT = `<script>
+(function () {
+  var list = document.getElementById('venue-list-search');
+  var widget = document.querySelector('.search-filter-widget');
+  if (!list || !widget) return;
+  var cards = Array.prototype.slice.call(list.querySelectorAll('.venue-card'));
+  var PAGE_SIZE = 10;
+  var revealCount = PAGE_SIZE;
+  var currentMatched = cards.slice();
+
+  var moreBtn = document.getElementById('searchMoreBtn');
+  var summaryCond = document.getElementById('resultSummaryCond');
+  var summaryCount = document.getElementById('resultSummaryCount');
+  var badge = document.getElementById('filterBadge');
+  var applyBtn = document.getElementById('applyFilterBtn');
+
+  // チェックボックスの表示ラベルを、件数バッジ(.count)を除いて取り出す
+  // (例: 「一番街(44)」というlabelのテキストから「一番街」だけを得る)。
+  function labelFor(input) {
+    var label = input.closest('label');
+    if (!label) return input.value;
+    var clone = label.cloneNode(true);
+    var countEl = clone.querySelector('.count');
+    if (countEl) countEl.parentNode.removeChild(countEl);
+    return clone.textContent.replace(/\\s+/g, ' ').trim();
+  }
+
+  function checkedInputs() {
+    return Array.prototype.slice.call(widget.querySelectorAll('input[type=checkbox]:checked'));
+  }
+
+  function updateBadgeAndSummary() {
+    var checked = checkedInputs();
+    if (badge) {
+      if (checked.length > 0) { badge.hidden = false; badge.textContent = String(checked.length); }
+      else badge.hidden = true;
+    }
+    var matchedCount = currentMatched.length;
+    if (checked.length === 0) {
+      if (summaryCond) summaryCond.hidden = true;
+      if (summaryCount) summaryCount.textContent = '久留米の飲み屋 ' + cards.length + '件';
+    } else {
+      var labels = checked.map(labelFor);
+      var condText = labels.length > 3
+        ? labels.slice(0, 3).join(' × ') + ' 他' + (labels.length - 3) + '件'
+        : labels.join(' × ');
+      if (summaryCond) { summaryCond.hidden = false; summaryCond.textContent = condText + ' で絞り込み中'; }
+      if (summaryCount) summaryCount.textContent = matchedCount + '件';
+    }
+    if (applyBtn) applyBtn.textContent = matchedCount + '件を見る';
+  }
+
+  // currentMatched(フィルタに合致する店舗、FILTER_SCRIPT適用後のdisplay状態から判定)の
+  // 先頭 revealCount 件だけを表示する。残りは隠した状態で「もっと見る」ボタンに件数を出す。
+  function renderPage() {
+    var shown = 0;
+    currentMatched.forEach(function (card, i) {
+      var visible = i < revealCount;
+      card.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    var remaining = currentMatched.length - shown;
+    if (moreBtn) {
+      if (remaining > 0) { moreBtn.hidden = false; moreBtn.textContent = 'もっと見る(残り' + remaining + '件)'; }
+      else moreBtn.hidden = true;
+    }
+    updateBadgeAndSummary();
+  }
+
+  // FILTER_SCRIPT の apply() は条件に合う店舗の display を '' に、合わない店舗を 'none' に
+  // 必ず更新してから filter:apply を発火するので、このタイミングで display を読み直せば
+  // 現在の絞り込み結果を正しく取得できる(ページングで隠した分と区別できる)。
+  function recomputeMatched() {
+    currentMatched = cards.filter(function (card) { return card.style.display !== 'none'; });
+  }
+
+  // 初期表示。URLクエリ(?tags=... 等)で絞り込みが既に適用されている場合も、
+  // その結果がそのまま display 状態に反映されているのでここで正しく拾える。
+  recomputeMatched();
+  renderPage();
+
+  widget.addEventListener('filter:apply', function () {
+    revealCount = PAGE_SIZE;
+    recomputeMatched();
+    renderPage();
+  });
+
+  if (moreBtn) {
+    moreBtn.addEventListener('click', function () {
+      revealCount = currentMatched.length;
+      renderPage();
+    });
+  }
+
+  // ---- 絞り込みシート(ボトムシート/モーダル)の開閉 ----
+  var openBtn = document.getElementById('openFilterSheetBtn');
+  var closeBtn = document.getElementById('closeFilterSheetBtn');
+  var overlay = document.getElementById('filterSheetOverlay');
+  var sheetResetBtn = document.getElementById('sheetResetBtn');
+  var realResetBtn = widget.querySelector('.tag-filter-reset');
+
+  function openSheet() {
+    if (!overlay) return;
+    overlay.hidden = false;
+    requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSheet() {
+    if (!overlay) return;
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(function () { overlay.hidden = true; }, 220);
+  }
+  if (openBtn) openBtn.addEventListener('click', openSheet);
+  if (closeBtn) closeBtn.addEventListener('click', closeSheet);
+  if (applyBtn) applyBtn.addEventListener('click', closeSheet);
+  if (overlay) {
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeSheet(); });
+  }
+  if (sheetResetBtn && realResetBtn) {
+    // 「条件をクリア」は既存の .tag-filter-reset(非表示)をクリックして既存ロジックに委ねる。
+    sheetResetBtn.addEventListener('click', function () { realResetBtn.click(); });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay && !overlay.hidden) closeSheet();
+  });
+
+  // ヘッダーの実測高さに絞り込みバーのsticky位置を揃える(ヘッダーの高さはフォントサイズ・
+  // ナビ表示有無で変わるため、固定値をCSSに書かず実測してCSS変数に渡す)。
+  var header = document.querySelector('.site-header');
+  var launchBar = document.querySelector('.search-launch-bar');
+  function syncHeaderOffset() {
+    if (!header || !launchBar) return;
+    document.documentElement.style.setProperty('--search-bar-top', header.getBoundingClientRect().height + 'px');
+  }
+  syncHeaderOffset();
+  window.addEventListener('resize', syncHeaderOffset);
 })();
 </script>`;
 
@@ -3465,24 +3765,61 @@ ${list}
 }
 
 // エリア・業態・タグの3軸を同時に組み合わせて絞り込める統合の「探す」ページ。
+// /search/ ページ(2026-10 絞り込みUI刷新「結果一覧が主役、絞り込みはボタンの中にしまう」)。
+// 初期表示は一覧(段階表示)だけを見せ、絞り込み条件一式は「絞り込む」ボタンで開くシートに収める。
+// 店舗カード自体(venueCardHtml)・絞り込みロジック(FILTER_SCRIPT)はいずれも既存のまま再利用し、
+// 見せ方だけを変える。
 function renderSearchPage(venues, areas, categories) {
-  const list = venues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
   const listId = "venue-list-search";
+  const list = venues.map((v) => venueCardHtml(v, categories, areas)).join("\n");
+  const total = venues.length;
   const body = `
 <nav class="breadcrumb"><a href="${url("/")}">TOP</a> &gt; 絞り込み検索</nav>
-<h1>条件を組み合わせて久留米の飲み屋を探す</h1>
-<p>いま営業中か・エリア・業態・予算・支払い方法・喫煙可否・お通しの有無・タグを、すべて組み合わせて絞り込めます(複数選択可)。</p>
-${filterWidgetHtml(venues, listId, areas, categories)}
+<h1 class="search-h1">久留米の飲み屋をさがす</h1>
+
+<div class="search-launch-bar">
+  <button type="button" class="search-launch-btn" id="openFilterSheetBtn" aria-haspopup="dialog" aria-controls="filterSheet">
+    <span class="search-launch-ic" aria-hidden="true">⚙️</span>絞り込む
+    <span class="search-launch-badge" id="filterBadge" hidden>0</span>
+  </button>
+  <button type="button" class="search-sort-btn" disabled title="並び替えは準備中です">並び替え</button>
+</div>
+
+<p class="search-result-summary">
+  <span class="result-summary-cond" id="resultSummaryCond" hidden></span>
+  <span class="result-summary-count" id="resultSummaryCount">久留米の飲み屋 ${total}件</span>
+</p>
+
 <ul class="venue-list" id="${listId}">
 ${list}
 </ul>
+<div class="search-more-wrap">
+  <button type="button" class="search-more-btn" id="searchMoreBtn" hidden>もっと見る</button>
+</div>
+
+<div class="filter-sheet-overlay" id="filterSheetOverlay" hidden>
+  <div class="filter-sheet" id="filterSheet" role="dialog" aria-modal="true" aria-labelledby="filterSheetTitle">
+    <div class="filter-sheet-head">
+      <h2 id="filterSheetTitle">絞り込む</h2>
+      <button type="button" class="filter-sheet-close" id="closeFilterSheetBtn" aria-label="閉じる">×</button>
+    </div>
+    <div class="filter-sheet-body">
+      ${searchFilterSheetWidgetHtml(venues, listId, areas, categories)}
+      <p class="filter-note small">営業時間・予算・支払い・喫煙の条件は、その項目の情報を確認できた店舗のみが対象です(情報が未取得の店舗は絞り込むと表示されません)。掲載内容は最新でない場合があります。</p>
+    </div>
+    <div class="filter-sheet-foot">
+      <button type="button" class="filter-sheet-reset" id="sheetResetBtn">条件をクリア</button>
+      <button type="button" class="filter-sheet-apply" id="applyFilterBtn">${total}件を見る</button>
+    </div>
+  </div>
+</div>
 `;
   return layout({
     title: "条件を組み合わせて探す(いま営業中・予算・カード可・禁煙)",
     description: "久留米・西鉄久留米駅周辺の飲み屋を、いま営業中・予算・支払い方法・喫煙可否・エリア・業態・タグを組み合わせて絞り込める検索ページ。",
     pathname: "/search/",
     bodyHtml: body,
-    extraScript: FILTER_SCRIPT,
+    extraScript: FILTER_SCRIPT + SEARCH_PAGE_SCRIPT,
     activeTab: "search",
   });
 }
