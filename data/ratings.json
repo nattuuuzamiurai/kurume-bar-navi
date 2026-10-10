@@ -399,103 +399,103 @@
     "rating": 4.3,
     "userRatingCount": 59,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:54.576Z"
+    "updatedAt": "2026-10-10T21:09:55.994Z"
   },
   "izakaya-kakomian": {
     "rating": 3.5,
     "userRatingCount": 310,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-10-01T22:20:54.896Z"
+    "updatedAt": "2026-10-10T21:09:56.296Z"
   },
   "izakaya-kalbi-yokocho": {
     "rating": 4.6,
     "userRatingCount": 33,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:55.219Z"
+    "updatedAt": "2026-10-10T21:09:56.605Z"
   },
   "izakaya-kamusa": {
     "rating": 4.1,
-    "userRatingCount": 341,
+    "userRatingCount": 342,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:55.553Z"
+    "updatedAt": "2026-10-10T21:09:56.912Z"
   },
   "izakaya-kaneitsuho": {
     "rating": 3.7,
     "userRatingCount": 586,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:55.879Z"
+    "updatedAt": "2026-10-10T21:09:57.191Z"
   },
   "izakaya-karisamu": {
     "rating": 4.8,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:56.194Z"
+    "updatedAt": "2026-10-10T21:09:57.487Z"
   },
   "izakaya-kasuriya": {
     "rating": 3.6,
     "userRatingCount": 68,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:56.513Z"
+    "updatedAt": "2026-10-10T21:09:57.778Z"
   },
   "izakaya-kawakko": {
     "rating": 4.2,
-    "userRatingCount": 398,
+    "userRatingCount": 399,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:56.822Z"
+    "updatedAt": "2026-10-10T21:09:58.063Z"
   },
   "izakaya-kengohyaku": {
     "rating": 3.7,
-    "userRatingCount": 227,
+    "userRatingCount": 228,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:57.137Z"
+    "updatedAt": "2026-10-10T21:09:58.357Z"
   },
   "izakaya-kiseki-tebasaki": {
     "rating": 3.1,
     "userRatingCount": 31,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:31.721Z"
+    "updatedAt": "2026-10-10T21:09:58.654Z"
   },
   "izakaya-kokaro": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:32.039Z"
+    "updatedAt": "2026-10-10T21:09:58.946Z"
   },
   "izakaya-korean-mutsumon-pocha": {
     "rating": 3.6,
     "userRatingCount": 46,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:32.363Z"
+    "updatedAt": "2026-10-10T21:09:59.236Z"
   },
   "izakaya-kuimonoya-wan": {
     "rating": 3.4,
     "userRatingCount": 142,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:32.677Z"
+    "updatedAt": "2026-10-10T21:09:59.516Z"
   },
   "izakaya-kunsei-mammauto": {
     "rating": 4.4,
     "userRatingCount": 73,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:32.980Z"
+    "updatedAt": "2026-10-10T21:09:59.798Z"
   },
   "izakaya-kushi-tanaka": {
     "rating": 4.1,
     "userRatingCount": 383,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:33.316Z"
+    "updatedAt": "2026-10-10T21:10:00.079Z"
   },
   "izakaya-lucky-raku": {
     "rating": 4.5,
-    "userRatingCount": 57,
+    "userRatingCount": 60,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:33.620Z"
+    "updatedAt": "2026-10-10T21:10:00.366Z"
   },
   "izakaya-makanai-dojo": {
     "rating": 3.9,
     "userRatingCount": 110,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-02T21:49:33.932Z"
+    "updatedAt": "2026-10-10T21:10:00.651Z"
   },
   "izakaya-marukichi": {
     "rating": 3.6,
@@ -1113,30 +1113,30 @@
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:52.970Z"
+    "updatedAt": "2026-10-10T21:09:54.449Z"
   },
   "snack-stella": {
     "rating": 2.3,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:53.290Z"
+    "updatedAt": "2026-10-10T21:09:54.763Z"
   },
   "snack-takefuji": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:53.619Z"
+    "updatedAt": "2026-10-10T21:09:55.073Z"
   },
   "snack-tankoumura": {
     "rating": 4.2,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:53.942Z"
+    "updatedAt": "2026-10-10T21:09:55.380Z"
   },
   "snack-yuyu": {
     "rating": 3.9,
     "userRatingCount": 11,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-01T22:20:54.264Z"
+    "updatedAt": "2026-10-10T21:09:55.693Z"
   }
 }
