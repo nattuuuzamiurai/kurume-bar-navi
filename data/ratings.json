@@ -69,7 +69,7 @@
     "rating": 1,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:51.408Z"
+    "updatedAt": "2026-10-15T20:56:09.015Z"
   },
   "bar-kurume-standard": {
     "rating": 4.8,
@@ -159,25 +159,25 @@
     "rating": 5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:51.715Z"
+    "updatedAt": "2026-10-15T20:56:09.334Z"
   },
   "club-four-season": {
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:52.024Z"
+    "updatedAt": "2026-10-15T20:56:09.658Z"
   },
   "club-sowaca": {
-    "rating": 4.7,
-    "userRatingCount": 7,
+    "rating": 4.8,
+    "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:52.331Z"
+    "updatedAt": "2026-10-15T20:56:09.970Z"
   },
   "club-the-member": {
     "rating": 3.8,
     "userRatingCount": 34,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:52.637Z"
+    "updatedAt": "2026-10-15T20:56:10.304Z"
   },
   "concafe-hakuchumu": {
     "rating": 3.8,
@@ -207,7 +207,7 @@
     "rating": 4.7,
     "userRatingCount": 25,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:52.942Z"
+    "updatedAt": "2026-10-15T20:56:10.616Z"
   },
   "girlsbar-platinum-seven": {
     "rating": 4.4,
@@ -303,97 +303,97 @@
     "rating": 4.2,
     "userRatingCount": 92,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:16.074Z"
+    "updatedAt": "2026-10-15T20:56:03.407Z"
   },
   "izakaya-ginshari": {
     "rating": 4.7,
-    "userRatingCount": 793,
+    "userRatingCount": 823,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:16.389Z"
+    "updatedAt": "2026-10-15T20:56:03.790Z"
   },
   "izakaya-goju-ban": {
     "rating": 4.3,
-    "userRatingCount": 415,
+    "userRatingCount": 417,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:16.705Z"
+    "updatedAt": "2026-10-15T20:56:04.120Z"
   },
   "izakaya-gokuu": {
-    "rating": 4.1,
-    "userRatingCount": 47,
+    "rating": 4.2,
+    "userRatingCount": 46,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:17.025Z"
+    "updatedAt": "2026-10-15T20:56:04.647Z"
   },
   "izakaya-gonanbou": {
     "rating": 4.3,
-    "userRatingCount": 82,
+    "userRatingCount": 83,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:17.339Z"
+    "updatedAt": "2026-10-15T20:56:05.013Z"
   },
   "izakaya-grill-party": {
     "rating": 4.4,
     "userRatingCount": 16,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:17.653Z"
+    "updatedAt": "2026-10-15T20:56:05.437Z"
   },
   "izakaya-gui-ya": {
     "rating": 5,
-    "userRatingCount": 19,
+    "userRatingCount": 20,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:17.967Z"
+    "updatedAt": "2026-10-15T20:56:05.764Z"
   },
   "izakaya-hamada": {
     "rating": 4.2,
     "userRatingCount": 31,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:18.281Z"
+    "updatedAt": "2026-10-15T20:56:06.097Z"
   },
   "izakaya-hanhan": {
     "rating": 4.3,
-    "userRatingCount": 111,
+    "userRatingCount": 112,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:18.601Z"
+    "updatedAt": "2026-10-15T20:56:06.512Z"
   },
   "izakaya-hidamari-hiyoshi": {
     "rating": 4.5,
-    "userRatingCount": 384,
+    "userRatingCount": 395,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:18.946Z"
+    "updatedAt": "2026-10-15T20:56:06.836Z"
   },
   "izakaya-hidamari-honten": {
     "rating": 4.5,
-    "userRatingCount": 701,
+    "userRatingCount": 725,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:19.260Z"
+    "updatedAt": "2026-10-15T20:56:07.135Z"
   },
   "izakaya-hiroya": {
     "rating": 4.2,
-    "userRatingCount": 213,
+    "userRatingCount": 214,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:19.589Z"
+    "updatedAt": "2026-10-15T20:56:07.437Z"
   },
   "izakaya-hirukara-shinkichi": {
-    "rating": 4,
-    "userRatingCount": 248,
+    "rating": 4.1,
+    "userRatingCount": 251,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:19.899Z"
+    "updatedAt": "2026-10-15T20:56:07.741Z"
   },
   "izakaya-hitokuchi": {
     "rating": 4.2,
     "userRatingCount": 146,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-06T22:20:20.211Z"
+    "updatedAt": "2026-10-15T20:56:08.043Z"
   },
   "izakaya-inatomi": {
     "rating": 5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:50.793Z"
+    "updatedAt": "2026-10-15T20:56:08.345Z"
   },
   "izakaya-isomaru": {
     "rating": 3.2,
-    "userRatingCount": 348,
+    "userRatingCount": 349,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-07T22:42:51.095Z"
+    "updatedAt": "2026-10-15T20:56:08.713Z"
   },
   "izakaya-kadoya": {
     "rating": 4.3,
