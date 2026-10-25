@@ -807,127 +807,127 @@
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:25.451Z"
+    "updatedAt": "2026-10-25T20:22:49.652Z"
   },
   "kyabakura-honey": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:25.756Z"
+    "updatedAt": "2026-10-25T20:22:49.977Z"
   },
   "kyabakura-laluna": {
     "rating": 4.2,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:26.068Z"
+    "updatedAt": "2026-10-25T20:22:50.296Z"
   },
   "kyabakura-lounge-loop": {
     "rating": 3,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:26.381Z"
+    "updatedAt": "2026-10-25T20:22:50.606Z"
   },
   "kyabakura-moncoeur": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:26.693Z"
+    "updatedAt": "2026-10-25T20:22:50.918Z"
   },
   "kyabakura-precious": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:27.001Z"
+    "updatedAt": "2026-10-25T20:22:51.237Z"
   },
   "kyabakura-rady": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:27.315Z"
+    "updatedAt": "2026-10-25T20:22:51.533Z"
   },
   "kyabakura-richard": {
     "rating": 5,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:27.639Z"
+    "updatedAt": "2026-10-25T20:22:51.826Z"
   },
   "kyabakura-swarovski": {
     "rating": 4,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:27.952Z"
+    "updatedAt": "2026-10-25T20:22:52.112Z"
   },
   "lounge-aoi": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:28.256Z"
+    "updatedAt": "2026-10-25T20:22:52.411Z"
   },
   "lounge-athena": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:28.561Z"
+    "updatedAt": "2026-10-25T20:22:52.703Z"
   },
   "lounge-carat": {
     "rating": 4.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:28.881Z"
+    "updatedAt": "2026-10-25T20:22:52.989Z"
   },
   "lounge-chester": {
     "rating": 2,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:29.192Z"
+    "updatedAt": "2026-10-25T20:22:53.280Z"
   },
   "lounge-endless": {
     "rating": 4.1,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-16T20:30:29.499Z"
+    "updatedAt": "2026-10-25T20:22:53.576Z"
   },
   "lounge-kanade": {
     "rating": 5,
-    "userRatingCount": 8,
+    "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:29.161Z"
+    "updatedAt": "2026-10-25T20:22:53.866Z"
   },
   "lounge-lepin": {
     "rating": 4.1,
     "userRatingCount": 18,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:29.497Z"
+    "updatedAt": "2026-10-25T20:22:54.160Z"
   },
   "lounge-megami": {
     "rating": 3.8,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:29.837Z"
+    "updatedAt": "2026-10-25T20:22:54.451Z"
   },
   "lounge-new-impact": {
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-10-17T20:07:30.174Z"
+    "updatedAt": "2026-10-25T20:22:54.738Z"
   },
   "lounge-papico": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:30.505Z"
+    "updatedAt": "2026-10-25T20:22:55.030Z"
   },
   "lounge-ryusei": {
     "rating": 4.9,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:30.838Z"
+    "updatedAt": "2026-10-25T20:22:55.334Z"
   },
   "lounge-st-christopher": {
     "rating": 2.9,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:31.170Z"
+    "updatedAt": "2026-10-25T20:22:55.624Z"
   },
   "shisha-x": {
     "rating": 4.2,
@@ -939,7 +939,7 @@
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-17T20:07:31.499Z"
+    "updatedAt": "2026-10-25T20:22:55.917Z"
   },
   "snack-aramis": {
     "rating": 4.4,
