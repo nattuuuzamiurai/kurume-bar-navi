@@ -855,79 +855,79 @@
     "rating": 4,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:52.112Z"
+    "updatedAt": "2026-11-03T22:54:45.274Z"
   },
   "lounge-aoi": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:52.411Z"
+    "updatedAt": "2026-11-03T22:54:45.637Z"
   },
   "lounge-athena": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:52.703Z"
+    "updatedAt": "2026-11-03T22:54:45.945Z"
   },
   "lounge-carat": {
     "rating": 4.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:52.989Z"
+    "updatedAt": "2026-11-03T22:54:46.305Z"
   },
   "lounge-chester": {
     "rating": 2,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:53.280Z"
+    "updatedAt": "2026-11-03T22:54:46.659Z"
   },
   "lounge-endless": {
     "rating": 4.1,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:53.576Z"
+    "updatedAt": "2026-11-03T22:54:46.993Z"
   },
   "lounge-kanade": {
     "rating": 5,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:53.866Z"
+    "updatedAt": "2026-11-03T22:54:47.352Z"
   },
   "lounge-lepin": {
     "rating": 4.1,
     "userRatingCount": 18,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:54.160Z"
+    "updatedAt": "2026-11-03T22:54:47.708Z"
   },
   "lounge-megami": {
     "rating": 3.8,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:54.451Z"
+    "updatedAt": "2026-11-03T22:54:48.000Z"
   },
   "lounge-new-impact": {
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-10-25T20:22:54.738Z"
+    "updatedAt": "2026-11-03T22:54:48.304Z"
   },
   "lounge-papico": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:55.030Z"
+    "updatedAt": "2026-11-03T22:54:48.598Z"
   },
   "lounge-ryusei": {
     "rating": 4.9,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:55.334Z"
+    "updatedAt": "2026-11-03T22:54:48.889Z"
   },
   "lounge-st-christopher": {
     "rating": 2.9,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:55.624Z"
+    "updatedAt": "2026-11-03T22:54:49.195Z"
   },
   "shisha-x": {
     "rating": 4.3,
@@ -939,55 +939,55 @@
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-25T20:22:55.917Z"
+    "updatedAt": "2026-11-03T22:54:49.492Z"
   },
   "snack-aramis": {
     "rating": 4.4,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:42.278Z"
+    "updatedAt": "2026-11-03T22:54:49.793Z"
   },
   "snack-belta-salone": {
     "rating": 4.8,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:42.621Z"
+    "updatedAt": "2026-11-03T22:54:50.087Z"
   },
   "snack-bluemoon": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:42.953Z"
+    "updatedAt": "2026-11-03T22:54:50.394Z"
   },
   "snack-brilliant": {
     "rating": 4.5,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:43.285Z"
+    "updatedAt": "2026-11-03T22:54:50.694Z"
   },
   "snack-calm": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:43.593Z"
+    "updatedAt": "2026-11-03T22:54:50.993Z"
   },
   "snack-charmant": {
     "rating": 4.3,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:43.922Z"
+    "updatedAt": "2026-11-03T22:54:51.292Z"
   },
   "snack-cookie": {
     "rating": 4.5,
     "userRatingCount": 12,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:44.259Z"
+    "updatedAt": "2026-11-03T22:54:51.586Z"
   },
   "snack-courage": {
     "rating": 4.5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-26T22:17:44.581Z"
+    "updatedAt": "2026-11-03T22:54:51.880Z"
   },
   "snack-ganesha": {
     "rating": 5,
