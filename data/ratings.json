@@ -3,67 +3,67 @@
     "rating": 4.3,
     "userRatingCount": 26,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:02.094Z"
+    "updatedAt": "2026-11-08T21:40:22.928Z"
   },
   "bar-adei": {
     "rating": 3.1,
     "userRatingCount": 37,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:02.409Z"
+    "updatedAt": "2026-11-08T21:40:23.265Z"
   },
   "bar-atwill": {
     "rating": 3.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:02.727Z"
+    "updatedAt": "2026-11-08T21:40:23.589Z"
   },
   "bar-bigisland": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:03.053Z"
+    "updatedAt": "2026-11-08T21:40:23.913Z"
   },
   "bar-bistro-theater": {
     "rating": 4.1,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:03.364Z"
+    "updatedAt": "2026-11-08T21:40:24.232Z"
   },
   "bar-bolester": {
     "rating": 4.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:03.679Z"
+    "updatedAt": "2026-11-08T21:40:24.524Z"
   },
   "bar-borracho": {
     "rating": 3.5,
     "userRatingCount": 20,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:03.988Z"
+    "updatedAt": "2026-11-08T21:40:24.816Z"
   },
   "bar-cupanddish": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-10-30T21:56:04.337Z"
+    "updatedAt": "2026-11-08T21:40:25.119Z"
   },
   "bar-ebisu": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:04.649Z"
+    "updatedAt": "2026-11-08T21:40:25.414Z"
   },
   "bar-elocho": {
     "rating": 4,
     "userRatingCount": 61,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:04.964Z"
+    "updatedAt": "2026-11-08T21:40:25.704Z"
   },
   "bar-flavor": {
     "rating": 3.7,
     "userRatingCount": 31,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:05.277Z"
+    "updatedAt": "2026-11-08T21:40:25.992Z"
   },
   "bar-huit": {
     "rating": 1,
@@ -75,67 +75,67 @@
     "rating": 4.8,
     "userRatingCount": 33,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:05.585Z"
+    "updatedAt": "2026-11-08T21:40:26.284Z"
   },
   "bar-kusumi": {
     "rating": 4.4,
     "userRatingCount": 104,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:05.951Z"
+    "updatedAt": "2026-11-08T21:40:26.580Z"
   },
   "bar-lampsquare": {
     "rating": 3.9,
     "userRatingCount": 55,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-30T21:56:06.261Z"
+    "updatedAt": "2026-11-08T21:40:26.876Z"
   },
   "bar-le-coeur": {
     "rating": 4.7,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:47.427Z"
+    "updatedAt": "2026-11-08T21:40:27.166Z"
   },
   "bar-live-actor": {
     "rating": 4.4,
     "userRatingCount": 27,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:47.774Z"
+    "updatedAt": "2026-11-08T21:40:27.456Z"
   },
   "bar-manuka": {
     "rating": 4.1,
     "userRatingCount": 23,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:48.122Z"
+    "updatedAt": "2026-11-08T21:40:27.748Z"
   },
   "bar-mix": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:48.463Z"
+    "updatedAt": "2026-11-08T21:40:28.046Z"
   },
   "bar-oneshot": {
     "rating": 4.6,
     "userRatingCount": 88,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:48.786Z"
+    "updatedAt": "2026-11-08T21:40:28.342Z"
   },
   "bar-papermoon": {
     "rating": 4.6,
-    "userRatingCount": 103,
+    "userRatingCount": 104,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:49.104Z"
+    "updatedAt": "2026-11-08T21:40:28.635Z"
   },
   "bar-replica": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:49.444Z"
+    "updatedAt": "2026-11-08T21:40:28.930Z"
   },
   "bar-secondo": {
     "rating": 4.2,
     "userRatingCount": 100,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-10-31T20:58:49.781Z"
+    "updatedAt": "2026-11-08T21:40:29.222Z"
   },
   "bar-shuffle": {
     "rating": 4.2,
