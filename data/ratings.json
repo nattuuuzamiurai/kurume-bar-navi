@@ -225,7 +225,7 @@
     "rating": 3.3,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:27.400Z"
+    "updatedAt": "2026-11-12T00:03:12.757Z"
   },
   "izakaya-amenita-pizzeria": {
     "rating": 4.2,
@@ -561,7 +561,7 @@
     "rating": 4.5,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:27.737Z"
+    "updatedAt": "2026-11-12T00:03:13.086Z"
   },
   "izakaya-nyanyan-chinese": {
     "rating": 4.1,
@@ -783,121 +783,121 @@
     "rating": 4.6,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:28.051Z"
+    "updatedAt": "2026-11-12T00:03:13.420Z"
   },
   "kyabakura-crescent": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:28.401Z"
+    "updatedAt": "2026-11-12T00:03:13.749Z"
   },
   "kyabakura-dolce": {
     "rating": 4,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:28.713Z"
+    "updatedAt": "2026-11-12T00:03:14.081Z"
   },
   "kyabakura-globe": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:29.029Z"
+    "updatedAt": "2026-11-12T00:03:14.405Z"
   },
   "kyabakura-hal": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:29.343Z"
+    "updatedAt": "2026-11-12T00:03:14.735Z"
   },
   "kyabakura-honey": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:29.662Z"
+    "updatedAt": "2026-11-12T00:03:15.062Z"
   },
   "kyabakura-laluna": {
     "rating": 4.2,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:29.977Z"
+    "updatedAt": "2026-11-12T00:03:15.390Z"
   },
   "kyabakura-lounge-loop": {
     "rating": 3,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:30.301Z"
+    "updatedAt": "2026-11-12T00:03:15.694Z"
   },
   "kyabakura-moncoeur": {
     "rating": 3.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:30.610Z"
+    "updatedAt": "2026-11-12T00:03:15.997Z"
   },
   "kyabakura-precious": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:30.920Z"
+    "updatedAt": "2026-11-12T00:03:16.300Z"
   },
   "kyabakura-rady": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:31.235Z"
+    "updatedAt": "2026-11-12T00:03:16.598Z"
   },
   "kyabakura-richard": {
     "rating": 5,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T00:30:31.544Z"
+    "updatedAt": "2026-11-12T00:03:16.899Z"
   },
   "kyabakura-swarovski": {
     "rating": 4,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:45.274Z"
+    "updatedAt": "2026-11-12T00:03:17.199Z"
   },
   "lounge-aoi": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:45.637Z"
+    "updatedAt": "2026-11-12T00:03:17.507Z"
   },
   "lounge-athena": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:45.945Z"
+    "updatedAt": "2026-11-12T00:03:17.805Z"
   },
   "lounge-carat": {
     "rating": 4.5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:46.305Z"
+    "updatedAt": "2026-11-12T00:03:18.106Z"
   },
   "lounge-chester": {
     "rating": 2,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:46.659Z"
+    "updatedAt": "2026-11-12T00:03:18.406Z"
   },
   "lounge-endless": {
     "rating": 4.1,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:46.993Z"
+    "updatedAt": "2026-11-12T00:03:18.705Z"
   },
   "lounge-kanade": {
     "rating": 5,
     "userRatingCount": 7,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:47.352Z"
+    "updatedAt": "2026-11-12T00:03:19.014Z"
   },
   "lounge-lepin": {
     "rating": 4.1,
     "userRatingCount": 18,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-03T22:54:47.708Z"
+    "updatedAt": "2026-11-12T00:03:19.314Z"
   },
   "lounge-megami": {
     "rating": 3.8,
