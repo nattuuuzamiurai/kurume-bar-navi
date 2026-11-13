@@ -399,31 +399,31 @@
     "rating": 4.3,
     "userRatingCount": 59,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:55.603Z"
+    "updatedAt": "2026-11-13T23:14:54.010Z"
   },
   "izakaya-kakomian": {
     "rating": 3.5,
     "userRatingCount": 310,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-11-05T23:15:55.892Z"
+    "updatedAt": "2026-11-13T23:14:54.319Z"
   },
   "izakaya-kalbi-yokocho": {
     "rating": 4.6,
     "userRatingCount": 33,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:56.204Z"
+    "updatedAt": "2026-11-13T23:14:54.638Z"
   },
   "izakaya-kamusa": {
     "rating": 4.1,
-    "userRatingCount": 345,
+    "userRatingCount": 344,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:56.506Z"
+    "updatedAt": "2026-11-13T23:14:54.951Z"
   },
   "izakaya-kaneitsuho": {
     "rating": 3.7,
     "userRatingCount": 586,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:56.794Z"
+    "updatedAt": "2026-11-13T23:14:55.266Z"
   },
   "izakaya-karisamu": {
     "rating": 4.8,
@@ -1041,102 +1041,102 @@
     "rating": 3.5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:15.014Z"
+    "updatedAt": "2026-11-13T23:14:48.515Z"
   },
   "snack-members-e": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:15.320Z"
+    "updatedAt": "2026-11-13T23:14:48.864Z"
   },
   "snack-mitsubachi": {
     "rating": 3.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:15.656Z"
+    "updatedAt": "2026-11-13T23:14:49.206Z"
   },
   "snack-nakagawa-r": {
     "rating": 4,
     "userRatingCount": 16,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:15.964Z"
+    "updatedAt": "2026-11-13T23:14:49.542Z"
   },
   "snack-nakagawa-second": {
     "rating": 4,
     "userRatingCount": 16,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:16.270Z"
+    "updatedAt": "2026-11-13T23:14:49.864Z"
   },
   "snack-orfe": {
     "rating": 4,
     "userRatingCount": 1,
     "businessStatus": "CLOSED_TEMPORARILY",
-    "updatedAt": "2026-11-04T23:12:16.573Z"
+    "updatedAt": "2026-11-13T23:14:50.188Z"
   },
   "snack-papillon": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:16.886Z"
+    "updatedAt": "2026-11-13T23:14:50.500Z"
   },
   "snack-rin": {
     "rating": 5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:17.193Z"
+    "updatedAt": "2026-11-13T23:14:50.848Z"
   },
   "snack-rinrin": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:17.497Z"
+    "updatedAt": "2026-11-13T23:14:51.161Z"
   },
   "snack-rosso": {
     "rating": 4.5,
     "userRatingCount": 10,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:17.805Z"
+    "updatedAt": "2026-11-13T23:14:51.476Z"
   },
   "snack-saito": {
     "rating": 5,
     "userRatingCount": 2,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:18.109Z"
+    "updatedAt": "2026-11-13T23:14:51.793Z"
   },
   "snack-sakura": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:18.414Z"
+    "updatedAt": "2026-11-13T23:14:52.134Z"
   },
   "snack-saten": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:18.729Z"
+    "updatedAt": "2026-11-13T23:14:52.447Z"
   },
   "snack-stella": {
     "rating": 2.3,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-04T23:12:19.038Z"
+    "updatedAt": "2026-11-13T23:14:52.761Z"
   },
   "snack-takefuji": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:54.636Z"
+    "updatedAt": "2026-11-13T23:14:53.072Z"
   },
   "snack-tankoumura": {
     "rating": 4.2,
     "userRatingCount": 5,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:54.955Z"
+    "updatedAt": "2026-11-13T23:14:53.387Z"
   },
   "snack-yuyu": {
     "rating": 3.9,
     "userRatingCount": 11,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-05T23:15:55.285Z"
+    "updatedAt": "2026-11-13T23:14:53.701Z"
   }
 }
