@@ -1,51 +1,51 @@
 {
   "bar-141saketen": {
-    "rating": 4.3,
-    "userRatingCount": 26,
+    "rating": 4.4,
+    "userRatingCount": 27,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:22.928Z"
+    "updatedAt": "2026-11-17T01:35:21.332Z"
   },
   "bar-adei": {
     "rating": 3.1,
     "userRatingCount": 37,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:23.265Z"
+    "updatedAt": "2026-11-17T01:35:21.643Z"
   },
   "bar-atwill": {
     "rating": 3.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:23.589Z"
+    "updatedAt": "2026-11-17T01:35:21.943Z"
   },
   "bar-bigisland": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:23.913Z"
+    "updatedAt": "2026-11-17T01:35:22.256Z"
   },
   "bar-bistro-theater": {
     "rating": 4.1,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:24.232Z"
+    "updatedAt": "2026-11-17T01:35:22.552Z"
   },
   "bar-bolester": {
     "rating": 4.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:24.524Z"
+    "updatedAt": "2026-11-17T01:35:22.848Z"
   },
   "bar-borracho": {
     "rating": 3.5,
     "userRatingCount": 20,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:24.816Z"
+    "updatedAt": "2026-11-17T01:35:23.146Z"
   },
   "bar-cupanddish": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-11-08T21:40:25.119Z"
+    "updatedAt": "2026-11-17T01:35:23.440Z"
   },
   "bar-ebisu": {
     "rating": null,
@@ -705,79 +705,79 @@
     "rating": 4.1,
     "userRatingCount": 23,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:24.663Z"
+    "updatedAt": "2026-11-17T01:35:16.665Z"
   },
   "izakaya-toriichizu": {
     "rating": 4.5,
     "userRatingCount": 623,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:24.962Z"
+    "updatedAt": "2026-11-17T01:35:17.027Z"
   },
   "izakaya-torimero": {
     "rating": 3.5,
     "userRatingCount": 217,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:25.261Z"
+    "updatedAt": "2026-11-17T01:35:17.364Z"
   },
   "izakaya-toriya-torisuke": {
     "rating": 4.1,
-    "userRatingCount": 78,
+    "userRatingCount": 79,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:25.615Z"
+    "updatedAt": "2026-11-17T01:35:17.701Z"
   },
   "izakaya-torizakaba-sumibito": {
     "rating": 4.6,
-    "userRatingCount": 29,
+    "userRatingCount": 28,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:25.918Z"
+    "updatedAt": "2026-11-17T01:35:18.028Z"
   },
   "izakaya-tsukasa": {
     "rating": 3.6,
     "userRatingCount": 191,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:26.213Z"
+    "updatedAt": "2026-11-17T01:35:18.346Z"
   },
   "izakaya-tsukune-yokocho": {
     "rating": 3.7,
     "userRatingCount": 253,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:26.510Z"
+    "updatedAt": "2026-11-17T01:35:18.674Z"
   },
   "izakaya-warukaruma": {
     "rating": 4.6,
     "userRatingCount": 8,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:26.807Z"
+    "updatedAt": "2026-11-17T01:35:19.015Z"
   },
   "izakaya-yakiniku-zen": {
     "rating": 4.2,
     "userRatingCount": 30,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:27.102Z"
+    "updatedAt": "2026-11-17T01:35:19.313Z"
   },
   "izakaya-yakitori-susumu": {
     "rating": 4.4,
-    "userRatingCount": 22,
-    "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:27.410Z"
-  },
-  "izakaya-yakitori-yokozuna": {
-    "rating": 3.7,
     "userRatingCount": 23,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:27.708Z"
+    "updatedAt": "2026-11-17T01:35:19.614Z"
+  },
+  "izakaya-yakitori-yokozuna": {
+    "rating": 3.6,
+    "userRatingCount": 24,
+    "businessStatus": "OPERATIONAL",
+    "updatedAt": "2026-11-17T01:35:19.910Z"
   },
   "izakaya-yolo": {
     "rating": 4,
-    "userRatingCount": 104,
+    "userRatingCount": 105,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:28.011Z"
+    "updatedAt": "2026-11-17T01:35:20.208Z"
   },
   "izakaya-zaku": {
     "rating": 4.2,
-    "userRatingCount": 92,
+    "userRatingCount": 93,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:28.306Z"
+    "updatedAt": "2026-11-17T01:35:20.682Z"
   },
   "kyabakura-chanter": {
     "rating": 4.6,
@@ -933,7 +933,7 @@
     "rating": 4.3,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-07T21:27:28.620Z"
+    "updatedAt": "2026-11-17T01:35:20.999Z"
   },
   "snack-a-king": {
     "rating": 5,
