@@ -51,19 +51,19 @@
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:25.414Z"
+    "updatedAt": "2026-11-18T00:32:04.751Z"
   },
   "bar-elocho": {
     "rating": 4,
     "userRatingCount": 61,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:25.704Z"
+    "updatedAt": "2026-11-18T00:32:05.069Z"
   },
   "bar-flavor": {
     "rating": 3.7,
     "userRatingCount": 31,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:25.992Z"
+    "updatedAt": "2026-11-18T00:32:05.383Z"
   },
   "bar-huit": {
     "rating": 1,
@@ -75,85 +75,85 @@
     "rating": 4.8,
     "userRatingCount": 33,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:26.284Z"
+    "updatedAt": "2026-11-18T00:32:05.692Z"
   },
   "bar-kusumi": {
     "rating": 4.4,
-    "userRatingCount": 104,
+    "userRatingCount": 106,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:26.580Z"
+    "updatedAt": "2026-11-18T00:32:05.988Z"
   },
   "bar-lampsquare": {
-    "rating": 3.9,
-    "userRatingCount": 55,
+    "rating": 4,
+    "userRatingCount": 56,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:26.876Z"
+    "updatedAt": "2026-11-18T00:32:06.271Z"
   },
   "bar-le-coeur": {
     "rating": 4.7,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:27.166Z"
+    "updatedAt": "2026-11-18T00:32:06.582Z"
   },
   "bar-live-actor": {
     "rating": 4.4,
     "userRatingCount": 27,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:27.456Z"
+    "updatedAt": "2026-11-18T00:32:06.901Z"
   },
   "bar-manuka": {
     "rating": 4.1,
     "userRatingCount": 23,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:27.748Z"
+    "updatedAt": "2026-11-18T00:32:07.226Z"
   },
   "bar-mix": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:28.046Z"
+    "updatedAt": "2026-11-18T00:32:07.536Z"
   },
   "bar-oneshot": {
     "rating": 4.6,
     "userRatingCount": 88,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:28.342Z"
+    "updatedAt": "2026-11-18T00:32:07.820Z"
   },
   "bar-papermoon": {
     "rating": 4.6,
     "userRatingCount": 104,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:28.635Z"
+    "updatedAt": "2026-11-18T00:32:08.105Z"
   },
   "bar-replica": {
     "rating": 5,
     "userRatingCount": 1,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:28.930Z"
+    "updatedAt": "2026-11-18T00:32:08.405Z"
   },
   "bar-secondo": {
     "rating": 4.2,
     "userRatingCount": 100,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-08T21:40:29.222Z"
+    "updatedAt": "2026-11-18T00:32:08.688Z"
   },
   "bar-shuffle": {
     "rating": 4.2,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:45.439Z"
+    "updatedAt": "2026-11-18T00:32:09.006Z"
   },
   "bar-tabetaria": {
     "rating": 3.6,
     "userRatingCount": 113,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:45.807Z"
+    "updatedAt": "2026-11-18T00:32:09.347Z"
   },
   "bar-welmona": {
     "rating": 4.9,
-    "userRatingCount": 27,
+    "userRatingCount": 28,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:46.165Z"
+    "updatedAt": "2026-11-18T00:32:09.654Z"
   },
   "club-313": {
     "rating": 5,
@@ -183,25 +183,25 @@
     "rating": 3.8,
     "userRatingCount": 20,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:46.538Z"
+    "updatedAt": "2026-11-18T00:32:09.944Z"
   },
   "concafe-kurukuru-bakyun": {
     "rating": 4.7,
     "userRatingCount": 6,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:46.897Z"
+    "updatedAt": "2026-11-18T00:32:10.241Z"
   },
   "concafe-paracora": {
     "rating": 2.3,
     "userRatingCount": 3,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:47.260Z"
+    "updatedAt": "2026-11-18T00:32:10.528Z"
   },
   "concafe-seventh-heaven": {
     "rating": 4.3,
     "userRatingCount": 38,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:47.614Z"
+    "updatedAt": "2026-11-18T00:32:10.822Z"
   },
   "girlsbar-axia": {
     "rating": 4.7,
@@ -231,7 +231,7 @@
     "rating": 4.2,
     "userRatingCount": 313,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-10T01:10:47.983Z"
+    "updatedAt": "2026-11-18T00:32:11.107Z"
   },
   "izakaya-arbequina": {
     "rating": 4.4,
