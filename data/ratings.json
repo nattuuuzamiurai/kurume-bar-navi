@@ -1,69 +1,69 @@
 {
   "bar-141saketen": {
     "rating": 4.4,
-    "userRatingCount": 27,
+    "userRatingCount": 28,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:21.332Z"
+    "updatedAt": "2026-11-26T01:33:40.837Z"
   },
   "bar-adei": {
     "rating": 3.1,
     "userRatingCount": 37,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:21.643Z"
+    "updatedAt": "2026-11-26T01:33:41.120Z"
   },
   "bar-atwill": {
     "rating": 3.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:21.943Z"
+    "updatedAt": "2026-11-26T01:33:41.410Z"
   },
   "bar-bigisland": {
     "rating": 5,
     "userRatingCount": 4,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:22.256Z"
+    "updatedAt": "2026-11-26T01:33:41.703Z"
   },
   "bar-bistro-theater": {
     "rating": 4.1,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:22.552Z"
+    "updatedAt": "2026-11-26T01:33:41.986Z"
   },
   "bar-bolester": {
     "rating": 4.9,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:22.848Z"
+    "updatedAt": "2026-11-26T01:33:42.267Z"
   },
   "bar-borracho": {
     "rating": 3.5,
     "userRatingCount": 20,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:23.146Z"
+    "updatedAt": "2026-11-26T01:33:42.547Z"
   },
   "bar-cupanddish": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "CLOSED_PERMANENTLY",
-    "updatedAt": "2026-11-17T01:35:23.440Z"
+    "updatedAt": "2026-11-26T01:33:42.834Z"
   },
   "bar-ebisu": {
     "rating": null,
     "userRatingCount": 0,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:04.751Z"
+    "updatedAt": "2026-11-26T01:33:43.118Z"
   },
   "bar-elocho": {
     "rating": 4,
     "userRatingCount": 61,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:05.069Z"
+    "updatedAt": "2026-11-26T01:33:43.409Z"
   },
   "bar-flavor": {
     "rating": 3.7,
     "userRatingCount": 31,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:05.383Z"
+    "updatedAt": "2026-11-26T01:33:43.699Z"
   },
   "bar-huit": {
     "rating": 1,
@@ -75,31 +75,31 @@
     "rating": 4.8,
     "userRatingCount": 33,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:05.692Z"
+    "updatedAt": "2026-11-26T01:33:43.985Z"
   },
   "bar-kusumi": {
     "rating": 4.4,
     "userRatingCount": 106,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:05.988Z"
+    "updatedAt": "2026-11-26T01:33:44.278Z"
   },
   "bar-lampsquare": {
     "rating": 4,
-    "userRatingCount": 56,
+    "userRatingCount": 57,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:06.271Z"
+    "updatedAt": "2026-11-26T01:33:44.569Z"
   },
   "bar-le-coeur": {
     "rating": 4.7,
     "userRatingCount": 15,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:06.582Z"
+    "updatedAt": "2026-11-26T01:33:44.856Z"
   },
   "bar-live-actor": {
-    "rating": 4.4,
-    "userRatingCount": 27,
+    "rating": 4.5,
+    "userRatingCount": 28,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-18T00:32:06.901Z"
+    "updatedAt": "2026-11-26T01:33:45.138Z"
   },
   "bar-manuka": {
     "rating": 4.1,
@@ -753,31 +753,31 @@
     "rating": 4.2,
     "userRatingCount": 30,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:19.313Z"
+    "updatedAt": "2026-11-26T01:33:38.970Z"
   },
   "izakaya-yakitori-susumu": {
-    "rating": 4.4,
-    "userRatingCount": 23,
+    "rating": 4.5,
+    "userRatingCount": 24,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:19.614Z"
+    "updatedAt": "2026-11-26T01:33:39.285Z"
   },
   "izakaya-yakitori-yokozuna": {
     "rating": 3.6,
     "userRatingCount": 24,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:19.910Z"
+    "updatedAt": "2026-11-26T01:33:39.604Z"
   },
   "izakaya-yolo": {
     "rating": 4,
-    "userRatingCount": 105,
+    "userRatingCount": 107,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:20.208Z"
+    "updatedAt": "2026-11-26T01:33:39.908Z"
   },
   "izakaya-zaku": {
     "rating": 4.2,
     "userRatingCount": 93,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:20.682Z"
+    "updatedAt": "2026-11-26T01:33:40.219Z"
   },
   "kyabakura-chanter": {
     "rating": 4.6,
@@ -931,9 +931,9 @@
   },
   "shisha-x": {
     "rating": 4.3,
-    "userRatingCount": 15,
+    "userRatingCount": 16,
     "businessStatus": "OPERATIONAL",
-    "updatedAt": "2026-11-17T01:35:20.999Z"
+    "updatedAt": "2026-11-26T01:33:40.529Z"
   },
   "snack-a-king": {
     "rating": 5,
